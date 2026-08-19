@@ -1,0 +1,36 @@
+name: Assemble verified production patch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '_upload/part-06'
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Assemble and verify patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat _upload/part-* > /tmp/67-patch.b64
+          base64 -d /tmp/67-patch.b64 | gzip -d > 67-SUPERADMIN-GITHUB-PRODUCTION-V1.patch
+          echo "b7fa2f796020cdd267309b0e7b8f392c1fca77a23e263f3a1505ad7d07810403  67-SUPERADMIN-GITHUB-PRODUCTION-V1.patch" | sha256sum -c -
+          printf '%s  %s\n' "b7fa2f796020cdd267309b0e7b8f392c1fca77a23e263f3a1505ad7d07810403" "67-SUPERADMIN-GITHUB-PRODUCTION-V1.patch" > 67-SUPERADMIN-GITHUB-PRODUCTION-V1.patch.sha256
+          rm -rf _upload
+      - name: Commit verified patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add verified 67 Superadmin GitHub production patch"
+          git push
