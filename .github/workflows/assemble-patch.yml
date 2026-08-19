@@ -1,10 +1,10 @@
-name: Assemble verified production patch
+name: Assemble verified 67 managed-workspace fix V2
 
 on:
   push:
     branches: [main]
     paths:
-      - '_upload/part-06'
+      - '_upload/67-GITHUB-MANAGED-WORKSPACE-FIX-V2.patch.gz.b64'
 
 permissions:
   contents: write
@@ -16,21 +16,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - name: Assemble and verify patch
+      - name: Assemble and verify V2 patch
         shell: bash
         run: |
           set -euo pipefail
-          cat _upload/part-* > /tmp/67-patch.b64
-          base64 -d /tmp/67-patch.b64 | gzip -d > 67-SUPERADMIN-GITHUB-PRODUCTION-V1.patch
-          echo "b7fa2f796020cdd267309b0e7b8f392c1fca77a23e263f3a1505ad7d07810403  67-SUPERADMIN-GITHUB-PRODUCTION-V1.patch" | sha256sum -c -
-          printf '%s  %s\n' "b7fa2f796020cdd267309b0e7b8f392c1fca77a23e263f3a1505ad7d07810403" "67-SUPERADMIN-GITHUB-PRODUCTION-V1.patch" > 67-SUPERADMIN-GITHUB-PRODUCTION-V1.patch.sha256
+          base64 -d _upload/67-GITHUB-MANAGED-WORKSPACE-FIX-V2.patch.gz.b64 | gzip -d > 67-GITHUB-MANAGED-WORKSPACE-FIX-V2.patch
+          echo "5b587a4e43056af1e0c1b457c516546ce94f4e6658faeff2282530a8ea9da582  67-GITHUB-MANAGED-WORKSPACE-FIX-V2.patch" | sha256sum -c -
+          printf '%s  %s\n' "5b587a4e43056af1e0c1b457c516546ce94f4e6658faeff2282530a8ea9da582" "67-GITHUB-MANAGED-WORKSPACE-FIX-V2.patch" > 67-GITHUB-MANAGED-WORKSPACE-FIX-V2.patch.sha256
           rm -rf _upload
-      - name: Commit verified patch
+          rm -f .github/workflows/assemble-patch.yml
+      - name: Commit verified V2 patch and clean transfer files
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Add verified 67 Superadmin GitHub production patch"
+          git commit -m "Add verified 67 managed-workspace fix V2"
           git push
