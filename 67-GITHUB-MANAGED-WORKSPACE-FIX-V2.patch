@@ -1,0 +1,926 @@
+diff --git a/SECURITY_DEPLOYMENT.md b/SECURITY_DEPLOYMENT.md
+index a7cdca3..0f2c925 100644
+--- a/SECURITY_DEPLOYMENT.md
++++ b/SECURITY_DEPLOYMENT.md
+@@ -8,7 +8,7 @@ The Superadmin/GitHub control plane is fail-closed: privileged authentication is
+ 2. Generate the Superadmin scrypt hash interactively with `npm run admin:hash-password`; the utility disables terminal echo. Put the result in the secret manager/environment as `SUPERADMIN_PASSWORD_HASH`.
+ 3. Generate independent values for `SUPERADMIN_SESSION_SECRET` (32+ bytes) and `SUPERADMIN_ENCRYPTION_KEY` (exactly 32 bytes after base64 decode). Never reuse either value as a password or GitHub token.
+ 4. Keep `DATA_DIR` outside the Git checkout, owner-only (`0700`). Secret/config and audit files are written as `0600` where supported. The GitHub token and sensitive Superadmin profile fields are AES-256-GCM encrypted at rest with separate AAD contexts.
+-5. `GIT_REPOSITORY_ROOT` must be the exact trusted checkout. Its single `origin` fetch URL and single push URL must identify the same github.com repository selected in Superadmin.
++5. `GIT_REPOSITORY_ROOT` must point to the trusted deployed project directory (for this deployment, `/67`). It does **not** need to contain `.git`. If it is not a Git checkout, the GitHub Module creates an isolated managed workspace under `DATA_DIR/github-workspaces/` and mirrors only approved source files from the deployment tree into that workspace. If `GIT_REPOSITORY_ROOT` is already a Git checkout, its single `origin` fetch URL and single push URL must identify the selected github.com repository.
+ 6. Prefer a fine-grained GitHub token restricted to the one repository and minimum required permissions. For the strongest deployment, inject `GITHUB_TOKEN` from a server secret manager; environment-managed tokens cannot be removed from the UI.
+ 7. Run the service as a dedicated non-root OS account. Do not share that OS account with untrusted shell users or unrelated workloads.
+ 8. Set `TRUST_PROXY=1` only when exactly one trusted reverse proxy is in front of Node and that proxy overwrites (not appends user-controlled values to) `X-Forwarded-For` and `X-Forwarded-Proto`.
+@@ -21,10 +21,12 @@ The Superadmin/GitHub control plane is fail-closed: privileged authentication is
+ - Git credentials are supplied through a temporary private `GIT_ASKPASS` helper; tokens are not embedded in remote URLs or returned to the browser.
+ - Local Git configuration capable of executing commands, injecting credentials/headers, changing TLS trust, adding includes, filters, helpers, proxies, hooks, submodules or alternate transports is rejected.
+ - `.env`, credentials, keys, database dumps, archives, logs, uploads/runtime directories, `.github/workflows`, symlinks and submodules are blocked from controlled pushes.
+-- Outgoing commits are audited, not only the current working tree. A secret added in an older outgoing commit and deleted later is still blocked. Outgoing merge commits require manual review.
++- Outgoing commits are audited, not only the current working tree. A secret added in an older outgoing commit and deleted later is still blocked. Outgoing merge commits require manual review. Incoming commits are also audited before controlled pulls; workflow mutations, secrets, symlinks, submodules, merge commits, and paths outside the source allowlist block automatic deployment.
+ - Review authorization is HMAC-signed, bound to the active Superadmin session, exact repository/branch/action/push mode, reviewed HEAD/remote SHA, file count and content/mode manifest, and expires within 10 minutes.
+ - For pushes, `npm test` and `npm run build` must both pass before authorization is issued.
+ - After staging, Git blob IDs and modes are rechecked against the reviewed manifest. The push uses the exact reviewed/generated commit SHA rather than a moving `HEAD`. A concurrent remote change is rejected by normal non-force Git push semantics.
++- Managed-workspace mode verifies project identity (`package.json` name plus required 67 source anchors) before mirroring deployment files, preventing an unrelated repository from being bound to `/67`. The managed workspace lives outside the deployment tree and never runs `git init` inside `/67`.
++- Managed pulls use an affected-file backup and atomic replacement for approved source files; failures attempt rollback of touched deployment files. Runtime/secrets remain outside the Git mirror.
+ 
+ ## Superadmin web controls
+ 
+diff --git a/server/github.js b/server/github.js
+index 7b7bf58..ebbd750 100644
+--- a/server/github.js
++++ b/server/github.js
+@@ -20,6 +20,7 @@ const MAX_OUTPUT = 8 * 1024 * 1024;
+ const OPERATION_TTL_MS = 10 * 60_000;
+ const MAX_SECRET_SCAN_BYTES = 2 * 1024 * 1024;
+ const SAFE_LARGE_BINARY_EXTENSIONS = /\.(?:png|jpe?g|gif|webp|avif|ico|woff2?|ttf|otf|pdf)$/i;
++const MANAGED_SOURCE_DIRS = new Set(['src','server','scripts','tests','test','public','assets','static','docs']);
+ 
+ function cleanError(error) {
+   const text = error?.stderr || error?.stdout || error?.message || String(error);
+@@ -228,12 +229,12 @@ export class GitHubService {
+     }
+   }
+ 
+-  async git(args, { network = false, timeout = 60_000 } = {}) {
++  async git(args, { network = false, timeout = 60_000, cwd = this.config.repositoryRoot } = {}) {
+     const secureArgs = this.gitSecurityArgs(args);
+     if (network) {
+-      return this.withNetworkGitEnv((env) => run('git', secureArgs, { cwd: this.config.repositoryRoot, timeout, env }));
++      return this.withNetworkGitEnv((env) => run('git', secureArgs, { cwd, timeout, env }));
+     }
+-    return run('git', secureArgs, { cwd: this.config.repositoryRoot, timeout, env: this.childEnv({
++    return run('git', secureArgs, { cwd, timeout, env: this.childEnv({
+       GIT_AUTHOR_NAME: this.config.gitAuthorName,
+       GIT_AUTHOR_EMAIL: this.config.gitAuthorEmail,
+       GIT_COMMITTER_NAME: this.config.gitAuthorName,
+@@ -241,9 +242,9 @@ export class GitHubService {
+     }) });
+   }
+ 
+-  async assertSafeLocalGitConfig() {
++  async assertSafeLocalGitConfig(cwd = this.config.repositoryRoot) {
+     const { stdout } = await run('git', ['config', '--no-includes', '--null', '--list'], {
+-      cwd: this.config.repositoryRoot,
++      cwd,
+       timeout: 15_000,
+       env: this.childEnv(),
+     });
+@@ -279,48 +280,200 @@ export class GitHubService {
+     if (blocked.length) throw new Error(`Unsafe local Git configuration is present: ${blocked.slice(0, 8).join(', ')}`);
+   }
+ 
+-  async assertRepositoryBinding(selection) {
+-    if (!selection?.repo || !selection?.branch) throw new Error('Select a GitHub repository and branch first.');
+-    const selected = normalizeGitHubRepo(selection.repo);
+-    const branch = assertSafeBranch(selection.branch);
+-    const { stdout: top } = await this.git(['rev-parse', '--show-toplevel']);
+-    const actualRoot = path.resolve(top.trim());
+-    if (actualRoot !== path.resolve(this.config.repositoryRoot)) throw new Error('GIT_REPOSITORY_ROOT is not the Git repository root.');
+-    await this.assertSafeLocalGitConfig();
+-    const { stdout: originRaw } = await this.git(['remote', 'get-url', '--all', 'origin']);
+-    const { stdout: pushOriginRaw } = await this.git(['remote', 'get-url', '--push', '--all', 'origin']);
++  managedWorkspacePath(selected, branch) {
++    const key = crypto.createHash('sha256').update(`${selected.fullName.toLowerCase()}\n${branch}`).digest('hex').slice(0, 24);
++    return path.join(this.config.dataDir, 'github-workspaces', key);
++  }
++
++  async detectRepositoryRoot(cwd = this.config.repositoryRoot) {
++    try {
++      const { stdout } = await this.git(['rev-parse', '--show-toplevel'], { cwd, timeout: 15_000 });
++      return path.resolve(stdout.trim());
++    } catch {
++      return null;
++    }
++  }
++
++  async assertOriginMatches(cwd, selected) {
++    await this.assertSafeLocalGitConfig(cwd);
++    const { stdout: originRaw } = await this.git(['remote', 'get-url', '--all', 'origin'], { cwd });
++    const { stdout: pushOriginRaw } = await this.git(['remote', 'get-url', '--push', '--all', 'origin'], { cwd });
+     const fetchUrls = originRaw.trim().split(/\r?\n/).filter(Boolean);
+     const pushUrls = pushOriginRaw.trim().split(/\r?\n/).filter(Boolean);
+     if (fetchUrls.length !== 1 || pushUrls.length !== 1) throw new Error('Origin must have exactly one fetch URL and one push URL.');
+     const origin = normalizeGitHubRepo(fetchUrls[0]);
+     const pushOrigin = normalizeGitHubRepo(pushUrls[0]);
+     if (origin.fullName.toLowerCase() !== selected.fullName.toLowerCase() || pushOrigin.fullName.toLowerCase() !== selected.fullName.toLowerCase()) {
+-      throw new Error(`Selected repository ${selected.fullName} does not match local origin fetch/push URLs.`);
++      throw new Error(`Selected repository ${selected.fullName} does not match the Git workspace origin.`);
++    }
++    return origin;
++  }
++
++  async ensureManagedWorkspace(selected, branch) {
++    const workspaceRoot = this.managedWorkspacePath(selected, branch);
++    const parent = path.dirname(workspaceRoot);
++    await fs.mkdir(parent, { recursive: true, mode: 0o700 });
++    const root = await this.detectRepositoryRoot(workspaceRoot);
++    const created = !root;
++    if (!root) {
++      await fs.rm(workspaceRoot, { recursive: true, force: true });
++      await this.withNetworkGitEnv((env) => run('git', this.gitSecurityArgs([
++        'clone', '--no-checkout', '--origin', 'origin', selected.repoUrl, workspaceRoot,
++      ]), { cwd: parent, timeout: 180_000, env }));
++    } else if (root !== path.resolve(workspaceRoot)) {
++      throw new Error('Managed Git workspace root is invalid.');
++    }
++    await this.assertOriginMatches(workspaceRoot, selected);
++    let currentBranch = null;
++    try { currentBranch = (await this.git(['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: workspaceRoot })).stdout.trim(); } catch {}
++    let remoteRef = null;
++    try { remoteRef = (await this.git(['rev-parse', `refs/remotes/origin/${branch}`], { cwd: workspaceRoot })).stdout.trim(); } catch {}
++    if (!remoteRef) {
++      await this.git(['fetch', '--prune', '--no-tags', selected.repoUrl, `+refs/heads/${branch}:refs/remotes/origin/${branch}`], { network: true, timeout: 120_000, cwd: workspaceRoot });
++      remoteRef = (await this.git(['rev-parse', `refs/remotes/origin/${branch}`], { cwd: workspaceRoot })).stdout.trim();
++    }
++    if (created || !currentBranch || currentBranch === 'HEAD') {
++      await this.git(['checkout', '-B', branch, `refs/remotes/origin/${branch}`], { cwd: workspaceRoot, timeout: 120_000 });
++    } else if (currentBranch !== branch) {
++      throw new Error(`Managed workspace is on ${currentBranch}; expected ${branch}. Remove the managed workspace before rebinding.`);
++    }
++    await this.git(['clean', '-fdx'], { cwd: workspaceRoot, timeout: 120_000 });
++    await this.assertNoUnsafeTrackedObjects(workspaceRoot);
++    return workspaceRoot;
++  }
++
++  async assertNoUnsafeTrackedObjects(cwd) {
++    const { stdout } = await this.git(['ls-files', '--stage', '-z'], { cwd, timeout: 60_000 });
++    for (const record of stdout.split('\0').filter(Boolean)) {
++      const match = record.match(/^(\d+)\s+[a-f0-9]+\s+\d+\t(.+)$/i);
++      if (!match) continue;
++      if (match[1] === '120000') throw new Error(`Git workspace contains symbolic link: ${match[2]}`);
++      if (match[1] === '160000') throw new Error(`Git workspace contains submodule: ${match[2]}`);
++    }
++  }
++
++  async assertProjectIdentity(cwd, branch) {
++    const localPackagePath = path.join(this.config.repositoryRoot, 'package.json');
++    let localPackage;
++    let remotePackage;
++    try { localPackage = JSON.parse(await fs.readFile(localPackagePath, 'utf8')); } catch { throw new Error('Deployed project package.json is unavailable or invalid.'); }
++    try {
++      const { stdout } = await this.git(['show', `refs/remotes/origin/${branch}:package.json`], { cwd, timeout: 30_000 });
++      remotePackage = JSON.parse(stdout);
++    } catch { throw new Error('Selected GitHub branch does not contain a valid package.json.'); }
++    const localName = String(localPackage?.name || '').trim();
++    const remoteName = String(remotePackage?.name || '').trim();
++    if (!localName || localName !== remoteName) throw new Error(`Selected GitHub repository does not match deployed project identity (${localName || 'unknown'} != ${remoteName || 'unknown'}).`);
++    for (const required of ['src/App.jsx', 'index.html', 'vite.config.js']) {
++      if (!(await exists(path.join(this.config.repositoryRoot, required)))) throw new Error(`Deployed project identity file is missing: ${required}`);
++      try { await this.git(['cat-file', '-e', `refs/remotes/origin/${branch}:${required}`], { cwd, timeout: 15_000 }); }
++      catch { throw new Error(`Selected GitHub branch does not match project 67; missing ${required}.`); }
++    }
++  }
++
++  async listDeploymentSourceFiles() {
++    const root = path.resolve(this.config.repositoryRoot);
++    const files = new Map();
++    const rootEntries = await fs.readdir(root, { withFileTypes: true });
++    const inspectFile = async (relative) => {
++      const normalized = normalizeRepoPath(relative);
++      if (!normalized || !isSafeSourcePath(normalized)) return;
++      const absolute = path.resolve(root, normalized);
++      if (!absolute.startsWith(`${root}${path.sep}`)) throw new Error('Deployment source path escapes GIT_REPOSITORY_ROOT.');
++      const stat = await fs.lstat(absolute);
++      if (stat.isSymbolicLink()) throw new Error(`Deployment source contains symbolic link: ${normalized}`);
++      if (stat.isFile()) files.set(normalized, { absolute, mode: (stat.mode & 0o111) ? 0o755 : 0o644 });
++    };
++    const walk = async (directory, prefix) => {
++      const entries = await fs.readdir(directory, { withFileTypes: true });
++      for (const entry of entries) {
++        const relative = `${prefix}/${entry.name}`;
++        if (entry.isSymbolicLink()) throw new Error(`Deployment source tree contains symbolic link: ${relative}`);
++        if (entry.isDirectory()) {
++          if (blockedPathReason(`${relative}/placeholder.js`)) continue;
++          await walk(path.join(directory, entry.name), relative);
++        } else if (entry.isFile()) await inspectFile(relative);
++      }
++    };
++    for (const entry of rootEntries) {
++      if (entry.isSymbolicLink() && MANAGED_SOURCE_DIRS.has(entry.name)) throw new Error(`Deployment source root contains symbolic link: ${entry.name}`);
++      if (entry.isFile() || entry.isSymbolicLink()) await inspectFile(entry.name);
++      else if (entry.isDirectory() && MANAGED_SOURCE_DIRS.has(entry.name)) await walk(path.join(root, entry.name), entry.name);
++    }
++    return files;
++  }
++
++  async syncDeploymentToWorkspace(binding) {
++    const cwd = binding.gitRoot;
++    if (binding.mode !== 'managed-workspace') return;
++    await this.assertNoUnsafeTrackedObjects(cwd);
++    const sourceFiles = await this.listDeploymentSourceFiles();
++    const { stdout } = await this.git(['ls-files', '-z'], { cwd, timeout: 60_000 });
++    const trackedSafe = stdout.split('\0').filter(Boolean).map(normalizeRepoPath).filter((candidate) => candidate && isSafeSourcePath(candidate));
++    const workspaceRoot = path.resolve(cwd);
++    for (const tracked of trackedSafe) {
++      if (sourceFiles.has(tracked)) continue;
++      const target = path.resolve(workspaceRoot, tracked);
++      if (!target.startsWith(`${workspaceRoot}${path.sep}`)) throw new Error('Managed workspace path escaped root.');
++      await fs.rm(target, { force: true });
++    }
++    for (const [relative, source] of sourceFiles) {
++      const target = path.resolve(workspaceRoot, relative);
++      if (!target.startsWith(`${workspaceRoot}${path.sep}`)) throw new Error('Managed workspace path escaped root.');
++      await fs.mkdir(path.dirname(target), { recursive: true, mode: 0o700 });
++      try {
++        const existing = await fs.lstat(target);
++        if (existing.isSymbolicLink() || (!existing.isFile() && !existing.isDirectory())) throw new Error(`Unsafe workspace target: ${relative}`);
++      } catch (error) {
++        if (error?.code !== 'ENOENT') throw error;
++      }
++      await fs.copyFile(source.absolute, target);
++      await fs.chmod(target, source.mode);
+     }
+-    return { selected, branch, origin };
++  }
++
++  async assertRepositoryBinding(selection) {
++    if (!selection?.repo || !selection?.branch) throw new Error('Select a GitHub repository and branch first.');
++    const selected = normalizeGitHubRepo(selection.repo);
++    const branch = assertSafeBranch(selection.branch);
++    const localRoot = await this.detectRepositoryRoot(this.config.repositoryRoot);
++    if (localRoot === path.resolve(this.config.repositoryRoot)) {
++      const origin = await this.assertOriginMatches(localRoot, selected);
++      return { selected, branch, origin, gitRoot: localRoot, mode: 'local-checkout' };
++    }
++    const gitRoot = await this.ensureManagedWorkspace(selected, branch);
++    await this.assertProjectIdentity(gitRoot, branch);
++    const origin = await this.assertOriginMatches(gitRoot, selected);
++    return { selected, branch, origin, gitRoot, mode: 'managed-workspace' };
+   }
+ 
+   async fetchBranch(binding) {
+-    await this.git(['fetch', '--prune', '--no-tags', binding.selected.repoUrl, `+refs/heads/${binding.branch}:refs/remotes/origin/${binding.branch}`], { network: true, timeout: 120_000 });
++    await this.git(['fetch', '--prune', '--no-tags', binding.selected.repoUrl, `+refs/heads/${binding.branch}:refs/remotes/origin/${binding.branch}`], { network: true, timeout: 120_000, cwd: binding.gitRoot });
+   }
+ 
+   async rawState(selection, { fetch = false } = {}) {
+     const binding = await this.assertRepositoryBinding(selection);
+-    if (fetch) await this.fetchBranch(binding);
+-    const { stdout: branchRaw } = await this.git(['rev-parse', '--abbrev-ref', 'HEAD']);
++    if (fetch) {
++      await this.fetchBranch(binding);
++      if (binding.mode === 'managed-workspace') await this.assertProjectIdentity(binding.gitRoot, binding.branch);
++    }
++    if (binding.mode === 'managed-workspace') await this.syncDeploymentToWorkspace(binding);
++    const { stdout: branchRaw } = await this.git(['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: binding.gitRoot });
+     const localBranch = branchRaw.trim();
+-    if (localBranch !== binding.branch) throw new Error(`Local checkout is on ${localBranch}; selected branch is ${binding.branch}.`);
+-    const { stdout: headRaw } = await this.git(['rev-parse', 'HEAD']);
++    if (localBranch !== binding.branch) throw new Error(`Git workspace is on ${localBranch}; selected branch is ${binding.branch}.`);
++    const { stdout: headRaw } = await this.git(['rev-parse', 'HEAD'], { cwd: binding.gitRoot });
+     let remoteSha = null;
+-    try { remoteSha = (await this.git(['rev-parse', `refs/remotes/origin/${binding.branch}`])).stdout.trim(); } catch {}
+-    const statusRaw = (await this.git(['status', '--porcelain=v1', '-z', '--untracked-files=all'])).stdout;
++    try { remoteSha = (await this.git(['rev-parse', `refs/remotes/origin/${binding.branch}`], { cwd: binding.gitRoot })).stdout.trim(); } catch {}
++    const statusRaw = (await this.git(['status', '--porcelain=v1', '-z', '--untracked-files=all'], { cwd: binding.gitRoot })).stdout;
+     const files = parseStatus(statusRaw);
+     const manifestComplete = files.length <= 250;
+-    const contentManifest = manifestComplete ? await this.workingTreeManifest(files) : [];
++    const contentManifest = manifestComplete ? await this.workingTreeManifest(files, binding.gitRoot) : [];
+     let counts = { ahead: 0, behind: 0 };
+-    if (remoteSha) counts = parseCount((await this.git(['rev-list', '--left-right', '--count', `HEAD...refs/remotes/origin/${binding.branch}`])).stdout);
++    if (remoteSha) counts = parseCount((await this.git(['rev-list', '--left-right', '--count', `HEAD...refs/remotes/origin/${binding.branch}`], { cwd: binding.gitRoot })).stdout);
+     return {
+       binding,
++      gitRoot: binding.gitRoot,
++      mode: binding.mode,
+       localBranch,
+       head: headRaw.trim(),
+       remoteSha,
+@@ -333,10 +486,10 @@ export class GitHubService {
+     };
+   }
+ 
+-  async workingTreeManifest(files) {
++  async workingTreeManifest(files, gitRoot = this.config.repositoryRoot) {
+     const unique = [...new Set(files.flatMap((entry) => [entry.path, entry.originalPath].filter(Boolean)))].sort();
+     const manifest = [];
+-    const root = path.resolve(this.config.repositoryRoot);
++    const root = path.resolve(gitRoot);
+     for (const candidate of unique) {
+       const normalized = normalizeRepoPath(candidate);
+       if (!normalized) {
+@@ -359,7 +512,7 @@ export class GitHubService {
+           continue;
+         }
+         const mode = (stat.mode & 0o111) ? '100755' : '100644';
+-        const { stdout } = await this.git(['hash-object', `--path=${normalized}`, '--', normalized], { timeout: 30_000 });
++        const { stdout } = await this.git(['hash-object', '--no-filters', '--', normalized], { timeout: 30_000, cwd: gitRoot });
+         const oid = stdout.trim();
+         manifest.push({ path: normalized, state: 'present', mode, oid: /^[a-f0-9]{40,64}$/i.test(oid) ? oid : null });
+       } catch (error) {
+@@ -370,10 +523,10 @@ export class GitHubService {
+     return manifest;
+   }
+ 
+-  async assertIndexMatchesManifest(manifest) {
++  async assertIndexMatchesManifest(manifest, gitRoot = this.config.repositoryRoot) {
+     const paths = manifest.map((entry) => entry.path);
+     if (!paths.length) return;
+-    const { stdout } = await this.git(['ls-files', '--stage', '-z', '--', ...paths], { timeout: 60_000 });
++    const { stdout } = await this.git(['ls-files', '--stage', '-z', '--', ...paths], { timeout: 60_000, cwd: gitRoot });
+     const index = new Map();
+     for (const record of stdout.split('\0').filter(Boolean)) {
+       const match = record.match(/^(\d+)\s+([a-f0-9]{40,64})\s+(\d+)\t(.+)$/i);
+@@ -391,54 +544,54 @@ export class GitHubService {
+     }
+   }
+ 
+-  async scanChanges(files) {
++  async scanChanges(files, gitRoot = this.config.repositoryRoot) {
+     const blockers = [];
+     const safeFiles = [];
+-    const root = path.resolve(this.config.repositoryRoot);
++    const root = path.resolve(gitRoot);
+     for (const entry of files) {
++      let entryBlocked = false;
+       for (const candidate of [entry.path, entry.originalPath].filter(Boolean)) {
+         const normalized = normalizeRepoPath(candidate);
+         const reason = blockedPathReason(candidate);
+         if (reason) {
+-          blockers.push({ path: candidate, reason });
++          blockers.push({ path: candidate, reason }); entryBlocked = true;
+           continue;
+         }
+-        const isNew = entry.status.includes('?') || entry.status.includes('A');
+-        if (isNew && !isSafeSourcePath(candidate)) {
+-          blockers.push({ path: candidate, reason: 'untracked/new file is outside the approved source allowlist' });
++        if (!isSafeSourcePath(candidate)) {
++          blockers.push({ path: candidate, reason: 'file is outside the approved source allowlist' }); entryBlocked = true;
+           continue;
+         }
+         if (!normalized) continue;
+         const absolute = path.resolve(root, normalized);
+         if (!absolute.startsWith(`${root}${path.sep}`)) {
+-          blockers.push({ path: candidate, reason: 'path escapes repository root' });
++          blockers.push({ path: candidate, reason: 'path escapes repository root' }); entryBlocked = true;
+           continue;
+         }
+         try {
+           const stat = await fs.lstat(absolute);
+           if (stat.isSymbolicLink()) {
+-            blockers.push({ path: candidate, reason: 'symbolic links are not allowed' });
++            blockers.push({ path: candidate, reason: 'symbolic links are not allowed' }); entryBlocked = true;
+             continue;
+           }
+           if (stat.isFile()) {
+             if (stat.size > MAX_SECRET_SCAN_BYTES && !SAFE_LARGE_BINARY_EXTENSIONS.test(candidate)) {
+-              blockers.push({ path: candidate, reason: 'non-binary file exceeds the security secret-scan size limit' });
++              blockers.push({ path: candidate, reason: 'non-binary file exceeds the security secret-scan size limit' }); entryBlocked = true;
+             } else if (stat.size <= MAX_SECRET_SCAN_BYTES) {
+               const buffer = await fs.readFile(absolute);
+               if (!buffer.includes(0)) {
+                 const findings = scanTextForSecrets(buffer.toString('utf8'));
+-                for (const finding of findings) blockers.push({ path: candidate, reason: `${finding} detected` });
++                for (const finding of findings) { blockers.push({ path: candidate, reason: `${finding} detected` }); entryBlocked = true; }
+               }
+             }
+           }
+         } catch (error) {
+-          if (error?.code !== 'ENOENT') blockers.push({ path: candidate, reason: 'file could not be safely inspected' });
++          if (error?.code !== 'ENOENT') { blockers.push({ path: candidate, reason: 'file could not be safely inspected' }); entryBlocked = true; }
+         }
+       }
+-      if (!blockers.some((blocker) => blocker.path === entry.path)) safeFiles.push(entry);
++      if (!entryBlocked) safeFiles.push(entry);
+     }
+     try {
+-      const { stdout } = await this.git(['ls-files', '--stage', '-z']);
++      const { stdout } = await this.git(['ls-files', '--stage', '-z'], { cwd: gitRoot });
+       for (const record of stdout.split('\0').filter(Boolean)) {
+         const match = record.match(/^(\d+)\s+[a-f0-9]+\s+\d+\t(.+)$/i);
+         if (!match) continue;
+@@ -453,7 +606,7 @@ export class GitHubService {
+     const blockers = [];
+     if (state.ahead <= 0) return blockers;
+     if (!state.remoteSha) return [{ path: '*', reason: 'remote branch state is unavailable; outgoing history cannot be audited' }];
+-    const { stdout: commitRaw } = await this.git(['rev-list', '--reverse', `refs/remotes/origin/${state.binding.branch}..HEAD`]);
++    const { stdout: commitRaw } = await this.git(['rev-list', '--reverse', `refs/remotes/origin/${state.binding.branch}..HEAD`], { cwd: state.gitRoot });
+     const commits = commitRaw.trim().split(/\s+/).filter(Boolean);
+     if (commits.length !== state.ahead) blockers.push({ path: '*', reason: 'outgoing commit count changed during review' });
+     if (commits.length > 50) return [{ path: '*', reason: 'more than 50 outgoing commits require manual review' }];
+@@ -463,13 +616,13 @@ export class GitHubService {
+         blockers.push({ path: '*', reason: 'invalid outgoing commit identity' });
+         continue;
+       }
+-      const { stdout: parentRaw } = await this.git(['rev-list', '--parents', '-n', '1', commit]);
++      const { stdout: parentRaw } = await this.git(['rev-list', '--parents', '-n', '1', commit], { cwd: state.gitRoot });
+       const commitAndParents = parentRaw.trim().split(/\s+/).filter(Boolean);
+       if (commitAndParents.length > 2) {
+         blockers.push({ path: '*', reason: `outgoing merge commit ${commit.slice(0, 12)} requires manual review` });
+         continue;
+       }
+-      const { stdout: diffRaw } = await this.git(['diff-tree', '--root', '--no-commit-id', '--name-status', '-r', '-z', '--find-renames=50%', commit]);
++      const { stdout: diffRaw } = await this.git(['diff-tree', '--root', '--no-commit-id', '--name-status', '-r', '-z', '--find-renames=50%', commit], { cwd: state.gitRoot });
+       const entries = parseNameStatus(diffRaw);
+       inspectedPaths += entries.length;
+       if (inspectedPaths > 1000) return [...blockers, { path: '*', reason: 'outgoing history changes more than 1000 paths and requires manual review' }];
+@@ -477,12 +630,13 @@ export class GitHubService {
+         for (const candidate of [entry.path, entry.originalPath].filter(Boolean)) {
+           const reason = blockedPathReason(candidate);
+           if (reason) blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)}: ${reason}` });
++          else if (!isSafeSourcePath(candidate)) blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)}: path is outside the approved source allowlist` });
+         }
+         if (entry.status === 'D') continue;
+         const candidate = entry.path;
+         if (!normalizeRepoPath(candidate)) continue;
+         let treeRaw = '';
+-        try { treeRaw = (await this.git(['ls-tree', '-z', commit, '--', candidate])).stdout; } catch { continue; }
++        try { treeRaw = (await this.git(['ls-tree', '-z', commit, '--', candidate], { cwd: state.gitRoot })).stdout; } catch { continue; }
+         const record = treeRaw.split('\0').find(Boolean);
+         if (!record) continue;
+         const match = record.match(/^(\d+)\s+(blob|tree|commit)\s+([a-f0-9]{40,64})\t(.+)$/i);
+@@ -497,11 +651,11 @@ export class GitHubService {
+           blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)} has unsupported mode ${mode}` });
+           continue;
+         }
+-        const size = Number((await this.git(['cat-file', '-s', objectId])).stdout.trim());
++        const size = Number((await this.git(['cat-file', '-s', objectId], { cwd: state.gitRoot })).stdout.trim());
+         if (Number.isFinite(size) && size > MAX_SECRET_SCAN_BYTES && !SAFE_LARGE_BINARY_EXTENSIONS.test(candidate)) {
+           blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)}: non-binary file exceeds the security secret-scan size limit` });
+         } else if (Number.isFinite(size) && size <= MAX_SECRET_SCAN_BYTES) {
+-          const content = (await this.git(['cat-file', 'blob', objectId], { timeout: 30_000 })).stdout;
++          const content = (await this.git(['cat-file', 'blob', objectId], { timeout: 30_000, cwd: state.gitRoot })).stdout;
+           if (!content.includes('\0')) {
+             for (const finding of scanTextForSecrets(content)) blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)}: ${finding} detected` });
+           }
+@@ -511,10 +665,60 @@ export class GitHubService {
+     return blockers;
+   }
+ 
++  async scanIncomingHistory(state) {
++    const blockers = [];
++    if (state.behind <= 0) return blockers;
++    if (!state.remoteSha) return [{ path: '*', reason: 'remote branch state is unavailable; incoming history cannot be audited' }];
++    const { stdout: commitRaw } = await this.git(['rev-list', '--reverse', `HEAD..refs/remotes/origin/${state.binding.branch}`], { cwd: state.gitRoot });
++    const commits = commitRaw.trim().split(/\s+/).filter(Boolean);
++    if (commits.length !== state.behind) blockers.push({ path: '*', reason: 'incoming commit count changed during review' });
++    if (commits.length > 50) return [{ path: '*', reason: 'more than 50 incoming commits require manual review' }];
++    let inspectedPaths = 0;
++    for (const commit of commits) {
++      if (!/^[a-f0-9]{40,64}$/i.test(commit)) { blockers.push({ path: '*', reason: 'invalid incoming commit identity' }); continue; }
++      const { stdout: parentRaw } = await this.git(['rev-list', '--parents', '-n', '1', commit], { cwd: state.gitRoot });
++      const commitAndParents = parentRaw.trim().split(/\s+/).filter(Boolean);
++      if (commitAndParents.length > 2) { blockers.push({ path: '*', reason: `incoming merge commit ${commit.slice(0, 12)} requires manual review` }); continue; }
++      const { stdout: diffRaw } = await this.git(['diff-tree', '--root', '--no-commit-id', '--name-status', '-r', '-z', '--find-renames=50%', commit], { cwd: state.gitRoot });
++      const entries = parseNameStatus(diffRaw);
++      inspectedPaths += entries.length;
++      if (inspectedPaths > 1000) return [...blockers, { path: '*', reason: 'incoming history changes more than 1000 paths and requires manual review' }];
++      for (const entry of entries) {
++        for (const candidate of [entry.path, entry.originalPath].filter(Boolean)) {
++          const reason = blockedPathReason(candidate);
++          if (reason) blockers.push({ path: candidate, reason: `incoming commit ${commit.slice(0, 12)}: ${reason}` });
++          else if (!isSafeSourcePath(candidate)) blockers.push({ path: candidate, reason: `incoming commit ${commit.slice(0, 12)}: path is outside the approved source allowlist` });
++        }
++        if (entry.status === 'D') continue;
++        const candidate = entry.path;
++        if (!normalizeRepoPath(candidate)) continue;
++        let treeRaw = '';
++        try { treeRaw = (await this.git(['ls-tree', '-z', commit, '--', candidate], { cwd: state.gitRoot })).stdout; } catch { continue; }
++        const record = treeRaw.split('\0').find(Boolean);
++        if (!record) continue;
++        const match = record.match(/^(\d+)\s+(blob|tree|commit)\s+([a-f0-9]{40,64})\t(.+)$/i);
++        if (!match) { blockers.push({ path: candidate, reason: `incoming commit ${commit.slice(0, 12)} has an uninspectable Git object` }); continue; }
++        const [, mode, type, objectId] = match;
++        if (mode === '120000') { blockers.push({ path: candidate, reason: `incoming commit ${commit.slice(0, 12)} contains a symbolic link` }); continue; }
++        if (mode === '160000' || type === 'commit') { blockers.push({ path: candidate, reason: `incoming commit ${commit.slice(0, 12)} contains a Git submodule` }); continue; }
++        if (type !== 'blob' || !['100644', '100755'].includes(mode)) { blockers.push({ path: candidate, reason: `incoming commit ${commit.slice(0, 12)} has unsupported mode ${mode}` }); continue; }
++        const size = Number((await this.git(['cat-file', '-s', objectId], { cwd: state.gitRoot })).stdout.trim());
++        if (Number.isFinite(size) && size > MAX_SECRET_SCAN_BYTES && !SAFE_LARGE_BINARY_EXTENSIONS.test(candidate)) {
++          blockers.push({ path: candidate, reason: `incoming commit ${commit.slice(0, 12)}: non-binary file exceeds the security secret-scan size limit` });
++        } else if (Number.isFinite(size) && size <= MAX_SECRET_SCAN_BYTES) {
++          const content = (await this.git(['cat-file', 'blob', objectId], { timeout: 30_000, cwd: state.gitRoot })).stdout;
++          if (!content.includes('\0')) for (const finding of scanTextForSecrets(content)) blockers.push({ path: candidate, reason: `incoming commit ${commit.slice(0, 12)}: ${finding} detected` });
++        }
++      }
++    }
++    return blockers;
++  }
++
+   stateFingerprint(state, action) {
+     return createReviewFingerprint({
+       repo: state.binding.selected.fullName.toLowerCase(),
+       branch: state.binding.branch,
++      mode: state.mode,
+       action,
+       head: state.head,
+       remoteSha: state.remoteSha,
+@@ -555,13 +759,103 @@ export class GitHubService {
+     throw new Error('Unsupported sync action.');
+   }
+ 
++  async assertSafeDeploymentParent(relative) {
++    const normalized = normalizeRepoPath(relative);
++    if (!normalized) throw new Error('Invalid deployment-relative path.');
++    const root = path.resolve(this.config.repositoryRoot);
++    const parts = normalized.split('/').slice(0, -1);
++    let current = root;
++    for (const part of parts) {
++      current = path.join(current, part);
++      try {
++        const stat = await fs.lstat(current);
++        if (stat.isSymbolicLink()) throw new Error(`Deployment path traverses symbolic link: ${normalized}`);
++        if (!stat.isDirectory()) throw new Error(`Deployment parent is not a directory: ${normalized}`);
++      } catch (error) {
++        if (error?.code === 'ENOENT') break;
++        throw error;
++      }
++    }
++  }
++
++  async applyManagedPullToDeployment(state) {
++    if (state.mode !== 'managed-workspace') return;
++    const { stdout } = await this.git(['diff', '--name-status', '-z', '--find-renames=50%', state.head, state.remoteSha], { cwd: state.gitRoot, timeout: 60_000 });
++    const entries = parseNameStatus(stdout);
++    const affected = [...new Set(entries.flatMap((entry) => [entry.path, entry.originalPath].filter(Boolean)))];
++    for (const candidate of affected) {
++      const reason = blockedPathReason(candidate);
++      if (reason) throw new Error(`Incoming deployment path blocked: ${candidate}: ${reason}`);
++      if (!isSafeSourcePath(candidate)) throw new Error(`Incoming deployment path is outside the approved source allowlist: ${candidate}`);
++      await this.assertSafeDeploymentParent(candidate);
++    }
++    const deploymentRoot = path.resolve(this.config.repositoryRoot);
++    const backupRoot = await fs.mkdtemp(path.join(this.config.dataDir, 'pull-backup-'));
++    const backup = new Map();
++    try {
++      for (const candidate of affected) {
++        const target = path.resolve(deploymentRoot, candidate);
++        if (!target.startsWith(`${deploymentRoot}${path.sep}`)) throw new Error('Incoming deployment path escaped root.');
++        try {
++          const stat = await fs.lstat(target);
++          if (stat.isSymbolicLink() || !stat.isFile()) throw new Error(`Existing deployment target is not a regular file: ${candidate}`);
++          const copy = path.join(backupRoot, candidate);
++          await fs.mkdir(path.dirname(copy), { recursive: true, mode: 0o700 });
++          await fs.copyFile(target, copy);
++          backup.set(candidate, { existed: true, mode: stat.mode & 0o777 });
++        } catch (error) {
++          if (error?.code === 'ENOENT') backup.set(candidate, { existed: false, mode: null });
++          else throw error;
++        }
++      }
++      await this.assertSafeLocalGitConfig(state.gitRoot);
++      await this.git(['merge', '--ff-only', state.remoteSha], { cwd: state.gitRoot, timeout: 120_000 });
++      for (const entry of entries) {
++        if (entry.originalPath) {
++          const oldTarget = path.resolve(deploymentRoot, entry.originalPath);
++          await fs.rm(oldTarget, { force: true });
++        }
++        const target = path.resolve(deploymentRoot, entry.path);
++        if (entry.status === 'D') {
++          await fs.rm(target, { force: true });
++          continue;
++        }
++        const source = path.resolve(state.gitRoot, entry.path);
++        const stat = await fs.lstat(source);
++        if (stat.isSymbolicLink() || !stat.isFile()) throw new Error(`Incoming workspace object is not a regular file: ${entry.path}`);
++        await fs.mkdir(path.dirname(target), { recursive: true });
++        const temp = `${target}.67-pull-${crypto.randomUUID()}.tmp`;
++        await fs.copyFile(source, temp);
++        await fs.chmod(temp, (stat.mode & 0o111) ? 0o755 : 0o644);
++        await fs.rename(temp, target);
++      }
++    } catch (error) {
++      for (const [candidate, previous] of backup) {
++        const target = path.resolve(deploymentRoot, candidate);
++        try {
++          if (!previous.existed) await fs.rm(target, { force: true });
++          else {
++            const copy = path.join(backupRoot, candidate);
++            await fs.mkdir(path.dirname(target), { recursive: true });
++            await fs.copyFile(copy, target);
++            await fs.chmod(target, previous.mode);
++          }
++        } catch {}
++      }
++      throw error;
++    } finally {
++      await fs.rm(backupRoot, { recursive: true, force: true }).catch(() => {});
++    }
++  }
++
+   async preview({ selection, action, pushMode, sessionBinding }) {
+     if (!['pull','push','sync','cleanup'].includes(action)) throw new Error('Unsupported sync action.');
+     const state = await this.rawState(selection, { fetch: action !== 'cleanup' });
+-    const { blockers, safeFiles } = await this.scanChanges(state.files);
++    const { blockers, safeFiles } = await this.scanChanges(state.files, state.gitRoot);
+     const expectedAction = this.expectedAction(action, state);
+     if (!state.manifestComplete) blockers.push({ path: '*', reason: 'more than 250 working-tree changes require manual review' });
+     if (['push','commit_and_push'].includes(expectedAction)) blockers.push(...await this.scanOutgoingHistory(state));
++    if (expectedAction === 'fast_forward_pull') blockers.push(...await this.scanIncomingHistory(state));
+ 
+     if ((action === 'pull' || expectedAction === 'fast_forward_pull') && state.dirty) blockers.push({ path: '*', reason: 'working tree must be clean before pulling' });
+     if (state.ahead > 0 && state.behind > 0) blockers.push({ path: '*', reason: 'local and remote histories diverged; manual merge/rebase is required' });
+@@ -578,6 +872,7 @@ export class GitHubService {
+       v: 1,
+       repo: state.binding.selected.fullName.toLowerCase(),
+       branch: state.binding.branch,
++      workspaceMode: state.mode,
+       action,
+       expectedAction,
+       pushMode,
+@@ -592,6 +887,7 @@ export class GitHubService {
+     return {
+       repo: state.binding.selected.fullName,
+       branch: state.binding.branch,
++      workspaceMode: state.mode,
+       action,
+       expectedAction,
+       ahead: state.ahead,
+@@ -614,9 +910,10 @@ export class GitHubService {
+     if (currentFingerprint !== authorizationPayload.fingerprint) throw new Error('Project or remote state changed. Review the operation again.');
+     if (authorizationPayload.repo !== state.binding.selected.fullName.toLowerCase() || authorizationPayload.branch !== state.binding.branch || authorizationPayload.action !== action) throw new Error('Repository/branch/action changed. Review again.');
+     if (authorizationPayload.pushMode !== pushMode) throw new Error('Push mode changed. Review again.');
+-    const { blockers, safeFiles } = await this.scanChanges(state.files);
++    const { blockers, safeFiles } = await this.scanChanges(state.files, state.gitRoot);
+     if (!state.manifestComplete) blockers.push({ path: '*', reason: 'more than 250 working-tree changes require manual review' });
+     if (['push','commit_and_push'].includes(authorizationPayload.expectedAction)) blockers.push(...await this.scanOutgoingHistory(state));
++    if (authorizationPayload.expectedAction === 'fast_forward_pull') blockers.push(...await this.scanIncomingHistory(state));
+     if (blockers.length) throw new Error('Security blockers appeared after review. Review again.');
+     if (safeFiles.length !== authorizationPayload.fileCount) throw new Error('Project files changed. Review again.');
+ 
+@@ -627,30 +924,35 @@ export class GitHubService {
+     this.operations.set(operationId, operation);
+     try {
+       if (expectedAction === 'fast_forward_pull') {
+-        await this.assertSafeLocalGitConfig();
+-        await this.git(['merge', '--ff-only', state.remoteSha], { timeout: 120_000 });
++        if (state.mode === 'managed-workspace') await this.applyManagedPullToDeployment(state);
++        else {
++          await this.assertSafeLocalGitConfig(state.gitRoot);
++          await this.git(['merge', '--ff-only', state.remoteSha], { timeout: 120_000, cwd: state.gitRoot });
++        }
+       } else if (expectedAction === 'commit_and_push') {
+         if (pushMode === 'off') throw new Error('GitHub push mode is Off.');
+         const paths = [...new Set(safeFiles.flatMap((entry) => [entry.path, entry.originalPath].filter(Boolean)))];
+         if (!paths.length) throw new Error('No safe files were approved for commit.');
+-        await this.assertSafeLocalGitConfig();
+-        await this.git(['add', '--all', '--', ...paths], { timeout: 120_000 });
+-        await this.assertIndexMatchesManifest(state.contentManifest);
++        await this.assertSafeLocalGitConfig(state.gitRoot);
++        await this.git(['add', '--all', '--', ...paths], { timeout: 120_000, cwd: state.gitRoot });
++        await this.assertIndexMatchesManifest(state.contentManifest, state.gitRoot);
+         const message = String(commitMessage || '').trim().replace(/[\r\n]+/g, ' ').slice(0, 120) || `Verified 67 update — ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`;
+-        await this.git(['commit', '-m', message], { timeout: 120_000 });
+-        const commitSha = (await this.git(['rev-parse', 'HEAD'])).stdout.trim();
+-        const parentSha = (await this.git(['rev-parse', `${commitSha}^`])).stdout.trim();
++        await this.git(['commit', '-m', message], { timeout: 120_000, cwd: state.gitRoot });
++        const commitSha = (await this.git(['rev-parse', 'HEAD'], { cwd: state.gitRoot })).stdout.trim();
++        const parentSha = (await this.git(['rev-parse', `${commitSha}^`], { cwd: state.gitRoot })).stdout.trim();
+         if (parentSha !== state.head) throw new Error('Commit parent changed during execution; push was blocked.');
+-        await this.assertSafeLocalGitConfig();
+-        await this.git(['push', state.binding.selected.repoUrl, `${commitSha}:refs/heads/${state.binding.branch}`], { network: true, timeout: 180_000 });
++        await this.assertSafeLocalGitConfig(state.gitRoot);
++        await this.git(['push', state.binding.selected.repoUrl, `${commitSha}:refs/heads/${state.binding.branch}`], { network: true, timeout: 180_000, cwd: state.gitRoot });
++        await this.git(['update-ref', `refs/remotes/origin/${state.binding.branch}`, commitSha], { cwd: state.gitRoot });
+       } else if (expectedAction === 'push') {
+         if (pushMode === 'off') throw new Error('GitHub push mode is Off.');
+-        await this.assertSafeLocalGitConfig();
+-        await this.git(['push', state.binding.selected.repoUrl, `${state.head}:refs/heads/${state.binding.branch}`], { network: true, timeout: 180_000 });
++        await this.assertSafeLocalGitConfig(state.gitRoot);
++        await this.git(['push', state.binding.selected.repoUrl, `${state.head}:refs/heads/${state.binding.branch}`], { network: true, timeout: 180_000, cwd: state.gitRoot });
++        await this.git(['update-ref', `refs/remotes/origin/${state.binding.branch}`, state.head], { cwd: state.gitRoot });
+       } else if (expectedAction === 'safe_maintenance') {
+-        await this.assertSafeLocalGitConfig();
+-        await this.git(['fetch', '--prune', '--no-tags', state.binding.selected.repoUrl, '+refs/heads/*:refs/remotes/origin/*'], { network: true, timeout: 120_000 });
+-        await this.git(['gc', '--auto'], { timeout: 120_000 });
++        await this.assertSafeLocalGitConfig(state.gitRoot);
++        await this.git(['fetch', '--prune', '--no-tags', state.binding.selected.repoUrl, '+refs/heads/*:refs/remotes/origin/*'], { network: true, timeout: 120_000, cwd: state.gitRoot });
++        await this.git(['gc', '--auto'], { timeout: 120_000, cwd: state.gitRoot });
+       }
+       operation.status = 'completed';
+       operation.completedAt = new Date().toISOString();
+@@ -677,7 +979,7 @@ export class GitHubService {
+     if (selection?.repo && selection?.branch) {
+       try {
+         const state = await this.rawState(selection, { fetch: false });
+-        git = { available: true, repo: state.binding.selected.fullName, branch: state.localBranch, head: state.head, remoteSha: state.remoteSha, ahead: state.ahead, behind: state.behind, dirty: state.dirty, fileCount: state.files.length };
++        git = { available: true, mode: state.mode, managedWorkspace: state.mode === 'managed-workspace', repo: state.binding.selected.fullName, branch: state.localBranch, head: state.head, remoteSha: state.remoteSha, ahead: state.ahead, behind: state.behind, dirty: state.dirty, fileCount: state.files.length };
+       } catch (error) { git = { available: false, error: cleanError(error) }; }
+     }
+     return { git, pushMode };
+diff --git a/server/githubService.test.js b/server/githubService.test.js
+index d190d9d..29e0c59 100644
+--- a/server/githubService.test.js
++++ b/server/githubService.test.js
+@@ -144,3 +144,161 @@ test('outgoing merge commits are blocked for manual review', async (t) => {
+   });
+   assert.ok(blockers.some((item) => /merge commit/.test(item.reason)), JSON.stringify(blockers));
+ });
++
++test('managed workspace mirrors only approved deployment source files without creating .git in deployment', async (t) => {
++  const deployment = await fs.mkdtemp(path.join(os.tmpdir(), '67-deployment-'));
++  const workspace = await fs.mkdtemp(path.join(os.tmpdir(), '67-workspace-'));
++  const dataDir = await fs.mkdtemp(path.join(os.tmpdir(), '67-data-'));
++  t.after(() => Promise.all([
++    fs.rm(deployment, { recursive: true, force: true }),
++    fs.rm(workspace, { recursive: true, force: true }),
++    fs.rm(dataDir, { recursive: true, force: true }),
++  ]));
++
++  for (const root of [deployment, workspace]) {
++    await fs.mkdir(path.join(root, 'src'), { recursive: true });
++    await fs.writeFile(path.join(root, 'package.json'), JSON.stringify({ name: '67', private: true }));
++    await fs.writeFile(path.join(root, 'index.html'), '<div id="root"></div>\n');
++    await fs.writeFile(path.join(root, 'vite.config.js'), 'export default {}\n');
++    await fs.writeFile(path.join(root, 'src', 'App.jsx'), 'export default function App(){return null}\n');
++  }
++  git(workspace, 'init', '-b', 'main');
++  git(workspace, 'config', 'user.name', 'Test');
++  git(workspace, 'config', 'user.email', 'test@example.com');
++  git(workspace, 'add', '.');
++  git(workspace, 'commit', '-m', 'baseline');
++  git(workspace, 'update-ref', 'refs/remotes/origin/main', git(workspace, 'rev-parse', 'HEAD'));
++
++  await fs.writeFile(path.join(deployment, 'src', 'App.jsx'), 'export default function App(){return "deployed"}\n');
++  await fs.writeFile(path.join(deployment, '.env'), 'GITHUB_TOKEN=ghp_abcdefghijklmnopqrstuvwxyz123456\n');
++  await fs.mkdir(path.join(deployment, 'node_modules'), { recursive: true });
++  await fs.writeFile(path.join(deployment, 'node_modules', 'ignored.js'), 'secret runtime\n');
++
++  const service = new GitHubService({
++    config: {
++      repositoryRoot: deployment,
++      dataDir,
++      sessionSecret: 's'.repeat(64),
++      gitAuthorName: '67 Test',
++      gitAuthorEmail: 'test@example.com',
++    },
++    store: null,
++    getToken: async () => 'github_pat_test_value_that_is_long_enough',
++    audit: async () => {},
++  });
++
++  await service.assertProjectIdentity(workspace, 'main');
++  await service.syncDeploymentToWorkspace({ gitRoot: workspace, mode: 'managed-workspace' });
++  const status = git(workspace, 'status', '--porcelain');
++  assert.match(status, /src\/App\.jsx/);
++  assert.doesNotMatch(status, /\.env|node_modules/);
++  await assert.rejects(() => fs.access(path.join(deployment, '.git')));
++});
++
++test('managed workspace project identity rejects an unrelated GitHub checkout', async (t) => {
++  const deployment = await fs.mkdtemp(path.join(os.tmpdir(), '67-deployment-'));
++  const workspace = await fs.mkdtemp(path.join(os.tmpdir(), '67-unrelated-'));
++  const dataDir = await fs.mkdtemp(path.join(os.tmpdir(), '67-data-'));
++  t.after(() => Promise.all([
++    fs.rm(deployment, { recursive: true, force: true }),
++    fs.rm(workspace, { recursive: true, force: true }),
++    fs.rm(dataDir, { recursive: true, force: true }),
++  ]));
++
++  await fs.mkdir(path.join(deployment, 'src'), { recursive: true });
++  await fs.writeFile(path.join(deployment, 'package.json'), JSON.stringify({ name: '67' }));
++  await fs.writeFile(path.join(deployment, 'index.html'), 'x');
++  await fs.writeFile(path.join(deployment, 'vite.config.js'), 'export default {}');
++  await fs.writeFile(path.join(deployment, 'src', 'App.jsx'), 'export default null');
++
++  await fs.mkdir(path.join(workspace, 'src'), { recursive: true });
++  await fs.writeFile(path.join(workspace, 'package.json'), JSON.stringify({ name: 'Tamiyouz-CEO-vault' }));
++  await fs.writeFile(path.join(workspace, 'index.html'), 'x');
++  await fs.writeFile(path.join(workspace, 'vite.config.js'), 'export default {}');
++  await fs.writeFile(path.join(workspace, 'src', 'App.jsx'), 'export default null');
++  git(workspace, 'init', '-b', 'main');
++  git(workspace, 'config', 'user.name', 'Test');
++  git(workspace, 'config', 'user.email', 'test@example.com');
++  git(workspace, 'add', '.');
++  git(workspace, 'commit', '-m', 'baseline');
++  git(workspace, 'update-ref', 'refs/remotes/origin/main', git(workspace, 'rev-parse', 'HEAD'));
++
++  const service = new GitHubService({
++    config: { repositoryRoot: deployment, dataDir, sessionSecret: 's'.repeat(64), gitAuthorName: '67 Test', gitAuthorEmail: 'test@example.com' },
++    store: null,
++    getToken: async () => 'github_pat_test_value_that_is_long_enough',
++    audit: async () => {},
++  });
++  await assert.rejects(() => service.assertProjectIdentity(workspace, 'main'), /does not match deployed project identity/);
++});
++
++test('incoming history blocks workflow changes before managed pull', async (t) => {
++  const root = await makeRepo();
++  t.after(() => fs.rm(root, { recursive: true, force: true }));
++  const baseline = git(root, 'rev-parse', 'HEAD');
++  await fs.mkdir(path.join(root, '.github', 'workflows'), { recursive: true });
++  await fs.writeFile(path.join(root, '.github', 'workflows', 'danger.yml'), 'name: danger\n');
++  git(root, 'add', '.github/workflows/danger.yml');
++  git(root, 'commit', '-m', 'remote workflow');
++  const remote = git(root, 'rev-parse', 'HEAD');
++  git(root, 'update-ref', 'refs/remotes/origin/main', remote);
++  git(root, 'reset', '--hard', baseline);
++
++  const blockers = await serviceFor(root).scanIncomingHistory({
++    behind: 1,
++    remoteSha: remote,
++    gitRoot: root,
++    binding: { branch: 'main', selected: { fullName: 'owner/repo', repoUrl: 'https://github.com/owner/repo.git' } },
++  });
++  assert.ok(blockers.some((item) => item.path === '.github/workflows/danger.yml'), JSON.stringify(blockers));
++});
++
++test('managed fast-forward pull applies approved remote source changes to deployment without git init', async (t) => {
++  const deployment = await fs.mkdtemp(path.join(os.tmpdir(), '67-deployment-pull-'));
++  const workspace = await fs.mkdtemp(path.join(os.tmpdir(), '67-workspace-pull-'));
++  const dataDir = await fs.mkdtemp(path.join(os.tmpdir(), '67-data-pull-'));
++  t.after(() => Promise.all([
++    fs.rm(deployment, { recursive: true, force: true }),
++    fs.rm(workspace, { recursive: true, force: true }),
++    fs.rm(dataDir, { recursive: true, force: true }),
++  ]));
++
++  for (const root of [deployment, workspace]) {
++    await fs.mkdir(path.join(root, 'src'), { recursive: true });
++    await fs.writeFile(path.join(root, 'package.json'), JSON.stringify({ name: '67', private: true }));
++    await fs.writeFile(path.join(root, 'index.html'), '<div id="root"></div>\n');
++    await fs.writeFile(path.join(root, 'vite.config.js'), 'export default {}\n');
++    await fs.writeFile(path.join(root, 'src', 'App.jsx'), 'export default function App(){return "v1"}\n');
++  }
++
++  git(workspace, 'init', '-b', 'main');
++  git(workspace, 'config', 'user.name', 'Test');
++  git(workspace, 'config', 'user.email', 'test@example.com');
++  git(workspace, 'add', '.');
++  git(workspace, 'commit', '-m', 'baseline');
++  const baseline = git(workspace, 'rev-parse', 'HEAD');
++  await fs.writeFile(path.join(workspace, 'src', 'App.jsx'), 'export default function App(){return "v2"}\n');
++  git(workspace, 'commit', '-am', 'remote update');
++  const remote = git(workspace, 'rev-parse', 'HEAD');
++  git(workspace, 'update-ref', 'refs/remotes/origin/main', remote);
++  git(workspace, 'reset', '--hard', baseline);
++
++  const service = new GitHubService({
++    config: { repositoryRoot: deployment, dataDir, sessionSecret: 's'.repeat(64), gitAuthorName: '67 Test', gitAuthorEmail: 'test@example.com' },
++    store: null,
++    getToken: async () => 'github_pat_test_value_that_is_long_enough',
++    audit: async () => {},
++  });
++
++  const state = {
++    mode: 'managed-workspace',
++    gitRoot: workspace,
++    head: baseline,
++    remoteSha: remote,
++    binding: { branch: 'main', selected: { fullName: 'owner/67', repoUrl: 'https://github.com/owner/67.git' } },
++  };
++  await service.applyManagedPullToDeployment(state);
++  assert.match(await fs.readFile(path.join(deployment, 'src', 'App.jsx'), 'utf8'), /v2/);
++  await assert.rejects(() => fs.access(path.join(deployment, '.git')));
++  assert.equal(git(workspace, 'rev-parse', 'HEAD'), remote);
++});
+diff --git a/server/index.js b/server/index.js
+index c9e288e..8b1e713 100644
+--- a/server/index.js
++++ b/server/index.js
+@@ -281,6 +281,9 @@ async function developerStatus() {
+       auditLogging: true,
+       gitHooksDisabled: true,
+       outgoingHistoryScanned: true,
++      incomingHistoryScanned: true,
++      managedWorkspaceIsolation: true,
++      projectIdentityBinding: true,
+     },
+   };
+ }
+diff --git a/src/pages/GitHubModule.jsx b/src/pages/GitHubModule.jsx
+index 958b983..12154c2 100644
+--- a/src/pages/GitHubModule.jsx
++++ b/src/pages/GitHubModule.jsx
+@@ -201,7 +201,7 @@ export default function GitHubModule({ session, onSessionExpired }) {
+ 
+       <div className="sa-grid three">
+         <article className="sa-metric"><div className="sa-metric-icon"><Github /></div><span>GitHub</span><strong>{status?.github?.connected ? 'Connected' : 'Disconnected'}</strong><small>{status?.github?.account?.login || 'No identity configured'}</small></article>
+-        <article className="sa-metric"><div className="sa-metric-icon"><GitBranch /></div><span>Repository Binding</span><strong>{local.available ? 'Verified' : 'Not Ready'}</strong><small>{status?.selection ? `${status.selection.repo} · ${status.selection.branch}` : 'Select repository and branch'}</small></article>
++        <article className="sa-metric"><div className="sa-metric-icon"><GitBranch /></div><span>Repository Binding</span><strong>{local.available ? (local.managedWorkspace ? 'Managed Workspace' : 'Verified Checkout') : 'Not Ready'}</strong><small>{status?.selection ? `${status.selection.repo} · ${status.selection.branch}` : 'Select repository and branch'}</small></article>
+         <article className="sa-metric"><div className="sa-metric-icon"><ShieldCheck /></div><span>Controlled Push</span><strong>{status?.pushMode || 'review'}</strong><small>Signed review + checks required</small></article>
+       </div>
+ 
+@@ -235,7 +235,7 @@ export default function GitHubModule({ session, onSessionExpired }) {
+ 
+         <article className="sa-card">
+           <div className="sa-card-head"><div><span className="sa-kicker">LOCAL BINDING</span><h2>Deployment Repository</h2></div><Server size={24} /></div>
+-          <div className="sa-stats compact"><div><span>Binding</span><strong>{local.available ? 'Verified' : status?.selection ? 'Blocked' : 'Not selected'}</strong></div><div><span>Branch</span><strong>{local.branch || status?.selection?.branch || '—'}</strong></div><div><span>Ahead</span><strong>{local.ahead ?? '—'}</strong></div><div><span>Behind</span><strong>{local.behind ?? '—'}</strong></div></div>
++          <div className="sa-stats compact"><div><span>Binding</span><strong>{local.available ? (local.managedWorkspace ? 'Managed Workspace' : 'Verified Checkout') : status?.selection ? 'Blocked' : 'Not selected'}</strong></div><div><span>Branch</span><strong>{local.branch || status?.selection?.branch || '—'}</strong></div><div><span>Ahead</span><strong>{local.ahead ?? '—'}</strong></div><div><span>Behind</span><strong>{local.behind ?? '—'}</strong></div></div>{local.managedWorkspace && <div className="sa-alert info"><ShieldCheck size={17} /><span>/67 لا يحتاج .git: الموديول يستخدم Git workspace معزول داخل DATA_DIR ويراجع نسخة deployment قبل أي تنفيذ.</span></div>}
+           {local.error && <div className="sa-alert error"><ShieldX size={17} /><span>{local.error}</span></div>}
+         </article>
+       </div>
+@@ -258,12 +258,12 @@ export default function GitHubModule({ session, onSessionExpired }) {
+       {status?.selection && <article className="sa-card">
+         <div className="sa-card-head"><div><span className="sa-kicker">OPERATIONS</span><h2>Review Before Execute</h2></div><Code2 size={24} /></div>
+         <div className="sa-actions">{actions.map(({ id, label, description, icon: Icon }) => <button key={id} onClick={() => previewAction(id)} disabled={Boolean(busy) || !local.available}><Icon size={20} /><div><strong>{label}</strong><span>{description}</span></div>{busy === `preview-${id}` && <Loader2 className="spin" size={18} />}</button>)}</div>
+-        {!local.available && <div className="sa-alert error"><CircleOff size={17} /><span>التنفيذ مقفول حتى يطابق الـRepository المختار الـorigin والـbranch الموجودين على السيرفر.</span></div>}
++        {!local.available && <div className="sa-alert error"><CircleOff size={17} /><span>التنفيذ مقفول حتى ينجح Project Identity check ويصبح الـRepository والـbranch مرتبطين بالـworkspace الآمن.</span></div>}
+       </article>}
+ 
+       {review && <ReviewPanel review={review} commitMessage={commitMessage} setCommitMessage={setCommitMessage} busy={busy} onExecute={executeReview} onCancel={() => setReview(null)} />}
+ 
+-      {local.available && <article className="sa-card"><div className="sa-card-head"><div><span className="sa-kicker">LIVE GIT STATE</span><h2>Current Checkout</h2></div><FileCode2 size={24} /></div><div className="sa-stats"><div><span>HEAD</span><strong className="mono">{local.head?.slice(0, 12)}</strong></div><div><span>Files changed</span><strong>{local.fileCount}</strong></div><div><span>Ahead</span><strong>{local.ahead}</strong></div><div><span>Behind</span><strong>{local.behind}</strong></div><div><span>Working tree</span><strong>{local.dirty ? 'Dirty' : 'Clean'}</strong></div></div></article>}
++      {local.available && <article className="sa-card"><div className="sa-card-head"><div><span className="sa-kicker">LIVE GIT STATE</span><h2>{local.managedWorkspace ? 'Managed Git Workspace' : 'Current Checkout'}</h2></div><FileCode2 size={24} /></div><div className="sa-stats"><div><span>HEAD</span><strong className="mono">{local.head?.slice(0, 12)}</strong></div><div><span>Files changed</span><strong>{local.fileCount}</strong></div><div><span>Ahead</span><strong>{local.ahead}</strong></div><div><span>Behind</span><strong>{local.behind}</strong></div><div><span>Working tree</span><strong>{local.dirty ? 'Dirty' : 'Clean'}</strong></div></div></article>}
+ 
+       <article className="sa-card"><div className="sa-card-head"><div><span className="sa-kicker">GITHUB SECURITY EVENTS</span><h2>Audit Log</h2></div><button className="sa-icon-btn" onClick={loadAudit}><RefreshCw size={17} /></button></div><div className="sa-audit-list">{!auditEvents.length ? <div className="sa-empty">لا توجد أحداث GitHub مسجلة حتى الآن.</div> : auditEvents.map((event, index) => <div className="sa-audit-row" key={`${event.at}-${index}`}><span className={`sa-audit-dot ${event.outcome}`} /><div><strong>{event.action}</strong><span>{event.actor} · {event.meta?.repo || event.meta?.account || ''}</span></div><StatusPill tone={event.outcome === 'success' ? 'success' : event.outcome === 'failed' || event.outcome === 'blocked' ? 'danger' : 'neutral'}>{event.outcome}</StatusPill><time>{new Date(event.at).toLocaleString('ar-EG')}</time></div>)}</div></article>
+     </div>
+@@ -275,7 +275,7 @@ function ReviewPanel({ review, commitMessage, setCommitMessage, busy, onExecute,
+   const needsCommit = review.expectedAction === 'commit_and_push';
+   return <article className="sa-card sa-review-card">
+     <div className="sa-card-head"><div><span className="sa-kicker">SIGNED REVIEW</span><h2>{review.action.toUpperCase()} · {review.expectedAction}</h2></div><StatusPill tone={canExecute ? 'success' : 'danger'}>{canExecute ? 'READY' : 'BLOCKED'}</StatusPill></div>
+-    <div className="sa-review-summary"><div><span>Repo</span><strong>{review.repo}</strong></div><div><span>Branch</span><strong>{review.branch}</strong></div><div><span>Ahead / Behind</span><strong>{review.ahead} / {review.behind}</strong></div><div><span>Files</span><strong>{review.files?.length || 0}</strong></div><div><span>Authorization</span><strong>{review.authorization ? 'Signed · 10 min max' : 'Not issued'}</strong></div></div>
++    <div className="sa-review-summary"><div><span>Repo</span><strong>{review.repo}</strong></div><div><span>Mode</span><strong>{review.workspaceMode === 'managed-workspace' ? 'Managed Workspace' : 'Local Checkout'}</strong></div><div><span>Branch</span><strong>{review.branch}</strong></div><div><span>Ahead / Behind</span><strong>{review.ahead} / {review.behind}</strong></div><div><span>Files</span><strong>{review.files?.length || 0}</strong></div><div><span>Authorization</span><strong>{review.authorization ? 'Signed · 10 min max' : 'Not issued'}</strong></div></div>
+     <div className="sa-checks"><div className={review.checks.verify === 'passed' ? 'ok' : 'bad'}>{review.checks.verify === 'passed' ? <CheckCircle2 /> : <XCircle />}Verify <b>{review.checks.verify}</b></div><div className={review.checks.tests === 'passed' || review.checks.tests === 'skipped' ? 'ok' : 'bad'}>{review.checks.tests === 'failed' ? <XCircle /> : <CheckCircle2 />}Tests <b>{review.checks.tests}</b></div><div className={review.checks.build === 'passed' || review.checks.build === 'skipped' ? 'ok' : 'bad'}>{review.checks.build === 'failed' ? <XCircle /> : <CheckCircle2 />}Build <b>{review.checks.build}</b></div></div>
+     {!!review.blockers?.length && <div className="sa-blockers"><h3><ShieldX size={18} />Blockers</h3>{review.blockers.map((item, i) => <div key={`${item.path}-${i}`}><code>{item.path}</code><span>{item.reason}</span></div>)}</div>}
+     {!!review.files?.length && <div className="sa-files"><h3>Approved file set</h3>{review.files.slice(0, 100).map((file, i) => <div key={`${file.path}-${i}`}><code>{file.status}</code><span>{file.path}</span></div>)}{review.files.length > 100 && <small>+ {review.files.length - 100} files</small>}</div>}
