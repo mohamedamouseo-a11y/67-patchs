@@ -1,0 +1,3152 @@
+diff --git a/.env.example b/.env.example
+new file mode 100644
+index 0000000..c257f8a
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,23 @@
++# Required in production. Never commit real values.
++NODE_ENV=production
++PORT=4173
++SERVER_HOST=127.0.0.1
++SUPERADMIN_USERNAME=change-me
++# Generate interactively with: npm run admin:hash-password
++SUPERADMIN_PASSWORD_HASH=scrypt$16384$8$1$REPLACE_SALT$REPLACE_HASH
++# Use independent secrets. Example: openssl rand -base64 48
++SUPERADMIN_SESSION_SECRET=replace-with-at-least-32-random-bytes
++# Exactly 32 bytes after base64 decode. Generator: openssl rand -base64 32
++SUPERADMIN_ENCRYPTION_KEY=replace-with-base64-32-byte-key
++# Exact public origin; no trailing slash/path/query.
++SUPERADMIN_ALLOWED_ORIGIN=https://67.example.com
++SUPERADMIN_SESSION_TTL_MINUTES=480
++# Must be outside GIT_REPOSITORY_ROOT.
++DATA_DIR=/var/lib/sixty-seven
++GIT_REPOSITORY_ROOT=/srv/sixty-seven
++GIT_COMMIT_AUTHOR_NAME=67 Superadmin
++GIT_COMMIT_AUTHOR_EMAIL=superadmin@example.com
++# Optional: strongest mode is environment/secret-manager managed token.
++# GITHUB_TOKEN=github_pat_...
++# Set to 1 only behind ONE trusted reverse proxy that overwrites X-Forwarded-*.
++TRUST_PROXY=1
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..ed413b8
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,9 @@
++node_modules/
++dist/
++.data/
++.env
++.env.*
++!.env.example
++*.log
++coverage/
++.DS_Store
+diff --git a/SECURITY_DEPLOYMENT.md b/SECURITY_DEPLOYMENT.md
+new file mode 100644
+index 0000000..a7cdca3
+--- /dev/null
++++ b/SECURITY_DEPLOYMENT.md
+@@ -0,0 +1,55 @@
++# 67 Superadmin + GitHub Module — Production Deployment
++
++The Superadmin/GitHub control plane is fail-closed: privileged authentication is unavailable until every required production secret and origin setting is valid. The implementation uses Node.js built-ins only; this patch adds no runtime npm dependency.
++
++## Required deployment controls
++
++1. Run the Node service on `127.0.0.1` behind HTTPS. Set `SUPERADMIN_ALLOWED_ORIGIN` to the exact public origin, with no trailing slash/path/query.
++2. Generate the Superadmin scrypt hash interactively with `npm run admin:hash-password`; the utility disables terminal echo. Put the result in the secret manager/environment as `SUPERADMIN_PASSWORD_HASH`.
++3. Generate independent values for `SUPERADMIN_SESSION_SECRET` (32+ bytes) and `SUPERADMIN_ENCRYPTION_KEY` (exactly 32 bytes after base64 decode). Never reuse either value as a password or GitHub token.
++4. Keep `DATA_DIR` outside the Git checkout, owner-only (`0700`). Secret/config and audit files are written as `0600` where supported. The GitHub token and sensitive Superadmin profile fields are AES-256-GCM encrypted at rest with separate AAD contexts.
++5. `GIT_REPOSITORY_ROOT` must be the exact trusted checkout. Its single `origin` fetch URL and single push URL must identify the same github.com repository selected in Superadmin.
++6. Prefer a fine-grained GitHub token restricted to the one repository and minimum required permissions. For the strongest deployment, inject `GITHUB_TOKEN` from a server secret manager; environment-managed tokens cannot be removed from the UI.
++7. Run the service as a dedicated non-root OS account. Do not share that OS account with untrusted shell users or unrelated workloads.
++8. Set `TRUST_PROXY=1` only when exactly one trusted reverse proxy is in front of Node and that proxy overwrites (not appends user-controlled values to) `X-Forwarded-For` and `X-Forwarded-Proto`.
++9. Back up the encrypted state only under a policy that separately protects the encryption key. Losing the key makes encrypted GitHub/profile data intentionally unreadable.
++10. Treat repository code and its `npm test` / `npm run build` scripts as trusted deployment code. The GitHub gate scrubs child-process environment secrets and disables Git hooks/filters, but build/test scripts are project code and should run inside the dedicated service account or an isolated container/VM.
++
++## GitHub execution guardrails
++
++- GitHub API and Git network targets are restricted to official GitHub HTTPS endpoints; SSH/git/file/ext protocols are disabled for controlled operations.
++- Git credentials are supplied through a temporary private `GIT_ASKPASS` helper; tokens are not embedded in remote URLs or returned to the browser.
++- Local Git configuration capable of executing commands, injecting credentials/headers, changing TLS trust, adding includes, filters, helpers, proxies, hooks, submodules or alternate transports is rejected.
++- `.env`, credentials, keys, database dumps, archives, logs, uploads/runtime directories, `.github/workflows`, symlinks and submodules are blocked from controlled pushes.
++- Outgoing commits are audited, not only the current working tree. A secret added in an older outgoing commit and deleted later is still blocked. Outgoing merge commits require manual review.
++- Review authorization is HMAC-signed, bound to the active Superadmin session, exact repository/branch/action/push mode, reviewed HEAD/remote SHA, file count and content/mode manifest, and expires within 10 minutes.
++- For pushes, `npm test` and `npm run build` must both pass before authorization is issued.
++- After staging, Git blob IDs and modes are rechecked against the reviewed manifest. The push uses the exact reviewed/generated commit SHA rather than a moving `HEAD`. A concurrent remote change is rejected by normal non-force Git push semantics.
++
++## Superadmin web controls
++
++- Server-side password verification (scrypt), single active server session, signed HttpOnly/Secure/SameSite=Strict cookie, CSRF token, exact production Origin checks, rate limits and audit logging.
++- No default admin username/password/OTP/bypass is embedded in the frontend.
++- Sensitive bank/profile settings are stored encrypted server-side instead of `localStorage`.
++- Privileged endpoints require HTTPS in production. Security headers prevent framing and unsafe cross-origin control-plane use while retaining same-origin camera/microphone/geolocation/payment capability used by the wider app; the existing Google Maps embed is explicitly allowed.
++
++## Build and deploy gate
++
++```bash
++npm ci
++npm test
++npm run build
++NODE_ENV=production npm start
++```
++
++Health check: `GET /api/health`.
++
++The application does **not** parse `.env` files automatically; inject variables with systemd/PM2/container/orchestrator secrets/environment. This avoids adding a dotenv dependency and prevents accidental secret-file loading from the Git checkout.
++
++## Reverse proxy baseline
++
++Proxy `/` to `http://127.0.0.1:4173`, terminate TLS at the proxy, set `Host`, overwrite `X-Forwarded-For` with the trusted proxy chain policy, and set `X-Forwarded-Proto https`. Do not expose port 4173 publicly.
++
++## Existing platform scope
++
++This patch preserves the original 67 Superadmin business dashboard and adds the GitHub Module to it while replacing its demo authentication and sensitive profile storage. Existing seller/customer/payment/document/community dashboard records in the supplied 67 frontend are still mock/client-side demo data from the original project; this patch does not invent a production business database for those pre-existing modules. They require a separate backend/data migration before those records can be considered production source-of-truth.
+diff --git a/package-lock.json b/package-lock.json
+index e394287..e1737f5 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -19,6 +19,9 @@
+         "@types/react-dom": "^18.3.0",
+         "@vitejs/plugin-react": "^4.3.0",
+         "vite": "^5.2.12"
++      },
++      "engines": {
++        "node": ">=20.11.0"
+       }
+     },
+     "node_modules/@babel/code-frame": {
+diff --git a/package.json b/package.json
+index aebf7f2..b17c7dd 100644
+--- a/package.json
++++ b/package.json
+@@ -5,8 +5,11 @@
+   "type": "module",
+   "scripts": {
+     "dev": "vite",
++    "dev:server": "NODE_ENV=development node server/index.js",
+     "build": "vite build",
+-    "preview": "vite preview"
++    "start": "node server/index.js",
++    "test": "node --test",
++    "admin:hash-password": "node scripts/hash-admin-password.js"
+   },
+   "dependencies": {
+     "lucide-react": "^0.378.0",
+@@ -20,5 +23,8 @@
+     "@types/react-dom": "^18.3.0",
+     "@vitejs/plugin-react": "^4.3.0",
+     "vite": "^5.2.12"
++  },
++  "engines": {
++    "node": ">=20.11.0"
+   }
+ }
+diff --git a/scripts/hash-admin-password.js b/scripts/hash-admin-password.js
+new file mode 100644
+index 0000000..23d0241
+--- /dev/null
++++ b/scripts/hash-admin-password.js
+@@ -0,0 +1,45 @@
++import { stdin, stdout } from 'node:process';
++import readline from 'node:readline';
++import { hashPassword } from '../server/security.js';
++
++function readHidden(prompt) {
++  if (!stdin.isTTY || !stdout.isTTY || typeof stdin.setRawMode !== 'function') {
++    throw new Error('Run this command in an interactive TTY so the password is not echoed.');
++  }
++  readline.emitKeypressEvents(stdin);
++  stdin.setRawMode(true);
++  stdin.resume();
++  stdout.write(prompt);
++  return new Promise((resolve, reject) => {
++    let value = '';
++    const cleanup = () => {
++      stdin.off('keypress', onKeypress);
++      stdin.setRawMode(false);
++      stdin.pause();
++      stdout.write('\n');
++    };
++    const onKeypress = (text, key = {}) => {
++      if (key.ctrl && key.name === 'c') {
++        cleanup();
++        reject(new Error('Cancelled.'));
++        return;
++      }
++      if (key.name === 'return' || key.name === 'enter') {
++        cleanup();
++        resolve(value);
++        return;
++      }
++      if (key.name === 'backspace') {
++        value = value.slice(0, -1);
++        return;
++      }
++      if (!key.ctrl && !key.meta && text) value += text;
++    };
++    stdin.on('keypress', onKeypress);
++  });
++}
++
++const password = await readHidden('Superadmin password (14+ chars): ');
++const confirmation = await readHidden('Confirm password: ');
++if (password !== confirmation) throw new Error('Passwords do not match.');
++stdout.write(`${await hashPassword(password)}\n`);
+diff --git a/server/config.js b/server/config.js
+new file mode 100644
+index 0000000..c0722b3
+--- /dev/null
++++ b/server/config.js
+@@ -0,0 +1,84 @@
++import crypto from 'node:crypto';
++import path from 'node:path';
++
++function env(name, fallback = '') {
++  return String(process.env[name] ?? fallback).trim();
++}
++
++function intEnv(name, fallback, min, max) {
++  const value = Number(process.env[name] ?? fallback);
++  if (!Number.isSafeInteger(value) || value < min || value > max) return fallback;
++  return value;
++}
++
++function parseEncryptionKey(raw) {
++  if (!raw) return null;
++  const candidates = [];
++  try { candidates.push(Buffer.from(raw, 'base64')); } catch {}
++  try { candidates.push(Buffer.from(raw, 'hex')); } catch {}
++  candidates.push(Buffer.from(raw, 'utf8'));
++  return candidates.find((value) => value.length === 32) ?? null;
++}
++
++function isPathInside(parent, child) {
++  const relative = path.relative(path.resolve(parent), path.resolve(child));
++  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
++}
++
++function validateAllowedOrigin(raw, production) {
++  if (!raw) return production ? 'SUPERADMIN_ALLOWED_ORIGIN is required in production.' : null;
++  try {
++    const parsed = new URL(raw);
++    if (parsed.origin !== raw || parsed.username || parsed.password || parsed.pathname !== '/' || parsed.search || parsed.hash) {
++      return 'SUPERADMIN_ALLOWED_ORIGIN must be an exact origin with no path, credentials, query, or fragment.';
++    }
++    if (production && parsed.protocol !== 'https:') return 'SUPERADMIN_ALLOWED_ORIGIN must use HTTPS in production.';
++    if (!['http:', 'https:'].includes(parsed.protocol)) return 'SUPERADMIN_ALLOWED_ORIGIN must use HTTP or HTTPS.';
++    return null;
++  } catch {
++    return 'SUPERADMIN_ALLOWED_ORIGIN must be a valid origin.';
++  }
++}
++
++export function loadConfig() {
++  const production = process.env.NODE_ENV === 'production';
++  const cwd = process.cwd();
++  const sessionSecret = env('SUPERADMIN_SESSION_SECRET');
++  const encryptionKey = parseEncryptionKey(env('SUPERADMIN_ENCRYPTION_KEY'));
++  const passwordHash = env('SUPERADMIN_PASSWORD_HASH');
++  const username = env('SUPERADMIN_USERNAME');
++  const allowedOrigin = env('SUPERADMIN_ALLOWED_ORIGIN');
++  const dataDir = path.resolve(env('DATA_DIR', production ? '/var/lib/sixty-seven' : path.join(cwd, '.data')));
++  const repositoryRoot = path.resolve(env('GIT_REPOSITORY_ROOT', cwd));
++  const serverHost = env('SERVER_HOST', '127.0.0.1');
++
++  const errors = [];
++  if (!username || username.length > 128) errors.push('SUPERADMIN_USERNAME is required and must be at most 128 characters.');
++  if (!/^scrypt\$16384\$8\$1\$[A-Za-z0-9_-]{16,}\$[A-Za-z0-9_-]{32,}$/.test(passwordHash)) errors.push('SUPERADMIN_PASSWORD_HASH must be a valid 67 scrypt hash.');
++  if (Buffer.byteLength(sessionSecret, 'utf8') < 32) errors.push('SUPERADMIN_SESSION_SECRET must be at least 32 bytes.');
++  if (!encryptionKey) errors.push('SUPERADMIN_ENCRYPTION_KEY must decode to exactly 32 bytes.');
++  const originError = validateAllowedOrigin(allowedOrigin, production);
++  if (originError) errors.push(originError);
++  if (production && isPathInside(repositoryRoot, dataDir)) errors.push('DATA_DIR must be outside GIT_REPOSITORY_ROOT in production.');
++  if (!serverHost || /[\s/\\]/.test(serverHost)) errors.push('SERVER_HOST is invalid.');
++
++  return {
++    production,
++    port: intEnv('PORT', 4173, 0, 65535),
++    serverHost,
++    username,
++    passwordHash,
++    sessionSecret,
++    encryptionKey,
++    allowedOrigin,
++    dataDir,
++    repositoryRoot,
++    sessionTtlMs: intEnv('SUPERADMIN_SESSION_TTL_MINUTES', 480, 15, 1440) * 60_000,
++    githubTokenFromEnv: env('GITHUB_TOKEN'),
++    gitAuthorName: env('GIT_COMMIT_AUTHOR_NAME', '67 Superadmin'),
++    gitAuthorEmail: env('GIT_COMMIT_AUTHOR_EMAIL', 'superadmin@67.local'),
++    trustProxy: env('TRUST_PROXY') === '1',
++    configErrors: errors,
++    instanceId: crypto.createHash('sha256').update(`${cwd}:${process.pid}`).digest('hex').slice(0, 12),
++  };
++}
+diff --git a/server/config.test.js b/server/config.test.js
+new file mode 100644
+index 0000000..f4d8cd1
+--- /dev/null
++++ b/server/config.test.js
+@@ -0,0 +1,47 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import path from 'node:path';
++import os from 'node:os';
++import { loadConfig } from './config.js';
++
++const VALID_HASH = 'scrypt$16384$8$1$abcdefghijklmnop$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-';
++
++function withEnv(overrides, fn) {
++  const before = { ...process.env };
++  Object.assign(process.env, overrides);
++  try { return fn(); } finally {
++    for (const key of Object.keys(process.env)) if (!(key in before)) delete process.env[key];
++    Object.assign(process.env, before);
++  }
++}
++
++test('production config rejects origin paths and DATA_DIR inside repository', () => {
++  const repo = path.join(os.tmpdir(), '67-config-repo');
++  const cfg = withEnv({
++    NODE_ENV: 'production',
++    SUPERADMIN_USERNAME: 'admin',
++    SUPERADMIN_PASSWORD_HASH: VALID_HASH,
++    SUPERADMIN_SESSION_SECRET: 's'.repeat(64),
++    SUPERADMIN_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString('base64'),
++    SUPERADMIN_ALLOWED_ORIGIN: 'https://67.example.com/admin',
++    GIT_REPOSITORY_ROOT: repo,
++    DATA_DIR: path.join(repo, '.data'),
++  }, () => loadConfig());
++  assert.ok(cfg.configErrors.some((value) => value.includes('exact origin')));
++  assert.ok(cfg.configErrors.some((value) => value.includes('outside GIT_REPOSITORY_ROOT')));
++});
++
++test('production config accepts exact HTTPS origin and external DATA_DIR', () => {
++  const cfg = withEnv({
++    NODE_ENV: 'production',
++    SUPERADMIN_USERNAME: 'admin',
++    SUPERADMIN_PASSWORD_HASH: VALID_HASH,
++    SUPERADMIN_SESSION_SECRET: 's'.repeat(64),
++    SUPERADMIN_ENCRYPTION_KEY: Buffer.alloc(32, 9).toString('base64'),
++    SUPERADMIN_ALLOWED_ORIGIN: 'https://67.example.com',
++    GIT_REPOSITORY_ROOT: '/srv/sixty-seven',
++    DATA_DIR: '/var/lib/sixty-seven',
++    SERVER_HOST: '127.0.0.1',
++  }, () => loadConfig());
++  assert.deepEqual(cfg.configErrors, []);
++});
+diff --git a/server/github.js b/server/github.js
+new file mode 100644
+index 0000000..7b7bf58
+--- /dev/null
++++ b/server/github.js
+@@ -0,0 +1,689 @@
++import crypto from 'node:crypto';
++import { execFile } from 'node:child_process';
++import fs from 'node:fs/promises';
++import path from 'node:path';
++import { promisify } from 'node:util';
++import {
++  assertSafeBranch,
++  blockedPathReason,
++  createExecutionAuthorization,
++  createReviewFingerprint,
++  isSafeSourcePath,
++  normalizeGitHubRepo,
++  normalizeRepoPath,
++  scanTextForSecrets,
++} from './githubSecurity.js';
++import { redactSecrets } from './security.js';
++
++const execFileAsync = promisify(execFile);
++const MAX_OUTPUT = 8 * 1024 * 1024;
++const OPERATION_TTL_MS = 10 * 60_000;
++const MAX_SECRET_SCAN_BYTES = 2 * 1024 * 1024;
++const SAFE_LARGE_BINARY_EXTENSIONS = /\.(?:png|jpe?g|gif|webp|avif|ico|woff2?|ttf|otf|pdf)$/i;
++
++function cleanError(error) {
++  const text = error?.stderr || error?.stdout || error?.message || String(error);
++  return redactSecrets(String(text).slice(0, 4000));
++}
++
++async function run(command, args, options = {}) {
++  try {
++    const result = await execFileAsync(command, args, {
++      cwd: options.cwd,
++      env: options.env || process.env,
++      timeout: options.timeout || 60_000,
++      maxBuffer: MAX_OUTPUT,
++      windowsHide: true,
++      encoding: 'utf8',
++    });
++    return { stdout: result.stdout || '', stderr: result.stderr || '' };
++  } catch (error) {
++    const wrapped = new Error(cleanError(error));
++    wrapped.code = error?.code;
++    throw wrapped;
++  }
++}
++
++function parseStatus(raw) {
++  const chunks = String(raw || '').split('\0');
++  const entries = [];
++  for (let i = 0; i < chunks.length; i += 1) {
++    const record = chunks[i];
++    if (!record || record.length < 4) continue;
++    const status = record.slice(0, 2);
++    const filePath = record.slice(3);
++    const entry = { status, path: filePath };
++    if (status.includes('R') || status.includes('C')) {
++      const originalPath = chunks[i + 1];
++      if (originalPath) { entry.originalPath = originalPath; i += 1; }
++    }
++    entries.push(entry);
++  }
++  return entries;
++}
++
++function parseNameStatus(raw) {
++  const chunks = String(raw || '').split('\0');
++  const entries = [];
++  for (let i = 0; i < chunks.length; i += 1) {
++    const statusRaw = chunks[i];
++    if (!statusRaw) continue;
++    const code = statusRaw.slice(0, 1);
++    if (!/^[ACDMRTUXB]$/.test(code)) continue;
++    if (code === 'R' || code === 'C') {
++      const originalPath = chunks[i + 1];
++      const filePath = chunks[i + 2];
++      if (filePath) entries.push({ status: code, path: filePath, originalPath });
++      i += 2;
++      continue;
++    }
++    const filePath = chunks[i + 1];
++    if (filePath) entries.push({ status: code, path: filePath });
++    i += 1;
++  }
++  return entries;
++}
++
++function parseCount(raw) {
++  const [left = '0', right = '0'] = String(raw).trim().split(/\s+/);
++  return { ahead: Number(left) || 0, behind: Number(right) || 0 };
++}
++
++async function exists(file) {
++  try { await fs.access(file); return true; } catch { return false; }
++}
++
++export class GitHubService {
++  constructor({ config, store, getToken, audit }) {
++    this.config = config;
++    this.store = store;
++    this.getToken = getToken;
++    this.audit = audit;
++    this.operations = new Map();
++  }
++
++  async githubApi(apiPath, { method = 'GET', body, token } = {}) {
++    const authToken = token || await this.getToken();
++    if (!authToken) throw new Error('GitHub is not connected.');
++    const url = new URL(apiPath, 'https://api.github.com');
++    if (url.origin !== 'https://api.github.com') throw new Error('Invalid GitHub API target.');
++    const response = await fetch(url, {
++      method,
++      headers: {
++        Accept: 'application/vnd.github+json',
++        Authorization: `Bearer ${authToken}`,
++        'User-Agent': '67-superadmin-developer-hub',
++        ...(body ? { 'Content-Type': 'application/json' } : {}),
++      },
++      body: body ? JSON.stringify(body) : undefined,
++      signal: AbortSignal.timeout(25_000),
++    });
++    const text = await response.text();
++    let data = null;
++    try { data = text ? JSON.parse(text) : null; } catch { data = null; }
++    if (!response.ok) {
++      const message = data?.message || `GitHub API error ${response.status}`;
++      throw new Error(redactSecrets(message));
++    }
++    return { data, headers: response.headers };
++  }
++
++  async validateToken(token) {
++    const raw = String(token || '').trim();
++    if (raw.length < 20 || raw.length > 512 || /\s/.test(raw)) throw new Error('Invalid GitHub token format.');
++    const { data, headers } = await this.githubApi('/user', { token: raw });
++    return {
++      token: raw,
++      account: {
++        login: data.login,
++        id: data.id,
++        avatarUrl: data.avatar_url,
++        profileUrl: data.html_url,
++      },
++      scopes: String(headers.get('x-oauth-scopes') || '').split(',').map((v) => v.trim()).filter(Boolean),
++    };
++  }
++
++  async listRepositories() {
++    const repos = [];
++    for (let page = 1; page <= 3; page += 1) {
++      const { data } = await this.githubApi(`/user/repos?per_page=100&page=${page}&sort=updated&affiliation=owner%2Ccollaborator%2Corganization_member`);
++      if (!Array.isArray(data)) break;
++      repos.push(...data.map((repo) => ({
++        id: repo.id,
++        fullName: repo.full_name,
++        private: Boolean(repo.private),
++        defaultBranch: repo.default_branch,
++        permissions: repo.permissions || {},
++        archived: Boolean(repo.archived),
++        htmlUrl: repo.html_url,
++      })));
++      if (data.length < 100) break;
++    }
++    return repos;
++  }
++
++  async listBranches(repoInput) {
++    const repo = normalizeGitHubRepo(repoInput);
++    const branches = [];
++    for (let page = 1; page <= 3; page += 1) {
++      const { data } = await this.githubApi(`/repos/${encodeURIComponent(repo.owner)}/${encodeURIComponent(repo.repo)}/branches?per_page=100&page=${page}`);
++      if (!Array.isArray(data)) break;
++      branches.push(...data.map((branch) => ({ name: branch.name, protected: Boolean(branch.protected), sha: branch.commit?.sha || null })));
++      if (data.length < 100) break;
++    }
++    return branches;
++  }
++
++  childEnv(extra = {}) {
++    const allow = ['PATH', 'SystemRoot', 'WINDIR', 'TEMP', 'TMP', 'TMPDIR', 'LANG', 'LC_ALL', 'TZ'];
++    const env = {};
++    for (const key of allow) if (process.env[key]) env[key] = process.env[key];
++    env.HOME = path.join(this.config.dataDir, 'child-home');
++    env.GIT_CONFIG_GLOBAL = process.platform === 'win32' ? 'NUL' : '/dev/null';
++    env.GIT_CONFIG_SYSTEM = process.platform === 'win32' ? 'NUL' : '/dev/null';
++    env.GIT_TERMINAL_PROMPT = '0';
++    env.GCM_INTERACTIVE = 'Never';
++    env.GIT_PAGER = 'cat';
++    env.PAGER = 'cat';
++    return { ...env, ...extra };
++  }
++
++  gitSecurityArgs(args) {
++    return [
++      '-c', 'core.hooksPath=/dev/null',
++      '-c', 'commit.gpgSign=false',
++      '-c', 'tag.gpgSign=false',
++      '-c', 'credential.helper=',
++      '-c', 'protocol.file.allow=never',
++      '-c', 'protocol.ext.allow=never',
++      '-c', 'protocol.ssh.allow=never',
++      '-c', 'protocol.git.allow=never',
++      ...args,
++    ];
++  }
++
++  async withNetworkGitEnv(callback) {
++    const token = await this.getToken();
++    if (!token) throw new Error('GitHub is not connected.');
++    await fs.mkdir(this.config.dataDir, { recursive: true, mode: 0o700 });
++    const tmpDir = await fs.mkdtemp(path.join(this.config.dataDir, 'git-auth-'));
++    const askpass = path.join(tmpDir, process.platform === 'win32' ? 'askpass.cmd' : 'askpass.sh');
++    const script = process.platform === 'win32'
++      ? '@echo off\r\necho %GITHUB_TOKEN%\r\n'
++      : '#!/bin/sh\ncase "$1" in\n  *Username*) printf "%s" "x-access-token" ;;\n  *Password*) printf "%s" "$GITHUB_TOKEN" ;;\n  *) printf "%s" "" ;;\nesac\n';
++    try {
++      await fs.writeFile(askpass, script, { mode: 0o700, flag: 'wx' });
++      try { await fs.chmod(askpass, 0o700); } catch {}
++      return await callback(this.childEnv({
++        GIT_ASKPASS: askpass,
++        GITHUB_TOKEN: token,
++        GIT_AUTHOR_NAME: this.config.gitAuthorName,
++        GIT_AUTHOR_EMAIL: this.config.gitAuthorEmail,
++        GIT_COMMITTER_NAME: this.config.gitAuthorName,
++        GIT_COMMITTER_EMAIL: this.config.gitAuthorEmail,
++      }));
++    } finally {
++      await fs.rm(tmpDir, { recursive: true, force: true }).catch(() => {});
++    }
++  }
++
++  async git(args, { network = false, timeout = 60_000 } = {}) {
++    const secureArgs = this.gitSecurityArgs(args);
++    if (network) {
++      return this.withNetworkGitEnv((env) => run('git', secureArgs, { cwd: this.config.repositoryRoot, timeout, env }));
++    }
++    return run('git', secureArgs, { cwd: this.config.repositoryRoot, timeout, env: this.childEnv({
++      GIT_AUTHOR_NAME: this.config.gitAuthorName,
++      GIT_AUTHOR_EMAIL: this.config.gitAuthorEmail,
++      GIT_COMMITTER_NAME: this.config.gitAuthorName,
++      GIT_COMMITTER_EMAIL: this.config.gitAuthorEmail,
++    }) });
++  }
++
++  async assertSafeLocalGitConfig() {
++    const { stdout } = await run('git', ['config', '--no-includes', '--null', '--list'], {
++      cwd: this.config.repositoryRoot,
++      timeout: 15_000,
++      env: this.childEnv(),
++    });
++    const blocked = [];
++    for (const record of String(stdout || '').split('\0').filter(Boolean)) {
++      const splitAt = record.indexOf('\n');
++      const key = (splitAt >= 0 ? record.slice(0, splitAt) : record).trim().toLowerCase();
++      if (!key) continue;
++      if (
++        key === 'core.hookspath'
++        || key === 'core.sshcommand'
++        || key === 'core.fsmonitor'
++        || key === 'core.attributesfile'
++        || key === 'credential.helper'
++        || key === 'http.extraheader'
++        || key === 'http.proxy'
++        || key === 'https.proxy'
++        || key === 'http.sslverify'
++        || key === 'http.sslcainfo'
++        || key === 'http.sslcert'
++        || key === 'http.sslkey'
++        || key === 'http.followredirects'
++        || /^http\..+\.(?:extraheader|proxy|sslverify|sslcainfo|sslcert|sslkey)$/.test(key)
++        || key === 'include.path'
++        || key.startsWith('includeif.')
++        || /^url\..+\.(?:insteadof|pushinsteadof)$/.test(key)
++        || /^remote\..+\.(?:proxy|receivepack|uploadpack|mirror)$/.test(key)
++        || /^filter\..+\./.test(key)
++        || /^diff\..+\.command$/.test(key)
++        || /^merge\..+\.driver$/.test(key)
++      ) blocked.push(key);
++    }
++    if (blocked.length) throw new Error(`Unsafe local Git configuration is present: ${blocked.slice(0, 8).join(', ')}`);
++  }
++
++  async assertRepositoryBinding(selection) {
++    if (!selection?.repo || !selection?.branch) throw new Error('Select a GitHub repository and branch first.');
++    const selected = normalizeGitHubRepo(selection.repo);
++    const branch = assertSafeBranch(selection.branch);
++    const { stdout: top } = await this.git(['rev-parse', '--show-toplevel']);
++    const actualRoot = path.resolve(top.trim());
++    if (actualRoot !== path.resolve(this.config.repositoryRoot)) throw new Error('GIT_REPOSITORY_ROOT is not the Git repository root.');
++    await this.assertSafeLocalGitConfig();
++    const { stdout: originRaw } = await this.git(['remote', 'get-url', '--all', 'origin']);
++    const { stdout: pushOriginRaw } = await this.git(['remote', 'get-url', '--push', '--all', 'origin']);
++    const fetchUrls = originRaw.trim().split(/\r?\n/).filter(Boolean);
++    const pushUrls = pushOriginRaw.trim().split(/\r?\n/).filter(Boolean);
++    if (fetchUrls.length !== 1 || pushUrls.length !== 1) throw new Error('Origin must have exactly one fetch URL and one push URL.');
++    const origin = normalizeGitHubRepo(fetchUrls[0]);
++    const pushOrigin = normalizeGitHubRepo(pushUrls[0]);
++    if (origin.fullName.toLowerCase() !== selected.fullName.toLowerCase() || pushOrigin.fullName.toLowerCase() !== selected.fullName.toLowerCase()) {
++      throw new Error(`Selected repository ${selected.fullName} does not match local origin fetch/push URLs.`);
++    }
++    return { selected, branch, origin };
++  }
++
++  async fetchBranch(binding) {
++    await this.git(['fetch', '--prune', '--no-tags', binding.selected.repoUrl, `+refs/heads/${binding.branch}:refs/remotes/origin/${binding.branch}`], { network: true, timeout: 120_000 });
++  }
++
++  async rawState(selection, { fetch = false } = {}) {
++    const binding = await this.assertRepositoryBinding(selection);
++    if (fetch) await this.fetchBranch(binding);
++    const { stdout: branchRaw } = await this.git(['rev-parse', '--abbrev-ref', 'HEAD']);
++    const localBranch = branchRaw.trim();
++    if (localBranch !== binding.branch) throw new Error(`Local checkout is on ${localBranch}; selected branch is ${binding.branch}.`);
++    const { stdout: headRaw } = await this.git(['rev-parse', 'HEAD']);
++    let remoteSha = null;
++    try { remoteSha = (await this.git(['rev-parse', `refs/remotes/origin/${binding.branch}`])).stdout.trim(); } catch {}
++    const statusRaw = (await this.git(['status', '--porcelain=v1', '-z', '--untracked-files=all'])).stdout;
++    const files = parseStatus(statusRaw);
++    const manifestComplete = files.length <= 250;
++    const contentManifest = manifestComplete ? await this.workingTreeManifest(files) : [];
++    let counts = { ahead: 0, behind: 0 };
++    if (remoteSha) counts = parseCount((await this.git(['rev-list', '--left-right', '--count', `HEAD...refs/remotes/origin/${binding.branch}`])).stdout);
++    return {
++      binding,
++      localBranch,
++      head: headRaw.trim(),
++      remoteSha,
++      statusRaw,
++      files,
++      contentManifest,
++      manifestComplete,
++      ...counts,
++      dirty: files.length > 0,
++    };
++  }
++
++  async workingTreeManifest(files) {
++    const unique = [...new Set(files.flatMap((entry) => [entry.path, entry.originalPath].filter(Boolean)))].sort();
++    const manifest = [];
++    const root = path.resolve(this.config.repositoryRoot);
++    for (const candidate of unique) {
++      const normalized = normalizeRepoPath(candidate);
++      if (!normalized) {
++        manifest.push({ path: String(candidate), state: 'invalid', mode: null, oid: null });
++        continue;
++      }
++      const absolute = path.resolve(root, normalized);
++      if (!absolute.startsWith(`${root}${path.sep}`)) {
++        manifest.push({ path: normalized, state: 'escape', mode: null, oid: null });
++        continue;
++      }
++      try {
++        const stat = await fs.lstat(absolute);
++        if (stat.isSymbolicLink()) {
++          manifest.push({ path: normalized, state: 'symlink', mode: '120000', oid: null });
++          continue;
++        }
++        if (!stat.isFile()) {
++          manifest.push({ path: normalized, state: 'unsupported', mode: null, oid: null });
++          continue;
++        }
++        const mode = (stat.mode & 0o111) ? '100755' : '100644';
++        const { stdout } = await this.git(['hash-object', `--path=${normalized}`, '--', normalized], { timeout: 30_000 });
++        const oid = stdout.trim();
++        manifest.push({ path: normalized, state: 'present', mode, oid: /^[a-f0-9]{40,64}$/i.test(oid) ? oid : null });
++      } catch (error) {
++        if (error?.code === 'ENOENT' || /No such file/i.test(error?.message || '')) manifest.push({ path: normalized, state: 'missing', mode: null, oid: null });
++        else throw error;
++      }
++    }
++    return manifest;
++  }
++
++  async assertIndexMatchesManifest(manifest) {
++    const paths = manifest.map((entry) => entry.path);
++    if (!paths.length) return;
++    const { stdout } = await this.git(['ls-files', '--stage', '-z', '--', ...paths], { timeout: 60_000 });
++    const index = new Map();
++    for (const record of stdout.split('\0').filter(Boolean)) {
++      const match = record.match(/^(\d+)\s+([a-f0-9]{40,64})\s+(\d+)\t(.+)$/i);
++      if (!match || match[3] !== '0') continue;
++      index.set(match[4], { mode: match[1], oid: match[2] });
++    }
++    for (const entry of manifest) {
++      const staged = index.get(entry.path);
++      if (entry.state === 'missing') {
++        if (staged) throw new Error(`Staged path ${entry.path} no longer matches the reviewed deletion.`);
++        continue;
++      }
++      if (entry.state !== 'present' || !entry.oid || !entry.mode) throw new Error(`Reviewed path ${entry.path} is not safely representable in Git.`);
++      if (!staged || staged.oid !== entry.oid || staged.mode !== entry.mode) throw new Error(`Staged path ${entry.path} differs from the reviewed file content or mode.`);
++    }
++  }
++
++  async scanChanges(files) {
++    const blockers = [];
++    const safeFiles = [];
++    const root = path.resolve(this.config.repositoryRoot);
++    for (const entry of files) {
++      for (const candidate of [entry.path, entry.originalPath].filter(Boolean)) {
++        const normalized = normalizeRepoPath(candidate);
++        const reason = blockedPathReason(candidate);
++        if (reason) {
++          blockers.push({ path: candidate, reason });
++          continue;
++        }
++        const isNew = entry.status.includes('?') || entry.status.includes('A');
++        if (isNew && !isSafeSourcePath(candidate)) {
++          blockers.push({ path: candidate, reason: 'untracked/new file is outside the approved source allowlist' });
++          continue;
++        }
++        if (!normalized) continue;
++        const absolute = path.resolve(root, normalized);
++        if (!absolute.startsWith(`${root}${path.sep}`)) {
++          blockers.push({ path: candidate, reason: 'path escapes repository root' });
++          continue;
++        }
++        try {
++          const stat = await fs.lstat(absolute);
++          if (stat.isSymbolicLink()) {
++            blockers.push({ path: candidate, reason: 'symbolic links are not allowed' });
++            continue;
++          }
++          if (stat.isFile()) {
++            if (stat.size > MAX_SECRET_SCAN_BYTES && !SAFE_LARGE_BINARY_EXTENSIONS.test(candidate)) {
++              blockers.push({ path: candidate, reason: 'non-binary file exceeds the security secret-scan size limit' });
++            } else if (stat.size <= MAX_SECRET_SCAN_BYTES) {
++              const buffer = await fs.readFile(absolute);
++              if (!buffer.includes(0)) {
++                const findings = scanTextForSecrets(buffer.toString('utf8'));
++                for (const finding of findings) blockers.push({ path: candidate, reason: `${finding} detected` });
++              }
++            }
++          }
++        } catch (error) {
++          if (error?.code !== 'ENOENT') blockers.push({ path: candidate, reason: 'file could not be safely inspected' });
++        }
++      }
++      if (!blockers.some((blocker) => blocker.path === entry.path)) safeFiles.push(entry);
++    }
++    try {
++      const { stdout } = await this.git(['ls-files', '--stage', '-z']);
++      for (const record of stdout.split('\0').filter(Boolean)) {
++        const match = record.match(/^(\d+)\s+[a-f0-9]+\s+\d+\t(.+)$/i);
++        if (!match) continue;
++        if (match[1] === '120000') blockers.push({ path: match[2], reason: 'symbolic links are not allowed in committed history' });
++        if (match[1] === '160000') blockers.push({ path: match[2], reason: 'Git submodules are not allowed' });
++      }
++    } catch {}
++    return { blockers, safeFiles };
++  }
++
++  async scanOutgoingHistory(state) {
++    const blockers = [];
++    if (state.ahead <= 0) return blockers;
++    if (!state.remoteSha) return [{ path: '*', reason: 'remote branch state is unavailable; outgoing history cannot be audited' }];
++    const { stdout: commitRaw } = await this.git(['rev-list', '--reverse', `refs/remotes/origin/${state.binding.branch}..HEAD`]);
++    const commits = commitRaw.trim().split(/\s+/).filter(Boolean);
++    if (commits.length !== state.ahead) blockers.push({ path: '*', reason: 'outgoing commit count changed during review' });
++    if (commits.length > 50) return [{ path: '*', reason: 'more than 50 outgoing commits require manual review' }];
++    let inspectedPaths = 0;
++    for (const commit of commits) {
++      if (!/^[a-f0-9]{40,64}$/i.test(commit)) {
++        blockers.push({ path: '*', reason: 'invalid outgoing commit identity' });
++        continue;
++      }
++      const { stdout: parentRaw } = await this.git(['rev-list', '--parents', '-n', '1', commit]);
++      const commitAndParents = parentRaw.trim().split(/\s+/).filter(Boolean);
++      if (commitAndParents.length > 2) {
++        blockers.push({ path: '*', reason: `outgoing merge commit ${commit.slice(0, 12)} requires manual review` });
++        continue;
++      }
++      const { stdout: diffRaw } = await this.git(['diff-tree', '--root', '--no-commit-id', '--name-status', '-r', '-z', '--find-renames=50%', commit]);
++      const entries = parseNameStatus(diffRaw);
++      inspectedPaths += entries.length;
++      if (inspectedPaths > 1000) return [...blockers, { path: '*', reason: 'outgoing history changes more than 1000 paths and requires manual review' }];
++      for (const entry of entries) {
++        for (const candidate of [entry.path, entry.originalPath].filter(Boolean)) {
++          const reason = blockedPathReason(candidate);
++          if (reason) blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)}: ${reason}` });
++        }
++        if (entry.status === 'D') continue;
++        const candidate = entry.path;
++        if (!normalizeRepoPath(candidate)) continue;
++        let treeRaw = '';
++        try { treeRaw = (await this.git(['ls-tree', '-z', commit, '--', candidate])).stdout; } catch { continue; }
++        const record = treeRaw.split('\0').find(Boolean);
++        if (!record) continue;
++        const match = record.match(/^(\d+)\s+(blob|tree|commit)\s+([a-f0-9]{40,64})\t(.+)$/i);
++        if (!match) {
++          blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)} has an uninspectable Git object` });
++          continue;
++        }
++        const [, mode, type, objectId] = match;
++        if (mode === '120000') { blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)} contains a symbolic link` }); continue; }
++        if (mode === '160000' || type === 'commit') { blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)} contains a Git submodule` }); continue; }
++        if (type !== 'blob' || !['100644', '100755'].includes(mode)) {
++          blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)} has unsupported mode ${mode}` });
++          continue;
++        }
++        const size = Number((await this.git(['cat-file', '-s', objectId])).stdout.trim());
++        if (Number.isFinite(size) && size > MAX_SECRET_SCAN_BYTES && !SAFE_LARGE_BINARY_EXTENSIONS.test(candidate)) {
++          blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)}: non-binary file exceeds the security secret-scan size limit` });
++        } else if (Number.isFinite(size) && size <= MAX_SECRET_SCAN_BYTES) {
++          const content = (await this.git(['cat-file', 'blob', objectId], { timeout: 30_000 })).stdout;
++          if (!content.includes('\0')) {
++            for (const finding of scanTextForSecrets(content)) blockers.push({ path: candidate, reason: `outgoing commit ${commit.slice(0, 12)}: ${finding} detected` });
++          }
++        }
++      }
++    }
++    return blockers;
++  }
++
++  stateFingerprint(state, action) {
++    return createReviewFingerprint({
++      repo: state.binding.selected.fullName.toLowerCase(),
++      branch: state.binding.branch,
++      action,
++      head: state.head,
++      remoteSha: state.remoteSha,
++      status: state.files.map((f) => [f.status, f.path, f.originalPath || '']),
++      contentManifest: state.contentManifest,
++      manifestComplete: state.manifestComplete,
++    }, this.config.sessionSecret);
++  }
++
++  async runChecks({ requireBuild }) {
++    const result = { verify: 'passed', tests: 'skipped', build: 'skipped', checkedAt: new Date().toISOString(), details: [] };
++    if (!requireBuild) return result;
++    try {
++      await fs.mkdir(path.join(this.config.dataDir, 'child-home'), { recursive: true, mode: 0o700 });
++      await run('npm', ['test'], { cwd: this.config.repositoryRoot, timeout: 120_000, env: this.childEnv({ CI: '1', NODE_ENV: 'test' }) });
++      result.tests = 'passed';
++    } catch (error) {
++      result.tests = 'failed'; result.details.push(`Tests: ${cleanError(error)}`);
++    }
++    try {
++      await run('npm', ['run', 'build'], { cwd: this.config.repositoryRoot, timeout: 180_000, env: this.childEnv({ CI: '1', NODE_ENV: 'production' }) });
++      result.build = 'passed';
++    } catch (error) {
++      result.build = 'failed'; result.details.push(`Build: ${cleanError(error)}`);
++    }
++    return result;
++  }
++
++  expectedAction(action, state) {
++    if (action === 'cleanup') return 'safe_maintenance';
++    if (action === 'pull') return state.behind > 0 ? 'fast_forward_pull' : 'nothing_to_pull';
++    if (action === 'push') return state.dirty ? 'commit_and_push' : state.ahead > 0 ? 'push' : 'nothing_to_push';
++    if (action === 'sync') {
++      if (state.behind > 0 && state.ahead === 0 && !state.dirty) return 'fast_forward_pull';
++      if (state.behind === 0 && (state.ahead > 0 || state.dirty)) return state.dirty ? 'commit_and_push' : 'push';
++      return 'already_synced';
++    }
++    throw new Error('Unsupported sync action.');
++  }
++
++  async preview({ selection, action, pushMode, sessionBinding }) {
++    if (!['pull','push','sync','cleanup'].includes(action)) throw new Error('Unsupported sync action.');
++    const state = await this.rawState(selection, { fetch: action !== 'cleanup' });
++    const { blockers, safeFiles } = await this.scanChanges(state.files);
++    const expectedAction = this.expectedAction(action, state);
++    if (!state.manifestComplete) blockers.push({ path: '*', reason: 'more than 250 working-tree changes require manual review' });
++    if (['push','commit_and_push'].includes(expectedAction)) blockers.push(...await this.scanOutgoingHistory(state));
++
++    if ((action === 'pull' || expectedAction === 'fast_forward_pull') && state.dirty) blockers.push({ path: '*', reason: 'working tree must be clean before pulling' });
++    if (state.ahead > 0 && state.behind > 0) blockers.push({ path: '*', reason: 'local and remote histories diverged; manual merge/rebase is required' });
++    if ((action === 'push' || action === 'sync') && pushMode === 'off' && ['push','commit_and_push'].includes(expectedAction)) blockers.push({ path: '*', reason: 'GitHub push mode is Off' });
++    if (['push','commit_and_push'].includes(expectedAction) && selection?.permissions?.push !== true) blockers.push({ path: '*', reason: 'connected GitHub identity does not have repository push permission' });
++
++    const requireBuild = ['push','commit_and_push'].includes(expectedAction);
++    const checks = blockers.length ? { verify: 'failed', tests: 'skipped', build: 'skipped', checkedAt: new Date().toISOString(), details: ['Security blockers must be resolved first.'] } : await this.runChecks({ requireBuild });
++    if (requireBuild && (checks.tests !== 'passed' || checks.build !== 'passed')) blockers.push({ path: '*', reason: 'tests and build must pass before push authorization' });
++
++    const fingerprint = this.stateFingerprint(state, action);
++    const now = Date.now();
++    const payload = {
++      v: 1,
++      repo: state.binding.selected.fullName.toLowerCase(),
++      branch: state.binding.branch,
++      action,
++      expectedAction,
++      pushMode,
++      fingerprint,
++      fileCount: safeFiles.length,
++      checks,
++      sessionBinding,
++      iat: now,
++      exp: now + OPERATION_TTL_MS,
++    };
++    const authorization = blockers.length === 0 ? createExecutionAuthorization(payload, this.config.sessionSecret) : null;
++    return {
++      repo: state.binding.selected.fullName,
++      branch: state.binding.branch,
++      action,
++      expectedAction,
++      ahead: state.ahead,
++      behind: state.behind,
++      head: state.head,
++      remoteSha: state.remoteSha,
++      dirty: state.dirty,
++      files: safeFiles,
++      blockers,
++      checks,
++      fingerprint,
++      authorization,
++      expiresAt: new Date(now + OPERATION_TTL_MS).toISOString(),
++    };
++  }
++
++  async execute({ selection, authorizationPayload, action, pushMode, commitMessage }) {
++    const state = await this.rawState(selection, { fetch: action !== 'cleanup' });
++    const currentFingerprint = this.stateFingerprint(state, action);
++    if (currentFingerprint !== authorizationPayload.fingerprint) throw new Error('Project or remote state changed. Review the operation again.');
++    if (authorizationPayload.repo !== state.binding.selected.fullName.toLowerCase() || authorizationPayload.branch !== state.binding.branch || authorizationPayload.action !== action) throw new Error('Repository/branch/action changed. Review again.');
++    if (authorizationPayload.pushMode !== pushMode) throw new Error('Push mode changed. Review again.');
++    const { blockers, safeFiles } = await this.scanChanges(state.files);
++    if (!state.manifestComplete) blockers.push({ path: '*', reason: 'more than 250 working-tree changes require manual review' });
++    if (['push','commit_and_push'].includes(authorizationPayload.expectedAction)) blockers.push(...await this.scanOutgoingHistory(state));
++    if (blockers.length) throw new Error('Security blockers appeared after review. Review again.');
++    if (safeFiles.length !== authorizationPayload.fileCount) throw new Error('Project files changed. Review again.');
++
++    const expectedAction = this.expectedAction(action, state);
++    if (expectedAction !== authorizationPayload.expectedAction) throw new Error('Required Git action changed. Review again.');
++    const operationId = cryptoRandomId();
++    const operation = { id: operationId, action, expectedAction, status: 'running', startedAt: new Date().toISOString() };
++    this.operations.set(operationId, operation);
++    try {
++      if (expectedAction === 'fast_forward_pull') {
++        await this.assertSafeLocalGitConfig();
++        await this.git(['merge', '--ff-only', state.remoteSha], { timeout: 120_000 });
++      } else if (expectedAction === 'commit_and_push') {
++        if (pushMode === 'off') throw new Error('GitHub push mode is Off.');
++        const paths = [...new Set(safeFiles.flatMap((entry) => [entry.path, entry.originalPath].filter(Boolean)))];
++        if (!paths.length) throw new Error('No safe files were approved for commit.');
++        await this.assertSafeLocalGitConfig();
++        await this.git(['add', '--all', '--', ...paths], { timeout: 120_000 });
++        await this.assertIndexMatchesManifest(state.contentManifest);
++        const message = String(commitMessage || '').trim().replace(/[\r\n]+/g, ' ').slice(0, 120) || `Verified 67 update — ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`;
++        await this.git(['commit', '-m', message], { timeout: 120_000 });
++        const commitSha = (await this.git(['rev-parse', 'HEAD'])).stdout.trim();
++        const parentSha = (await this.git(['rev-parse', `${commitSha}^`])).stdout.trim();
++        if (parentSha !== state.head) throw new Error('Commit parent changed during execution; push was blocked.');
++        await this.assertSafeLocalGitConfig();
++        await this.git(['push', state.binding.selected.repoUrl, `${commitSha}:refs/heads/${state.binding.branch}`], { network: true, timeout: 180_000 });
++      } else if (expectedAction === 'push') {
++        if (pushMode === 'off') throw new Error('GitHub push mode is Off.');
++        await this.assertSafeLocalGitConfig();
++        await this.git(['push', state.binding.selected.repoUrl, `${state.head}:refs/heads/${state.binding.branch}`], { network: true, timeout: 180_000 });
++      } else if (expectedAction === 'safe_maintenance') {
++        await this.assertSafeLocalGitConfig();
++        await this.git(['fetch', '--prune', '--no-tags', state.binding.selected.repoUrl, '+refs/heads/*:refs/remotes/origin/*'], { network: true, timeout: 120_000 });
++        await this.git(['gc', '--auto'], { timeout: 120_000 });
++      }
++      operation.status = 'completed';
++      operation.completedAt = new Date().toISOString();
++      operation.result = { expectedAction };
++      return operation;
++    } catch (error) {
++      operation.status = 'failed';
++      operation.completedAt = new Date().toISOString();
++      operation.error = cleanError(error);
++      throw error;
++    } finally {
++      this.pruneOperations();
++    }
++  }
++
++  getOperation(id) { return this.operations.get(String(id)) || null; }
++  pruneOperations() {
++    const cutoff = Date.now() - 60 * 60_000;
++    for (const [id, op] of this.operations) if (Date.parse(op.startedAt) < cutoff) this.operations.delete(id);
++  }
++
++  async status(selection, pushMode) {
++    let git = { available: false, error: null };
++    if (selection?.repo && selection?.branch) {
++      try {
++        const state = await this.rawState(selection, { fetch: false });
++        git = { available: true, repo: state.binding.selected.fullName, branch: state.localBranch, head: state.head, remoteSha: state.remoteSha, ahead: state.ahead, behind: state.behind, dirty: state.dirty, fileCount: state.files.length };
++      } catch (error) { git = { available: false, error: cleanError(error) }; }
++    }
++    return { git, pushMode };
++  }
++}
++
++function cryptoRandomId() {
++  return crypto.randomUUID();
++}
+diff --git a/server/githubSecurity.js b/server/githubSecurity.js
+new file mode 100644
+index 0000000..35888b5
+--- /dev/null
++++ b/server/githubSecurity.js
+@@ -0,0 +1,119 @@
++import crypto from 'node:crypto';
++import path from 'node:path';
++
++const REPO_PART = /^[A-Za-z0-9_.-]+$/;
++const SOURCE_ROOTS = new Set(['src','server','scripts','tests','test','public','assets','static','docs','.github']);
++const ROOT_ALLOWLIST = new Set(['.gitignore','.dockerignore','.editorconfig','package.json','package-lock.json','vite.config.js','vite.config.ts','index.html','README.md','SECURITY.md','LICENSE']);
++const SOURCE_EXTENSIONS = /\.(?:[cm]?[jt]sx?|json|md|mdx|txt|ya?ml|css|scss|sass|less|html|svg|png|jpe?g|gif|webp|avif|ico|sh)$/i;
++const BLOCKED_DIRS = new Set(['.git','node_modules','dist','build','coverage','.cache','tmp','.ssh','.aws','.azure','.gcloud','storage','uploads','logs','downloads','backups','backup','.data']);
++const BLOCKED_BASENAMES = new Set(['.env','.envrc','.npmrc','.netrc','credentials.json','service-account.json','service_account.json','.gitmodules','ecosystem.config.cjs','superadmin.json','audit.jsonl']);
++const BLOCKED_EXTENSIONS = /\.(?:pem|key|p12|pfx|ppk|jks|keystore|sqlite|sqlite3|db|dump|zip|7z|rar|tar|tgz|gz|backup|bak|orig|rej|log)$/i;
++const ENV_SAMPLE = /^\.env(?:\.[A-Za-z0-9_-]+)*\.(?:example|sample|template)$/i;
++const SAFE_ROOT_DOC = /^(?:README|SECURITY|CHANGELOG|CONTRIBUTING|CODE_OF_CONDUCT|LICENSE|NOTICE)(?:[._-].+)?$/i;
++
++export function normalizeGitHubRepo(input) {
++  const raw = String(input ?? '').trim();
++  if (!raw) throw new Error('GitHub repository is required.');
++  let candidate = raw;
++  if (/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\.git)?$/.test(candidate)) candidate = `https://github.com/${candidate}`;
++  else if (/^git@github\.com:/i.test(candidate)) candidate = candidate.replace(/^git@github\.com:/i, 'https://github.com/');
++  else if (/^ssh:\/\/git@github\.com\//i.test(candidate)) candidate = candidate.replace(/^ssh:\/\/git@github\.com\//i, 'https://github.com/');
++  let parsed;
++  try { parsed = new URL(candidate); } catch { throw new Error('Invalid GitHub repository URL.'); }
++  if (parsed.protocol !== 'https:' || parsed.hostname.toLowerCase() !== 'github.com' || parsed.port || parsed.username || parsed.password || parsed.search || parsed.hash) throw new Error('Only canonical github.com repository URLs are supported.');
++  const parts = parsed.pathname.replace(/^\/+|\/+$/g, '').split('/');
++  if (parts.length !== 2) throw new Error('Repository URL must be owner/repository.');
++  const owner = parts[0];
++  const repo = parts[1].replace(/\.git$/i, '');
++  if (!REPO_PART.test(owner) || !REPO_PART.test(repo)) throw new Error('Invalid GitHub owner/repository.');
++  return { owner, repo, fullName: `${owner}/${repo}`, repoUrl: `https://github.com/${owner}/${repo}.git` };
++}
++
++export function assertSafeBranch(value) {
++  const branch = String(value ?? '').trim();
++  if (!branch || branch.length > 240 || branch.startsWith('-') || branch.startsWith('.') || branch.endsWith('.') || branch.endsWith('.lock')) throw new Error('Invalid branch name.');
++  if (!/^[A-Za-z0-9._/-]+$/.test(branch) || branch.includes('..') || branch.includes('//') || branch.includes('@{')) throw new Error('Invalid branch name.');
++  return branch;
++}
++
++export function normalizeRepoPath(filePath) {
++  const normalized = String(filePath ?? '').replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/+/g, '/');
++  if (!normalized || normalized.includes('\0') || normalized.startsWith('/') || /^[A-Za-z]:\//.test(normalized)) return null;
++  if (normalized.split('/').some((segment) => !segment || segment === '.' || segment === '..')) return null;
++  return normalized;
++}
++
++export function blockedPathReason(filePath) {
++  const normalized = normalizeRepoPath(filePath);
++  if (!normalized) return 'invalid repository-relative path';
++  const segments = normalized.split('/');
++  const lowerSegments = segments.map((segment) => segment.toLowerCase());
++  const base = lowerSegments.at(-1);
++  if (lowerSegments.some((segment) => BLOCKED_DIRS.has(segment))) return 'runtime/secret/generated directory is excluded';
++  if (BLOCKED_BASENAMES.has(base) && !ENV_SAMPLE.test(base)) return 'sensitive configuration file is excluded';
++  if (/^\.env(?:\.|$)/i.test(base) && !ENV_SAMPLE.test(base)) return 'environment secret file is excluded';
++  if (BLOCKED_EXTENSIONS.test(base)) return 'sensitive/generated/archive file type is excluded';
++  if (/^\.github\/workflows\//i.test(normalized)) return 'workflow changes require out-of-band review';
++  return null;
++}
++
++export function isSafeSourcePath(filePath) {
++  const normalized = normalizeRepoPath(filePath);
++  if (!normalized || blockedPathReason(normalized)) return false;
++  const segments = normalized.split('/');
++  if (segments.length === 1) return ROOT_ALLOWLIST.has(normalized) || ENV_SAMPLE.test(normalized) || SAFE_ROOT_DOC.test(normalized);
++  if (!SOURCE_ROOTS.has(segments[0])) return false;
++  return SOURCE_EXTENSIONS.test(path.posix.basename(normalized));
++}
++
++const SECRET_PATTERNS = [
++  ['GitHub token', /\b(?:github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9_]{20,})\b/g],
++  ['AWS access key', /\b(?:AKIA|ASIA)[0-9A-Z]{16}\b/g],
++  ['Google API key', /\bAIza[0-9A-Za-z_-]{30,}\b/g],
++  ['Slack token', /\bxox[baprs]-[A-Za-z0-9-]{20,}\b/g],
++  ['private key', /-----BEGIN (?:ENCRYPTED |RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/g],
++  ['live payment key', /\b(?:sk|rk)_live_[A-Za-z0-9]{12,}\b/g],
++];
++
++export function scanTextForSecrets(text) {
++  const findings = [];
++  for (const [label, pattern] of SECRET_PATTERNS) {
++    pattern.lastIndex = 0;
++    if (pattern.test(String(text ?? ''))) findings.push(label);
++  }
++  return findings;
++}
++
++export function createReviewFingerprint(input, secret) {
++  const canonical = JSON.stringify(input);
++  return crypto.createHmac('sha256', secret).update('67/developer-hub/review/v1\0').update(canonical).digest('base64url');
++}
++
++export function createExecutionAuthorization(payload, secret) {
++  const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
++  const sig = crypto.createHmac('sha256', secret).update('67/developer-hub/execute/v1\0').update(body).digest('base64url');
++  return `${body}.${sig}`;
++}
++
++export function verifyExecutionAuthorization(token, secret, now = Date.now()) {
++  const raw = String(token ?? '');
++  if (!raw || raw.length > 16384) throw new Error('Invalid execution authorization.');
++  const [body, sig, extra] = raw.split('.');
++  if (!body || !sig || extra) throw new Error('Invalid execution authorization.');
++  const expected = crypto.createHmac('sha256', secret).update('67/developer-hub/execute/v1\0').update(body).digest('base64url');
++  const a = Buffer.from(sig); const b = Buffer.from(expected);
++  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) throw new Error('Invalid execution authorization signature.');
++  let payload;
++  try { payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8')); } catch { throw new Error('Invalid execution authorization payload.'); }
++  if (payload?.v !== 1 || !payload.fingerprint || !payload.repo || !payload.branch || !payload.action || !payload.sessionBinding) throw new Error('Incomplete execution authorization.');
++  if (typeof payload.fingerprint !== 'string' || payload.fingerprint.length > 256 || typeof payload.sessionBinding !== 'string' || payload.sessionBinding.length > 256) throw new Error('Invalid execution authorization binding.');
++  if (!['pull','push','sync','cleanup'].includes(payload.action)) throw new Error('Invalid execution authorization action.');
++  if (!['safe_maintenance','fast_forward_pull','nothing_to_pull','push','nothing_to_push','commit_and_push','already_synced'].includes(payload.expectedAction)) throw new Error('Invalid execution authorization expected action.');
++  if (!['off','review','auto'].includes(payload.pushMode)) throw new Error('Invalid execution authorization push mode.');
++  if (!Number.isSafeInteger(payload.fileCount) || payload.fileCount < 0) throw new Error('Invalid execution authorization file count.');
++  if (!Number.isSafeInteger(payload.iat) || !Number.isSafeInteger(payload.exp) || payload.iat > now + 30_000 || payload.exp <= now || payload.exp <= payload.iat || payload.exp - payload.iat > 10 * 60_000) throw new Error('Execution authorization expired or invalid.');
++  if (['push','commit_and_push'].includes(payload.expectedAction)) {
++    if (payload.checks?.verify !== 'passed' || payload.checks?.tests !== 'passed' || payload.checks?.build !== 'passed') throw new Error('Execution authorization checks are incomplete.');
++  }
++  return payload;
++}
+diff --git a/server/githubSecurity.test.js b/server/githubSecurity.test.js
+new file mode 100644
+index 0000000..2f04c0b
+--- /dev/null
++++ b/server/githubSecurity.test.js
+@@ -0,0 +1,47 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {
++  assertSafeBranch, blockedPathReason, createExecutionAuthorization, isSafeSourcePath,
++  normalizeGitHubRepo, scanTextForSecrets, verifyExecutionAuthorization,
++} from './githubSecurity.js';
++
++test('GitHub repositories are restricted to github.com owner/repo identities', () => {
++  assert.equal(normalizeGitHubRepo('OpenAI/example.git').fullName, 'OpenAI/example');
++  assert.equal(normalizeGitHubRepo('git@github.com:OpenAI/example.git').fullName, 'OpenAI/example');
++  assert.throws(() => normalizeGitHubRepo('https://evil.example/OpenAI/example'));
++  assert.throws(() => normalizeGitHubRepo('http://github.com/OpenAI/example'));
++  assert.throws(() => normalizeGitHubRepo('https://github.com/OpenAI/example?x=1'));
++  assert.throws(() => normalizeGitHubRepo('https://github.com/a/b/extra'));
++});
++
++test('branch validation rejects command/ref injection shapes', () => {
++  assert.equal(assertSafeBranch('feature/safe-branch_1'), 'feature/safe-branch_1');
++  for (const value of ['--upload-pack=x', '../main', 'a..b', 'a b', 'x@{1}', '.hidden']) assert.throws(() => assertSafeBranch(value));
++});
++
++test('secret/runtime paths and workflow mutations are blocked', () => {
++  for (const value of ['.env', 'server/.env.production', '.ssh/id_ed25519', 'uploads/customer.jpg', 'node_modules/x.js', '.github/workflows/deploy.yml', 'backup/app.tar.gz']) {
++    assert.ok(blockedPathReason(value), value);
++  }
++  assert.equal(blockedPathReason('src/pages/AdminDashboard.jsx'), null);
++  assert.equal(isSafeSourcePath('src/pages/AdminDashboard.jsx'), true);
++  assert.equal(isSafeSourcePath('.env.example'), true);
++  assert.equal(isSafeSourcePath('SECURITY_DEPLOYMENT.md'), true);
++  assert.equal(isSafeSourcePath('random-dir/new.js'), false);
++});
++
++test('secret scanning detects high confidence credential patterns', () => {
++  assert.deepEqual(scanTextForSecrets('const x = "hello"'), []);
++  assert.ok(scanTextForSecrets('const token="ghp_abcdefghijklmnopqrstuvwxyz123456"').includes('GitHub token'));
++  assert.ok(scanTextForSecrets('-----BEGIN PRIVATE KEY-----').includes('private key'));
++});
++
++test('execution authorization is signed and expires', () => {
++  const secret = 'x'.repeat(64);
++  const now = Date.now();
++  const payload = { v: 1, repo: 'owner/repo', branch: 'main', action: 'push', expectedAction: 'push', pushMode: 'review', fingerprint: 'fp', sessionBinding: 'session-hash', fileCount: 0, checks: { verify: 'passed', tests: 'passed', build: 'passed' }, iat: now, exp: now + 60_000 };
++  const token = createExecutionAuthorization(payload, secret);
++  assert.equal(verifyExecutionAuthorization(token, secret, now + 1_000).fingerprint, 'fp');
++  assert.throws(() => verifyExecutionAuthorization(`${token}x`, secret, now + 1_000));
++  assert.throws(() => verifyExecutionAuthorization(token, secret, now + 61_000));
++});
+diff --git a/server/githubService.test.js b/server/githubService.test.js
+new file mode 100644
+index 0000000..d190d9d
+--- /dev/null
++++ b/server/githubService.test.js
+@@ -0,0 +1,146 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import fs from 'node:fs/promises';
++import os from 'node:os';
++import path from 'node:path';
++import { execFileSync } from 'node:child_process';
++import { GitHubService } from './github.js';
++
++function git(cwd, ...args) {
++  return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
++}
++
++async function makeRepo() {
++  const root = await fs.mkdtemp(path.join(os.tmpdir(), '67-git-security-'));
++  git(root, 'init', '-b', 'main');
++  git(root, 'config', 'user.name', 'Test');
++  git(root, 'config', 'user.email', 'test@example.com');
++  await fs.writeFile(path.join(root, 'README.md'), 'baseline\n');
++  git(root, 'add', 'README.md');
++  git(root, 'commit', '-m', 'baseline');
++  return root;
++}
++
++function serviceFor(root) {
++  return new GitHubService({
++    config: {
++      repositoryRoot: root,
++      dataDir: path.join(root, '.private-test-data'),
++      sessionSecret: 's'.repeat(64),
++      gitAuthorName: '67 Test',
++      gitAuthorEmail: 'test@example.com',
++    },
++    store: null,
++    getToken: async () => 'github_pat_test_value_that_is_long_enough',
++    audit: async () => {},
++  });
++}
++
++test('unsafe executable local Git configuration is rejected', async (t) => {
++  const root = await makeRepo();
++  t.after(() => fs.rm(root, { recursive: true, force: true }));
++  git(root, 'config', 'filter.evil.clean', 'sh -c "echo owned"');
++  await assert.rejects(() => serviceFor(root).assertSafeLocalGitConfig(), /Unsafe local Git configuration/);
++});
++
++test('local Git configuration cannot weaken HTTPS/TLS verification', async (t) => {
++  const root = await makeRepo();
++  t.after(() => fs.rm(root, { recursive: true, force: true }));
++  git(root, 'config', 'http.sslVerify', 'false');
++  await assert.rejects(() => serviceFor(root).assertSafeLocalGitConfig(), /http\.sslverify/);
++});
++
++test('outgoing history catches a secret path even when a later commit deletes it', async (t) => {
++  const root = await makeRepo();
++  t.after(() => fs.rm(root, { recursive: true, force: true }));
++  const baseline = git(root, 'rev-parse', 'HEAD');
++  git(root, 'update-ref', 'refs/remotes/origin/main', baseline);
++
++  await fs.writeFile(path.join(root, '.env'), 'GITHUB_TOKEN=ghp_abcdefghijklmnopqrstuvwxyz123456\n');
++  git(root, 'add', '-f', '.env');
++  git(root, 'commit', '-m', 'bad secret commit');
++  git(root, 'rm', '.env');
++  git(root, 'commit', '-m', 'remove secret again');
++
++  const blockers = await serviceFor(root).scanOutgoingHistory({
++    ahead: 2,
++    remoteSha: baseline,
++    binding: { branch: 'main', selected: { fullName: 'owner/repo', repoUrl: 'https://github.com/owner/repo.git' } },
++  });
++  assert.ok(blockers.some((item) => item.path === '.env'), JSON.stringify(blockers));
++});
++
++test('review manifest changes when working-tree content changes with the same Git status', async (t) => {
++  const root = await makeRepo();
++  t.after(() => fs.rm(root, { recursive: true, force: true }));
++  git(root, 'remote', 'add', 'origin', 'https://github.com/owner/repo.git');
++  const service = serviceFor(root);
++  const selection = { repo: 'owner/repo', branch: 'main', permissions: { push: true } };
++
++  await fs.writeFile(path.join(root, 'README.md'), 'first reviewed content\n');
++  const first = await service.rawState(selection, { fetch: false });
++  const firstFingerprint = service.stateFingerprint(first, 'push');
++  assert.equal(first.files.length, 1);
++
++  await fs.writeFile(path.join(root, 'README.md'), 'different content, same status\n');
++  const second = await service.rawState(selection, { fetch: false });
++  const secondFingerprint = service.stateFingerprint(second, 'push');
++  assert.notEqual(firstFingerprint, secondFingerprint);
++});
++
++test('staged index is rejected when it differs from reviewed content', async (t) => {
++  const root = await makeRepo();
++  t.after(() => fs.rm(root, { recursive: true, force: true }));
++  git(root, 'remote', 'add', 'origin', 'https://github.com/owner/repo.git');
++  const service = serviceFor(root);
++  const selection = { repo: 'owner/repo', branch: 'main', permissions: { push: true } };
++
++  await fs.writeFile(path.join(root, 'README.md'), 'reviewed content\n');
++  const reviewed = await service.rawState(selection, { fetch: false });
++  await fs.writeFile(path.join(root, 'README.md'), 'tampered after review\n');
++  git(root, 'add', 'README.md');
++  await assert.rejects(() => service.assertIndexMatchesManifest(reviewed.contentManifest), /differs from the reviewed/);
++});
++
++test('outgoing history scans secret content in an otherwise safe source path', async (t) => {
++  const root = await makeRepo();
++  t.after(() => fs.rm(root, { recursive: true, force: true }));
++  const baseline = git(root, 'rev-parse', 'HEAD');
++  git(root, 'update-ref', 'refs/remotes/origin/main', baseline);
++  await fs.mkdir(path.join(root, 'src'), { recursive: true });
++  await fs.writeFile(path.join(root, 'src', 'config.js'), 'export const token = "ghp_abcdefghijklmnopqrstuvwxyz123456";\n');
++  git(root, 'add', 'src/config.js');
++  git(root, 'commit', '-m', 'bad source secret');
++  await fs.writeFile(path.join(root, 'src', 'config.js'), 'export const token = null;\n');
++  git(root, 'commit', '-am', 'remove source secret');
++
++  const blockers = await serviceFor(root).scanOutgoingHistory({
++    ahead: 2,
++    remoteSha: baseline,
++    binding: { branch: 'main', selected: { fullName: 'owner/repo', repoUrl: 'https://github.com/owner/repo.git' } },
++  });
++  assert.ok(blockers.some((item) => item.path === 'src/config.js' && /GitHub token detected/.test(item.reason)), JSON.stringify(blockers));
++});
++
++test('outgoing merge commits are blocked for manual review', async (t) => {
++  const root = await makeRepo();
++  t.after(() => fs.rm(root, { recursive: true, force: true }));
++  const baseline = git(root, 'rev-parse', 'HEAD');
++  git(root, 'update-ref', 'refs/remotes/origin/main', baseline);
++  git(root, 'checkout', '-b', 'feature');
++  await fs.writeFile(path.join(root, 'feature.txt'), 'feature\n');
++  git(root, 'add', 'feature.txt');
++  git(root, 'commit', '-m', 'feature');
++  git(root, 'checkout', 'main');
++  await fs.writeFile(path.join(root, 'main.txt'), 'main\n');
++  git(root, 'add', 'main.txt');
++  git(root, 'commit', '-m', 'main change');
++  git(root, 'merge', '--no-ff', 'feature', '-m', 'merge feature');
++
++  const blockers = await serviceFor(root).scanOutgoingHistory({
++    ahead: 3,
++    remoteSha: baseline,
++    binding: { branch: 'main', selected: { fullName: 'owner/repo', repoUrl: 'https://github.com/owner/repo.git' } },
++  });
++  assert.ok(blockers.some((item) => /merge commit/.test(item.reason)), JSON.stringify(blockers));
++});
+diff --git a/server/http.integration.test.js b/server/http.integration.test.js
+new file mode 100644
+index 0000000..36d0f1f
+--- /dev/null
++++ b/server/http.integration.test.js
+@@ -0,0 +1,129 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { spawn } from 'node:child_process';
++import fs from 'node:fs/promises';
++import os from 'node:os';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++import { hashPassword } from './security.js';
++
++const here = path.dirname(fileURLToPath(import.meta.url));
++const root = path.dirname(here);
++
++function waitForServer(child) {
++  return new Promise((resolve, reject) => {
++    let output = '';
++    const timer = setTimeout(() => reject(new Error(`server start timeout: ${output}`)), 10_000);
++    const onData = (chunk) => {
++      output += String(chunk);
++      const match = output.match(/67 server listening on 127\.0\.0\.1:(\d+)/);
++      if (match) {
++        clearTimeout(timer);
++        child.stdout.off('data', onData);
++        resolve(Number(match[1]));
++      }
++    };
++    child.stdout.on('data', onData);
++    child.stderr.on('data', (chunk) => { output += String(chunk); });
++    child.once('exit', (code) => {
++      clearTimeout(timer);
++      reject(new Error(`server exited before ready (${code}): ${output}`));
++    });
++  });
++}
++
++test('production HTTP control plane enforces HTTPS proxy, auth cookie and CSRF', async (t) => {
++  const dataDir = await fs.mkdtemp(path.join(os.tmpdir(), '67-http-'));
++  t.after(() => fs.rm(dataDir, { recursive: true, force: true }));
++  const password = 'Production-Admin-Password-67!';
++  const passwordHash = await hashPassword(password);
++  const child = spawn(process.execPath, ['server/index.js'], {
++    cwd: root,
++    env: {
++      ...process.env,
++      NODE_ENV: 'production',
++      PORT: '0',
++      SERVER_HOST: '127.0.0.1',
++      TRUST_PROXY: '1',
++      SUPERADMIN_USERNAME: 'root-admin',
++      SUPERADMIN_PASSWORD_HASH: passwordHash,
++      SUPERADMIN_SESSION_SECRET: 'session-secret-'.repeat(4),
++      SUPERADMIN_ENCRYPTION_KEY: Buffer.alloc(32, 3).toString('base64'),
++      SUPERADMIN_ALLOWED_ORIGIN: 'https://67.test',
++      DATA_DIR: dataDir,
++      GIT_REPOSITORY_ROOT: root,
++    },
++    stdio: ['ignore', 'pipe', 'pipe'],
++  });
++  t.after(() => { if (!child.killed) child.kill('SIGTERM'); });
++  const port = await waitForServer(child);
++  const base = `http://127.0.0.1:${port}`;
++
++  const insecure = await fetch(`${base}/api/superadmin/session`);
++  assert.equal(insecure.status, 400);
++
++  const commonHeaders = { Origin: 'https://67.test', 'X-Forwarded-Proto': 'https' };
++  const missingOriginLogin = await fetch(`${base}/api/superadmin/login`, {
++    method: 'POST',
++    headers: { 'X-Forwarded-Proto': 'https', 'Content-Type': 'application/json' },
++    body: JSON.stringify({ username: 'root-admin', password }),
++  });
++  assert.equal(missingOriginLogin.status, 403);
++
++  const login = await fetch(`${base}/api/superadmin/login`, {
++    method: 'POST',
++    headers: { ...commonHeaders, 'Content-Type': 'application/json' },
++    body: JSON.stringify({ username: 'root-admin', password }),
++  });
++  assert.equal(login.status, 200);
++  const setCookie = login.headers.get('set-cookie') || '';
++  assert.match(setCookie, /__Host-67-superadmin=/);
++  assert.match(setCookie, /HttpOnly/i);
++  assert.match(setCookie, /Secure/i);
++  assert.match(setCookie, /SameSite=Strict/i);
++  const cookie = setCookie.split(';')[0];
++  const loginBody = await login.json();
++  assert.ok(loginBody.csrfToken);
++
++  const session = await fetch(`${base}/api/superadmin/session`, { headers: { ...commonHeaders, Cookie: cookie } });
++  assert.equal(session.status, 200);
++  assert.equal((await session.json()).authenticated, true);
++
++  const profileBefore = await fetch(`${base}/api/superadmin/profile`, { headers: { ...commonHeaders, Cookie: cookie } });
++  assert.equal(profileBefore.status, 200);
++  assert.deepEqual((await profileBefore.json()).profile, { bankName: '', accountHolder: '', bankIBAN: '', adminAvatar: '' });
++
++  const profileUpdate = await fetch(`${base}/api/superadmin/profile`, {
++    method: 'PUT',
++    headers: { ...commonHeaders, Cookie: cookie, 'X-CSRF-Token': loginBody.csrfToken, 'Content-Type': 'application/json' },
++    body: JSON.stringify({ bankName: 'Secure Bank', accountHolder: 'Admin Owner', bankIBAN: 'SA123456789012345', adminAvatar: 'https://example.com/avatar.png' }),
++  });
++  assert.equal(profileUpdate.status, 200);
++  assert.equal((await profileUpdate.json()).profile.bankName, 'Secure Bank');
++  const stored = JSON.parse(await fs.readFile(path.join(dataDir, 'superadmin.json'), 'utf8'));
++  assert.equal(JSON.stringify(stored).includes('Secure Bank'), false);
++  assert.equal(JSON.stringify(stored).includes('SA123456789012345'), false);
++
++  const badProfile = await fetch(`${base}/api/superadmin/profile`, {
++    method: 'PUT',
++    headers: { ...commonHeaders, Cookie: cookie, 'X-CSRF-Token': loginBody.csrfToken, 'Content-Type': 'application/json' },
++    body: JSON.stringify({ bankIBAN: '../../etc/passwd' }),
++  });
++  assert.equal(badProfile.status, 400);
++
++  const rejectedOrigin = await fetch(`${base}/api/superadmin/logout`, {
++    method: 'POST', headers: { Cookie: cookie, Origin: 'https://evil.example', 'X-Forwarded-Proto': 'https', 'X-CSRF-Token': loginBody.csrfToken },
++  });
++  assert.equal(rejectedOrigin.status, 403);
++
++  const missingCsrf = await fetch(`${base}/api/superadmin/logout`, { method: 'POST', headers: { ...commonHeaders, Cookie: cookie } });
++  assert.equal(missingCsrf.status, 403);
++
++  const logout = await fetch(`${base}/api/superadmin/logout`, {
++    method: 'POST', headers: { ...commonHeaders, Cookie: cookie, 'X-CSRF-Token': loginBody.csrfToken },
++  });
++  assert.equal(logout.status, 204);
++
++  const stale = await fetch(`${base}/api/superadmin/session`, { headers: { ...commonHeaders, Cookie: cookie } });
++  assert.equal(stale.status, 401);
++});
+diff --git a/server/index.js b/server/index.js
+new file mode 100644
+index 0000000..c9e288e
+--- /dev/null
++++ b/server/index.js
+@@ -0,0 +1,557 @@
++import crypto from 'node:crypto';
++import fs from 'node:fs/promises';
++import http from 'node:http';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++import { loadConfig } from './config.js';
++import { GitHubService } from './github.js';
++import { assertSafeBranch, normalizeGitHubRepo, verifyExecutionAuthorization } from './githubSecurity.js';
++import { SecureStore } from './store.js';
++import {
++  createSession,
++  csrfMatches,
++  decryptSecret,
++  encryptSecret,
++  ipFingerprint,
++  parseCookie,
++  redactSecrets,
++  sessionCookieName,
++  sessionCookieOptions,
++  timingSafeEqualString,
++  verifyPasswordHash,
++  verifySession,
++} from './security.js';
++
++const config = loadConfig();
++const store = new SecureStore(config.dataDir);
++await store.init();
++
++const cookieName = sessionCookieName(config.production);
++const sessionHash = (sid) => crypto.createHash('sha256').update(String(sid)).digest('hex');
++const distDir = path.resolve(process.cwd(), 'dist');
++const JSON_LIMIT = 64 * 1024;
++
++class HttpError extends Error {
++  constructor(status, message, code = undefined) {
++    super(message);
++    this.status = status;
++    this.code = code;
++  }
++}
++
++class FixedWindowLimiter {
++  constructor({ windowMs, limit }) {
++    this.windowMs = windowMs;
++    this.limit = limit;
++    this.entries = new Map();
++  }
++
++  check(key, { increment = true } = {}) {
++    const now = Date.now();
++    const current = this.entries.get(key);
++    const entry = !current || current.resetAt <= now ? { count: 0, resetAt: now + this.windowMs } : current;
++    if (increment) entry.count += 1;
++    this.entries.set(key, entry);
++    if (this.entries.size > 10_000) {
++      for (const [itemKey, item] of this.entries) if (item.resetAt <= now) this.entries.delete(itemKey);
++    }
++    return { allowed: increment ? entry.count <= this.limit : entry.count < this.limit, remaining: Math.max(0, this.limit - entry.count), resetAt: entry.resetAt };
++  }
++}
++
++const loginLimiter = new FixedWindowLimiter({ windowMs: 15 * 60_000, limit: 8 });
++const mutationLimiter = new FixedWindowLimiter({ windowMs: 60_000, limit: 45 });
++
++function safeMeta(meta = {}) {
++  const clean = {};
++  for (const [key, value] of Object.entries(meta)) {
++    if (/token|password|secret|authorization|cookie/i.test(key)) continue;
++    if (value == null || ['string', 'number', 'boolean'].includes(typeof value)) {
++      clean[key] = typeof value === 'string' ? redactSecrets(value).slice(0, 800) : value;
++    }
++  }
++  return clean;
++}
++
++function requestIp(req) {
++  if (config.trustProxy) {
++    const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0]?.trim();
++    if (forwarded) return forwarded.slice(0, 128);
++  }
++  return String(req.socket.remoteAddress || 'unknown').slice(0, 128);
++}
++
++function isSecureRequest(req) {
++  if (!config.production) return true;
++  if (req.socket.encrypted) return true;
++  if (!config.trustProxy) return false;
++  return String(req.headers['x-forwarded-proto'] || '').split(',')[0]?.trim().toLowerCase() === 'https';
++}
++
++async function audit(ctx, action, outcome = 'success', meta = {}) {
++  try {
++    await store.appendAudit({
++      at: new Date().toISOString(),
++      action: String(action).slice(0, 80),
++      outcome,
++      actor: ctx.superadmin?.sub || 'anonymous',
++      ip: ipFingerprint(requestIp(ctx.req), config.sessionSecret || 'unconfigured'),
++      requestId: ctx.requestId,
++      meta: safeMeta(meta),
++    });
++  } catch (error) {
++    console.error('[audit-write-failed]', redactSecrets(error?.message || String(error)));
++  }
++}
++
++function setSecurityHeaders(res) {
++  const csp = [
++    "default-src 'self'",
++    "base-uri 'self'",
++    "object-src 'none'",
++    "frame-ancestors 'none'",
++    "script-src 'self'",
++    "style-src 'self' 'unsafe-inline' https:",
++    "font-src 'self' https: data:",
++    "img-src 'self' data: blob: https:",
++    "connect-src 'self'",
++    "frame-src 'self' https://www.google.com",
++    "form-action 'self'",
++    ...(config.production ? ['upgrade-insecure-requests'] : []),
++  ].join('; ');
++  res.setHeader('Content-Security-Policy', csp);
++  res.setHeader('Referrer-Policy', 'no-referrer');
++  res.setHeader('X-Content-Type-Options', 'nosniff');
++  res.setHeader('X-Frame-Options', 'DENY');
++  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
++  res.setHeader('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=(self), payment=(self)');
++  if (config.production) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
++}
++
++function json(res, status, payload, extraHeaders = {}) {
++  const body = Buffer.from(JSON.stringify(payload));
++  res.statusCode = status;
++  res.setHeader('Content-Type', 'application/json; charset=utf-8');
++  res.setHeader('Content-Length', body.length);
++  res.setHeader('Cache-Control', 'no-store');
++  res.setHeader('Pragma', 'no-cache');
++  for (const [key, value] of Object.entries(extraHeaders)) res.setHeader(key, value);
++  res.end(body);
++}
++
++function empty(res, status = 204, extraHeaders = {}) {
++  res.statusCode = status;
++  res.setHeader('Cache-Control', 'no-store');
++  for (const [key, value] of Object.entries(extraHeaders)) res.setHeader(key, value);
++  res.end();
++}
++
++function serializeCookie(name, value, options) {
++  const parts = [`${name}=${encodeURIComponent(value)}`];
++  if (options.path) parts.push(`Path=${options.path}`);
++  if (options.httpOnly) parts.push('HttpOnly');
++  if (options.secure) parts.push('Secure');
++  if (options.sameSite) parts.push(`SameSite=${String(options.sameSite)[0].toUpperCase()}${String(options.sameSite).slice(1)}`);
++  if (Number.isFinite(options.maxAge)) parts.push(`Max-Age=${Math.max(0, Math.floor(options.maxAge / 1000))}`);
++  return parts.join('; ');
++}
++
++async function readJson(req) {
++  const contentType = String(req.headers['content-type'] || '').split(';')[0].trim().toLowerCase();
++  if (contentType && contentType !== 'application/json') throw new HttpError(415, 'Content-Type must be application/json.');
++  const chunks = [];
++  let total = 0;
++  for await (const chunk of req) {
++    total += chunk.length;
++    if (total > JSON_LIMIT) throw new HttpError(413, 'Request body is too large.');
++    chunks.push(chunk);
++  }
++  if (!total) return {};
++  try {
++    const parsed = JSON.parse(Buffer.concat(chunks).toString('utf8'));
++    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('object required');
++    return parsed;
++  } catch {
++    throw new HttpError(400, 'Invalid JSON body.');
++  }
++}
++
++function originAllowed(req) {
++  const origin = String(req.headers.origin || '').trim();
++  if (!origin) return !config.production;
++  if (config.allowedOrigin) return origin === config.allowedOrigin;
++  if (config.production) return false;
++  const host = String(req.headers.host || '');
++  return origin === `http://${host}` || origin === `https://${host}` || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
++}
++
++async function authenticate(ctx) {
++  if (config.configErrors.length) throw new HttpError(503, 'Superadmin security configuration is incomplete.', 'SUPERADMIN_NOT_CONFIGURED');
++  const token = parseCookie(ctx.req.headers.cookie, cookieName);
++  const session = verifySession(token, config.sessionSecret);
++  if (!session || !timingSafeEqualString(session.sub, config.username)) throw new HttpError(401, 'Authentication required.');
++  let saved;
++  try { saved = await store.readConfig(); } catch { throw new HttpError(503, 'Session security state is unavailable.'); }
++  if (!saved.activeSessionHash || !timingSafeEqualString(saved.activeSessionHash, sessionHash(session.sid))) throw new HttpError(401, 'Session is no longer active.');
++  ctx.superadmin = session;
++  return session;
++}
++
++function requireCsrf(ctx) {
++  if (!csrfMatches(ctx.superadmin, ctx.req.headers['x-csrf-token'])) throw new HttpError(403, 'CSRF validation failed.');
++}
++
++function requireMutationOrigin(ctx) {
++  if (!originAllowed(ctx.req)) throw new HttpError(403, 'Origin rejected.');
++}
++
++function requireMutationRate(ctx) {
++  const key = `${requestIp(ctx.req)}:${ctx.superadmin?.sub || 'anonymous'}`;
++  const result = mutationLimiter.check(key);
++  if (!result.allowed) throw new HttpError(429, 'Too many privileged requests. Slow down.');
++}
++
++async function readGitHubToken() {
++  if (config.githubTokenFromEnv) return config.githubTokenFromEnv;
++  const saved = await store.readConfig();
++  if (!saved.githubToken) return null;
++  return decryptSecret(saved.githubToken, config.encryptionKey);
++}
++
++const github = new GitHubService({ config, store, getToken: readGitHubToken, audit });
++
++function normalizeProfileText(value, field, maxLength) {
++  const text = String(value ?? '').trim();
++  if (text.length > maxLength || /[\u0000-\u001f\u007f]/.test(text)) throw new HttpError(400, `${field} is invalid.`);
++  return text;
++}
++
++function validateSuperadminProfile(input) {
++  const bankName = normalizeProfileText(input.bankName, 'Bank name', 120);
++  const accountHolder = normalizeProfileText(input.accountHolder, 'Account holder', 160);
++  const bankIBAN = normalizeProfileText(input.bankIBAN, 'IBAN', 64).replace(/\s+/g, '').toUpperCase();
++  const adminAvatar = normalizeProfileText(input.adminAvatar, 'Avatar URL', 512);
++  if (bankIBAN && !/^[A-Z]{2}[0-9A-Z]{13,32}$/.test(bankIBAN)) throw new HttpError(400, 'IBAN format is invalid.');
++  if (adminAvatar) {
++    let parsed;
++    try { parsed = new URL(adminAvatar); } catch { throw new HttpError(400, 'Avatar URL is invalid.'); }
++    if (parsed.protocol !== 'https:') throw new HttpError(400, 'Avatar URL must use HTTPS.');
++  }
++  return { bankName, accountHolder, bankIBAN, adminAvatar };
++}
++
++async function readSuperadminProfile() {
++  const saved = await store.readConfig();
++  if (!saved.adminProfile) return { bankName: '', accountHolder: '', bankIBAN: '', adminAvatar: '' };
++  let plaintext;
++  try { plaintext = decryptSecret(saved.adminProfile, config.encryptionKey, 'admin-profile'); }
++  catch { throw new HttpError(503, 'Encrypted Superadmin profile is unreadable.'); }
++  let parsed;
++  try { parsed = JSON.parse(plaintext); } catch { throw new HttpError(503, 'Encrypted Superadmin profile is invalid.'); }
++  return validateSuperadminProfile(parsed || {});
++}
++
++async function developerStatus() {
++  const saved = await store.readConfig();
++  let connected = false;
++  let tokenError = null;
++  if (config.githubTokenFromEnv) connected = true;
++  else if (saved.githubToken) {
++    try { connected = Boolean(await readGitHubToken()); } catch { tokenError = 'Encrypted GitHub token is unreadable; reconnect GitHub.'; }
++  }
++  let account = saved.githubAccount || null;
++  if (connected && config.githubTokenFromEnv && !account) {
++    try { account = (await github.validateToken(config.githubTokenFromEnv)).account; } catch { tokenError = 'Environment-managed GitHub token could not be verified.'; }
++  }
++  const selection = saved.githubSelection || null;
++  const pushMode = ['off', 'review', 'auto'].includes(saved.githubPushMode) ? saved.githubPushMode : 'review';
++  const local = await github.status(selection, pushMode);
++  return {
++    github: { connected: connected && !tokenError, account, tokenSource: config.githubTokenFromEnv ? 'environment' : connected ? 'encrypted_store' : null, error: tokenError },
++    selection,
++    pushMode,
++    local: local.git,
++    security: {
++      serverSideAuth: true,
++      csrfProtection: true,
++      encryptedTokenAtRest: !config.githubTokenFromEnv,
++      reviewBeforeExecute: true,
++      pushChecksRequired: true,
++      blockedSecretPaths: true,
++      auditLogging: true,
++      gitHooksDisabled: true,
++      outgoingHistoryScanned: true,
++    },
++  };
++}
++
++function validationStatus(message) {
++  if (/authentication required|session is no longer active/i.test(message)) return 401;
++  if (/csrf|origin rejected|requires explicit|not permitted|permission/i.test(message)) return 403;
++  if (/too many/i.test(message)) return 429;
++  if (/required|invalid|unsupported|select|does not|must|blocked|changed|expired|diverged|outside|cannot|not allowed|not connected|not exist|archived|unreadable/i.test(message)) return 400;
++  return 500;
++}
++
++async function handleApi(ctx, url) {
++  const { req, res } = ctx;
++  const method = req.method || 'GET';
++  const pathname = url.pathname;
++
++  if (config.production && (pathname.startsWith('/api/superadmin/') || pathname.startsWith('/api/developer-hub/')) && !isSecureRequest(req)) {
++    throw new HttpError(400, 'HTTPS is required for privileged endpoints.');
++  }
++
++  if (method === 'GET' && pathname === '/api/health') {
++    return json(res, 200, { ok: true, service: '67', adminConfigured: config.configErrors.length === 0 });
++  }
++
++  if (method === 'GET' && pathname === '/api/superadmin/session') {
++    if (config.configErrors.length) return json(res, 503, { authenticated: false, configured: false });
++    const token = parseCookie(req.headers.cookie, cookieName);
++    const session = verifySession(token, config.sessionSecret);
++    if (!session || !timingSafeEqualString(session.sub, config.username)) return json(res, 401, { authenticated: false, configured: true });
++    let saved;
++    try { saved = await store.readConfig(); } catch { return json(res, 503, { authenticated: false, configured: true }); }
++    if (!saved.activeSessionHash || !timingSafeEqualString(saved.activeSessionHash, sessionHash(session.sid))) return json(res, 401, { authenticated: false, configured: true });
++    return json(res, 200, { authenticated: true, configured: true, username: session.sub, csrfToken: session.csrf, expiresAt: new Date(session.exp).toISOString() });
++  }
++
++  if (method === 'POST' && pathname === '/api/superadmin/login') {
++    requireMutationOrigin(ctx);
++    if (config.configErrors.length) {
++      await audit(ctx, 'SUPERADMIN_LOGIN', 'blocked', { reason: 'security_configuration_incomplete' });
++      throw new HttpError(503, 'Superadmin security configuration is incomplete.', 'SUPERADMIN_NOT_CONFIGURED');
++    }
++    const key = requestIp(req);
++    const current = loginLimiter.check(key, { increment: false });
++    if (!current.allowed) throw new HttpError(429, 'Too many login attempts. Try again later.');
++    const body = await readJson(req);
++    const username = String(body.username || '').trim();
++    const password = String(body.password || '');
++    if (username.length > 128 || password.length > 256 || !username || !password) {
++      loginLimiter.check(key);
++      await audit(ctx, 'SUPERADMIN_LOGIN', 'failed', { reason: 'invalid_input' });
++      throw new HttpError(401, 'Invalid credentials.');
++    }
++    const [passwordOk, usernameOk] = await Promise.all([
++      verifyPasswordHash(password, config.passwordHash),
++      Promise.resolve(timingSafeEqualString(username, config.username)),
++    ]);
++    if (!passwordOk || !usernameOk) {
++      loginLimiter.check(key);
++      await audit(ctx, 'SUPERADMIN_LOGIN', 'failed', { reason: 'credentials_rejected' });
++      throw new HttpError(401, 'Invalid credentials.');
++    }
++    const { token, payload } = createSession({ username: config.username, secret: config.sessionSecret, ttlMs: config.sessionTtlMs });
++    await store.patchConfig({ activeSessionHash: sessionHash(payload.sid) });
++    ctx.superadmin = payload;
++    await audit(ctx, 'SUPERADMIN_LOGIN', 'success');
++    return json(res, 200, { authenticated: true, username: payload.sub, csrfToken: payload.csrf, expiresAt: new Date(payload.exp).toISOString() }, {
++      'Set-Cookie': serializeCookie(cookieName, token, sessionCookieOptions(config.production, config.sessionTtlMs)),
++    });
++  }
++
++  if (pathname.startsWith('/api/superadmin/')) {
++    await authenticate(ctx);
++    if (method !== 'GET' && method !== 'HEAD') { requireMutationOrigin(ctx); requireCsrf(ctx); requireMutationRate(ctx); }
++
++    if (method === 'POST' && pathname === '/api/superadmin/logout') {
++      await store.patchConfig({ activeSessionHash: null });
++      await audit(ctx, 'SUPERADMIN_LOGOUT', 'success');
++      return empty(res, 204, { 'Set-Cookie': serializeCookie(cookieName, '', { ...sessionCookieOptions(config.production, 0), maxAge: 0 }) });
++    }
++    if (method === 'GET' && pathname === '/api/superadmin/profile') {
++      return json(res, 200, { profile: await readSuperadminProfile() });
++    }
++    if (method === 'PUT' && pathname === '/api/superadmin/profile') {
++      const body = await readJson(req);
++      const profile = validateSuperadminProfile(body);
++      await store.patchConfig({ adminProfile: encryptSecret(JSON.stringify(profile), config.encryptionKey, 'admin-profile') });
++      await audit(ctx, 'SUPERADMIN_PROFILE_UPDATED', 'success', { bankConfigured: Boolean(profile.bankName && profile.accountHolder && profile.bankIBAN), avatarConfigured: Boolean(profile.adminAvatar) });
++      return json(res, 200, { profile });
++    }
++    if (method === 'GET' && pathname === '/api/superadmin/audit') {
++      const requested = Number(url.searchParams.get('limit') || 100);
++      const limit = Number.isFinite(requested) ? Math.min(Math.max(Math.trunc(requested), 1), 250) : 100;
++      return json(res, 200, { events: await store.readAudit(limit) });
++    }
++  }
++
++  if (pathname.startsWith('/api/developer-hub/')) {
++    await authenticate(ctx);
++    if (method !== 'GET' && method !== 'HEAD') { requireMutationOrigin(ctx); requireCsrf(ctx); requireMutationRate(ctx); }
++
++    if (method === 'GET' && pathname === '/api/developer-hub/status') return json(res, 200, await developerStatus());
++
++    if (method === 'POST' && pathname === '/api/developer-hub/github-auth') {
++      if (config.githubTokenFromEnv) throw new HttpError(409, 'GitHub token is managed by the server environment.');
++      const body = await readJson(req);
++      try {
++        const validated = await github.validateToken(body.token);
++        await store.patchConfig({ githubToken: encryptSecret(validated.token, config.encryptionKey), githubAccount: validated.account });
++        await audit(ctx, 'GITHUB_CONNECTED', 'success', { account: validated.account.login });
++        return json(res, 200, { connected: true, account: validated.account, scopes: validated.scopes });
++      } catch (error) {
++        await audit(ctx, 'GITHUB_CONNECTED', 'failed', { reason: redactSecrets(error?.message || 'connection_failed') });
++        throw error;
++      }
++    }
++
++    if (method === 'DELETE' && pathname === '/api/developer-hub/github-connection') {
++      if (config.githubTokenFromEnv) throw new HttpError(409, 'GitHub token is managed by the server environment and cannot be removed from the UI.');
++      await store.patchConfig({ githubToken: null, githubAccount: null, githubSelection: null, githubPushMode: 'review' });
++      await audit(ctx, 'GITHUB_DISCONNECTED');
++      return empty(res);
++    }
++
++    if (method === 'GET' && pathname === '/api/developer-hub/github-repositories') return json(res, 200, { repositories: await github.listRepositories() });
++
++    if (method === 'GET' && pathname === '/api/developer-hub/github-branches') {
++      return json(res, 200, { branches: await github.listBranches(String(url.searchParams.get('repo') || '')) });
++    }
++
++    if (method === 'POST' && pathname === '/api/developer-hub/github-selection') {
++      const body = await readJson(req);
++      const repo = normalizeGitHubRepo(body.repo);
++      const branch = assertSafeBranch(body.branch);
++      const repositories = await github.listRepositories();
++      const found = repositories.find((item) => item.fullName.toLowerCase() === repo.fullName.toLowerCase());
++      if (!found) throw new HttpError(400, 'Repository is not accessible to the connected GitHub identity.');
++      if (found.archived) throw new HttpError(400, 'Archived repositories cannot be selected.');
++      const branches = await github.listBranches(repo.fullName);
++      if (!branches.some((item) => item.name === branch)) throw new HttpError(400, 'Branch does not exist in the selected repository.');
++      const selection = { repo: repo.fullName, branch, defaultBranch: found.defaultBranch, permissions: found.permissions };
++      await store.patchConfig({ githubSelection: selection });
++      await audit(ctx, 'GITHUB_SELECTION_UPDATED', 'success', { repo: repo.fullName, branch });
++      return json(res, 200, { selection });
++    }
++
++    if (method === 'POST' && pathname === '/api/developer-hub/github-push-mode') {
++      const body = await readJson(req);
++      const mode = String(body.mode || '');
++      if (!['off', 'review', 'auto'].includes(mode)) throw new HttpError(400, 'Invalid push mode.');
++      await store.patchConfig({ githubPushMode: mode });
++      await audit(ctx, 'GITHUB_PUSH_MODE_UPDATED', 'success', { mode });
++      return json(res, 200, { pushMode: mode });
++    }
++
++    if (method === 'POST' && pathname === '/api/developer-hub/github-sync-preview') {
++      const body = await readJson(req);
++      const saved = await store.readConfig();
++      const selection = saved.githubSelection;
++      const pushMode = ['off', 'review', 'auto'].includes(saved.githubPushMode) ? saved.githubPushMode : 'review';
++      const action = String(body.action || '');
++      const preview = await github.preview({ selection, action, pushMode, sessionBinding: sessionHash(ctx.superadmin.sid) });
++      await audit(ctx, 'GITHUB_SYNC_PREVIEW', preview.blockers.length ? 'blocked' : 'success', { action, repo: preview.repo, branch: preview.branch, blockers: preview.blockers.length, files: preview.files.length });
++      return json(res, 200, preview);
++    }
++
++    if (method === 'POST' && pathname === '/api/developer-hub/github-sync-execute') {
++      const body = await readJson(req);
++      try {
++        const saved = await store.readConfig();
++        const selection = saved.githubSelection;
++        const pushMode = ['off', 'review', 'auto'].includes(saved.githubPushMode) ? saved.githubPushMode : 'review';
++        const action = String(body.action || '');
++        const executionKind = String(body.executionKind || '');
++        const auth = verifyExecutionAuthorization(body.authorization, config.sessionSecret);
++        if (!timingSafeEqualString(auth.sessionBinding, sessionHash(ctx.superadmin.sid))) throw new HttpError(403, 'Execution authorization belongs to a different Superadmin session.');
++        if (auth.pushMode === 'review' && ['push', 'commit_and_push'].includes(auth.expectedAction) && executionKind !== 'review_approved') throw new HttpError(403, 'Review mode requires explicit Superadmin approval.');
++        if (auth.pushMode === 'auto' && ['push', 'commit_and_push'].includes(auth.expectedAction) && !['auto', 'review_approved'].includes(executionKind)) throw new HttpError(403, 'Auto mode requires verified auto or explicit approval.');
++        const operation = await github.execute({ selection, authorizationPayload: auth, action, pushMode, commitMessage: body.commitMessage });
++        await audit(ctx, 'GITHUB_SYNC_EXECUTE', 'success', { action, expectedAction: operation.expectedAction, operationId: operation.id });
++        return json(res, 200, { operation });
++      } catch (error) {
++        await audit(ctx, 'GITHUB_SYNC_EXECUTE', 'failed', { action: String(body.action || ''), reason: redactSecrets(error?.message || 'execution_failed') });
++        throw error;
++      }
++    }
++
++    const operationMatch = pathname.match(/^\/api\/developer-hub\/github-sync-operation\/([0-9a-f-]{36})$/i);
++    if (method === 'GET' && operationMatch) {
++      const operation = github.getOperation(operationMatch[1]);
++      if (!operation) throw new HttpError(404, 'Operation not found.');
++      return json(res, 200, { operation });
++    }
++  }
++
++  throw new HttpError(404, 'API route not found.');
++}
++
++const MIME = new Map([
++  ['.html', 'text/html; charset=utf-8'], ['.js', 'text/javascript; charset=utf-8'], ['.mjs', 'text/javascript; charset=utf-8'],
++  ['.css', 'text/css; charset=utf-8'], ['.json', 'application/json; charset=utf-8'], ['.svg', 'image/svg+xml'], ['.png', 'image/png'],
++  ['.jpg', 'image/jpeg'], ['.jpeg', 'image/jpeg'], ['.gif', 'image/gif'], ['.webp', 'image/webp'], ['.ico', 'image/x-icon'],
++  ['.woff', 'font/woff'], ['.woff2', 'font/woff2'], ['.txt', 'text/plain; charset=utf-8'],
++]);
++
++async function sendFile(req, res, filePath, { noStore = false } = {}) {
++  const stat = await fs.stat(filePath);
++  if (!stat.isFile()) throw new HttpError(404, 'Not found.');
++  res.statusCode = 200;
++  res.setHeader('Content-Type', MIME.get(path.extname(filePath).toLowerCase()) || 'application/octet-stream');
++  res.setHeader('Content-Length', stat.size);
++  res.setHeader('Cache-Control', noStore ? 'no-store' : config.production ? 'public, max-age=3600' : 'no-store');
++  if (req.method === 'HEAD') return res.end();
++  const handle = await fs.open(filePath, 'r');
++  const stream = handle.createReadStream();
++  stream.on('error', () => { try { res.destroy(); } catch {} });
++  stream.pipe(res);
++}
++
++async function handleStatic(ctx, url) {
++  const { req, res } = ctx;
++  if (!['GET', 'HEAD'].includes(req.method || '')) throw new HttpError(404, 'Not found.');
++  let decoded;
++  try { decoded = decodeURIComponent(url.pathname); } catch { throw new HttpError(400, 'Invalid URL path.'); }
++  const segments = decoded.split('/').filter(Boolean);
++  if (segments.some((segment) => segment.startsWith('.') || segment === '..' || segment.includes('\0'))) throw new HttpError(404, 'Not found.');
++  const relative = segments.join('/');
++  const candidate = path.resolve(distDir, relative || 'index.html');
++  if (candidate !== distDir && !candidate.startsWith(`${distDir}${path.sep}`)) throw new HttpError(404, 'Not found.');
++  if (relative) {
++    try { return await sendFile(req, res, candidate, { noStore: path.basename(candidate) === 'index.html' }); } catch (error) { if (error?.code !== 'ENOENT' && error?.status !== 404) throw error; }
++  }
++  const acceptsHtml = String(req.headers.accept || '').includes('text/html');
++  if (!relative || acceptsHtml) return sendFile(req, res, path.join(distDir, 'index.html'), { noStore: true });
++  throw new HttpError(404, 'Not found.');
++}
++
++async function requestHandler(req, res) {
++  const requestId = crypto.randomUUID();
++  const ctx = { req, res, requestId, superadmin: null };
++  res.setHeader('X-Request-Id', requestId);
++  setSecurityHeaders(res);
++  try {
++    const url = new URL(req.url || '/', 'http://127.0.0.1');
++    if (url.pathname.startsWith('/api/')) await handleApi(ctx, url);
++    else await handleStatic(ctx, url);
++  } catch (error) {
++    if (res.headersSent) { try { res.destroy(); } catch {} return; }
++    const message = redactSecrets(error?.message || 'Internal server error.');
++    const status = Number.isSafeInteger(error?.status) ? error.status : validationStatus(message);
++    if (status >= 500) console.error(`[${requestId}]`, message);
++    const exposed = config.production && status >= 500 ? 'Internal server error.' : message;
++    json(res, status, { error: exposed, ...(error?.code ? { code: error.code } : {}), requestId });
++  }
++}
++
++const server = http.createServer({ requestTimeout: 30_000, headersTimeout: 15_000, keepAliveTimeout: 5_000, maxHeaderSize: 16 * 1024 }, requestHandler);
++server.listen(config.port, config.serverHost, () => {
++  if (config.configErrors.length) {
++    console.error('67 Superadmin is FAIL-CLOSED. Fix these environment settings before login:');
++    for (const error of config.configErrors) console.error(`- ${error}`);
++  }
++  const address = server.address();
++  const actualPort = address && typeof address === 'object' ? address.port : config.port;
++  console.log(`67 server listening on ${config.serverHost}:${actualPort}`);
++});
++
++function shutdown(signal) {
++  console.log(`${signal}: shutting down`);
++  server.close(() => process.exit(0));
++  setTimeout(() => process.exit(1), 10_000).unref();
++}
++process.on('SIGTERM', () => shutdown('SIGTERM'));
++process.on('SIGINT', () => shutdown('SIGINT'));
+diff --git a/server/security.js b/server/security.js
+new file mode 100644
+index 0000000..6c86b44
+--- /dev/null
++++ b/server/security.js
+@@ -0,0 +1,143 @@
++import crypto from 'node:crypto';
++
++const SESSION_VERSION = 1;
++const MAX_SESSION_TOKEN_LENGTH = 8192;
++
++function b64url(value) {
++  return Buffer.from(value).toString('base64url');
++}
++
++function sign(body, secret) {
++  return crypto.createHmac('sha256', secret).update('67/superadmin/session/v1\0').update(body).digest('base64url');
++}
++
++export function timingSafeEqualString(a, b) {
++  const aa = Buffer.from(String(a ?? ''), 'utf8');
++  const bb = Buffer.from(String(b ?? ''), 'utf8');
++  return aa.length === bb.length && crypto.timingSafeEqual(aa, bb);
++}
++
++export function createSession({ username, secret, ttlMs, now = Date.now() }) {
++  const payload = {
++    v: SESSION_VERSION,
++    sub: username,
++    sid: crypto.randomBytes(24).toString('base64url'),
++    csrf: crypto.randomBytes(24).toString('base64url'),
++    iat: now,
++    exp: now + ttlMs,
++  };
++  const body = b64url(JSON.stringify(payload));
++  return { token: `${body}.${sign(body, secret)}`, payload };
++}
++
++export function verifySession(token, secret, now = Date.now()) {
++  const raw = String(token ?? '');
++  if (!raw || raw.length > MAX_SESSION_TOKEN_LENGTH) return null;
++  const [body, signature, extra] = raw.split('.');
++  if (!body || !signature || extra) return null;
++  const expected = sign(body, secret);
++  if (!timingSafeEqualString(signature, expected)) return null;
++  try {
++    const payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8'));
++    if (payload?.v !== SESSION_VERSION || typeof payload.sub !== 'string' || !payload.sid || !payload.csrf) return null;
++    if (!Number.isSafeInteger(payload.iat) || !Number.isSafeInteger(payload.exp)) return null;
++    if (payload.iat > now + 30_000 || payload.exp <= now || payload.exp - payload.iat > 24 * 60 * 60_000) return null;
++    return payload;
++  } catch {
++    return null;
++  }
++}
++
++export function parseCookie(cookieHeader, name) {
++  for (const part of String(cookieHeader ?? '').split(';')) {
++    const index = part.indexOf('=');
++    if (index < 0) continue;
++    const key = part.slice(0, index).trim();
++    if (key !== name) continue;
++    try { return decodeURIComponent(part.slice(index + 1).trim()); } catch { return null; }
++  }
++  return null;
++}
++
++export function csrfMatches(session, supplied) {
++  return Boolean(session?.csrf) && timingSafeEqualString(session.csrf, supplied);
++}
++
++export function sessionCookieName(production) {
++  return production ? '__Host-67-superadmin' : '67-superadmin';
++}
++
++export function sessionCookieOptions(production, maxAge) {
++  return {
++    httpOnly: true,
++    secure: production,
++    sameSite: 'strict',
++    path: '/',
++    maxAge,
++  };
++}
++
++function secretAad(context) {
++  const normalized = String(context || 'github-token').trim();
++  if (!/^[a-z0-9_-]{1,64}$/i.test(normalized)) throw new Error('Invalid encryption context.');
++  return Buffer.from(`67/superadmin/${normalized}/v1`, 'utf8');
++}
++
++export function encryptSecret(plaintext, key, context = 'github-token') {
++  if (!key || key.length !== 32) throw new Error('Encryption key is unavailable.');
++  const iv = crypto.randomBytes(12);
++  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
++  cipher.setAAD(secretAad(context));
++  const ciphertext = Buffer.concat([cipher.update(String(plaintext), 'utf8'), cipher.final()]);
++  const tag = cipher.getAuthTag();
++  return { v: 1, alg: 'A256GCM', iv: iv.toString('base64'), tag: tag.toString('base64'), ciphertext: ciphertext.toString('base64') };
++}
++
++export function decryptSecret(record, key, context = 'github-token') {
++  if (!record || record.v !== 1 || record.alg !== 'A256GCM') throw new Error('Unsupported encrypted secret.');
++  const decipher = crypto.createDecipheriv('aes-256-gcm', key, Buffer.from(record.iv, 'base64'));
++  decipher.setAAD(secretAad(context));
++  decipher.setAuthTag(Buffer.from(record.tag, 'base64'));
++  return Buffer.concat([decipher.update(Buffer.from(record.ciphertext, 'base64')), decipher.final()]).toString('utf8');
++}
++
++export function redactSecrets(value) {
++  return String(value ?? '')
++    .replace(/https:\/\/[^\s/@:]+:[^\s/@]+@github\.com/gi, 'https://github.com')
++    .replace(/github_pat_[A-Za-z0-9_]+/g, 'github_pat_***')
++    .replace(/gh[pousr]_[A-Za-z0-9_]+/g, 'gh*_***')
++    .replace(/(?:AKIA|ASIA)[0-9A-Z]{16}/g, 'AWS_ACCESS_KEY_REDACTED')
++    .replace(/AIza[0-9A-Za-z_-]{30,}/g, 'GOOGLE_API_KEY_REDACTED')
++    .replace(/xox[baprs]-[A-Za-z0-9-]+/g, 'xox*-***')
++    .replace(/(?:sk|rk)_live_[A-Za-z0-9]+/g, '*_live_***')
++    .replace(/\beyJ[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{8,}\b/g, 'JWT_REDACTED')
++    .replace(/-----BEGIN (?:ENCRYPTED |RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/g, 'PRIVATE_KEY_REDACTED');
++}
++
++export function ipFingerprint(ip, secret) {
++  return crypto.createHmac('sha256', secret).update(String(ip ?? 'unknown')).digest('hex').slice(0, 16);
++}
++
++export async function hashPassword(password) {
++  const raw = String(password ?? '');
++  if (raw.length < 14 || raw.length > 256) throw new Error('Password must be between 14 and 256 characters.');
++  const salt = crypto.randomBytes(16);
++  const derived = await new Promise((resolve, reject) => {
++    crypto.scrypt(raw, salt, 64, { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 }, (error, key) => error ? reject(error) : resolve(key));
++  });
++  return `scrypt$16384$8$1$${salt.toString('base64url')}$${derived.toString('base64url')}`;
++}
++
++export async function verifyPasswordHash(password, encoded) {
++  const parts = String(encoded ?? '').split('$');
++  if (parts.length !== 6 || parts[0] !== 'scrypt') return false;
++  const N = Number(parts[1]); const r = Number(parts[2]); const p = Number(parts[3]);
++  if (N !== 16384 || r !== 8 || p !== 1) return false;
++  let salt; let expected;
++  try { salt = Buffer.from(parts[4], 'base64url'); expected = Buffer.from(parts[5], 'base64url'); } catch { return false; }
++  if (salt.length < 16 || expected.length !== 64) return false;
++  const derived = await new Promise((resolve) => {
++    crypto.scrypt(String(password ?? ''), salt, 64, { N, r, p, maxmem: 64 * 1024 * 1024 }, (error, key) => resolve(error ? null : key));
++  });
++  return Boolean(derived) && derived.length === expected.length && crypto.timingSafeEqual(derived, expected);
++}
+diff --git a/server/security.test.js b/server/security.test.js
+new file mode 100644
+index 0000000..8b74973
+--- /dev/null
++++ b/server/security.test.js
+@@ -0,0 +1,42 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import crypto from 'node:crypto';
++import { createSession, verifySession, csrfMatches, encryptSecret, decryptSecret, redactSecrets, hashPassword, verifyPasswordHash } from './security.js';
++
++test('session signature, csrf and expiry are fail-closed', () => {
++  const secret = 's'.repeat(64);
++  const now = Date.now();
++  const { token, payload } = createSession({ username: 'root-admin', secret, ttlMs: 60_000, now });
++  assert.equal(verifySession(token, secret, now + 1_000)?.sub, 'root-admin');
++  assert.equal(csrfMatches(payload, payload.csrf), true);
++  assert.equal(csrfMatches(payload, `${payload.csrf}x`), false);
++  assert.equal(verifySession(`${token}x`, secret, now + 1_000), null);
++  assert.equal(verifySession(token, secret, now + 61_000), null);
++});
++
++test('AES-256-GCM secret storage rejects tampering', () => {
++  const key = crypto.randomBytes(32);
++  const record = encryptSecret('github_pat_example_secret_value_123456789', key);
++  assert.equal(decryptSecret(record, key), 'github_pat_example_secret_value_123456789');
++  const tampered = { ...record, ciphertext: Buffer.from('tampered').toString('base64') };
++  assert.throws(() => decryptSecret(tampered, key));
++});
++
++test('AES-GCM contexts prevent cross-purpose secret decryption', () => {
++  const key = crypto.randomBytes(32);
++  const record = encryptSecret('{"bankIBAN":"SA1234567890123"}', key, 'admin-profile');
++  assert.match(decryptSecret(record, key, 'admin-profile'), /bankIBAN/);
++  assert.throws(() => decryptSecret(record, key, 'github-token'));
++});
++
++test('redaction removes common GitHub and private key secrets', () => {
++  const output = redactSecrets('token ghp_abcdefghijklmnopqrstuvwxyz123456 and -----BEGIN PRIVATE KEY-----');
++  assert.equal(output.includes('ghp_abcdefghijklmnopqrstuvwxyz123456'), false);
++  assert.equal(output.includes('BEGIN PRIVATE KEY'), false);
++});
++
++test('scrypt password hashes verify without storing plaintext credentials', async () => {
++  const hash = await hashPassword('A-strong-admin-password-67!');
++  assert.equal(await verifyPasswordHash('A-strong-admin-password-67!', hash), true);
++  assert.equal(await verifyPasswordHash('wrong-password-value', hash), false);
++});
+diff --git a/server/store.js b/server/store.js
+new file mode 100644
+index 0000000..6b6fcba
+--- /dev/null
++++ b/server/store.js
+@@ -0,0 +1,92 @@
++import fs from 'node:fs/promises';
++import path from 'node:path';
++
++const MAX_AUDIT_BYTES = 5 * 1024 * 1024;
++
++async function ensureDir(dir) {
++  await fs.mkdir(dir, { recursive: true, mode: 0o700 });
++  try { await fs.chmod(dir, 0o700); } catch {}
++}
++
++export class SecureStore {
++  constructor(dataDir) {
++    this.dataDir = dataDir;
++    this.configPath = path.join(dataDir, 'superadmin.json');
++    this.auditPath = path.join(dataDir, 'audit.jsonl');
++    this.configQueue = Promise.resolve();
++    this.auditQueue = Promise.resolve();
++  }
++
++  async init() { await ensureDir(this.dataDir); }
++
++  async readConfig() {
++    await this.init();
++    try {
++      const raw = await fs.readFile(this.configPath, 'utf8');
++      const parsed = JSON.parse(raw);
++      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
++    } catch (error) {
++      if (error?.code === 'ENOENT') return {};
++      throw error;
++    }
++  }
++
++  async writeConfig(next) {
++    await this.init();
++    const tmp = `${this.configPath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
++    const payload = `${JSON.stringify(next, null, 2)}\n`;
++    try {
++      await fs.writeFile(tmp, payload, { mode: 0o600, flag: 'wx' });
++      await fs.rename(tmp, this.configPath);
++      try { await fs.chmod(this.configPath, 0o600); } catch {}
++    } finally {
++      try { await fs.unlink(tmp); } catch {}
++    }
++  }
++
++  async patchConfig(patch) {
++    const task = this.configQueue.then(async () => {
++      const current = await this.readConfig();
++      const next = { ...current, ...patch, updatedAt: new Date().toISOString() };
++      await this.writeConfig(next);
++      return next;
++    });
++    this.configQueue = task.catch(() => {});
++    return task;
++  }
++
++  async rotateAuditIfNeeded(incomingBytes) {
++    let stat;
++    try { stat = await fs.stat(this.auditPath); } catch (error) { if (error?.code === 'ENOENT') return; throw error; }
++    if (stat.size + incomingBytes <= MAX_AUDIT_BYTES) return;
++    const rotated = path.join(this.dataDir, 'audit.previous.jsonl');
++    try { await fs.unlink(rotated); } catch (error) { if (error?.code !== 'ENOENT') throw error; }
++    await fs.rename(this.auditPath, rotated);
++    try { await fs.chmod(rotated, 0o600); } catch {}
++  }
++
++  async appendAudit(event) {
++    const task = this.auditQueue.then(async () => {
++      await this.init();
++      const line = `${JSON.stringify(event)}\n`;
++      await this.rotateAuditIfNeeded(Buffer.byteLength(line));
++      await fs.appendFile(this.auditPath, line, { mode: 0o600 });
++      try { await fs.chmod(this.auditPath, 0o600); } catch {}
++    });
++    this.auditQueue = task.catch(() => {});
++    return task;
++  }
++
++  async readAudit(limit = 100) {
++    await this.init();
++    try {
++      const raw = await fs.readFile(this.auditPath, 'utf8');
++      return raw.trim().split('\n').filter(Boolean).slice(-Math.min(Math.max(limit, 1), 250)).reverse().map((line) => {
++        try { return JSON.parse(line); } catch { return null; }
++      }).filter(Boolean);
++    } catch (error) {
++      if (error?.code === 'ENOENT') return [];
++      throw error;
++    }
++  }
++}
+diff --git a/server/store.test.js b/server/store.test.js
+new file mode 100644
+index 0000000..829503b
+--- /dev/null
++++ b/server/store.test.js
+@@ -0,0 +1,15 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import fs from 'node:fs/promises';
++import os from 'node:os';
++import path from 'node:path';
++import { SecureStore } from './store.js';
++
++test('concurrent privileged config writes are serialized without lost updates', async (t) => {
++  const root = await fs.mkdtemp(path.join(os.tmpdir(), '67-store-'));
++  t.after(() => fs.rm(root, { recursive: true, force: true }));
++  const store = new SecureStore(root);
++  await Promise.all(Array.from({ length: 24 }, (_, index) => store.patchConfig({ [`key${index}`]: index })));
++  const saved = await store.readConfig();
++  for (let index = 0; index < 24; index += 1) assert.equal(saved[`key${index}`], index);
++});
+diff --git a/src/App.jsx b/src/App.jsx
+index 4fb7700..b43f58e 100644
+--- a/src/App.jsx
++++ b/src/App.jsx
+@@ -81,6 +81,7 @@ function App() {
+ 
+   const isSellerApp = location.pathname.startsWith('/seller');
+   const isGateway = location.pathname === '/';
++  const isAdmin = location.pathname.startsWith('/admin');
+   const showParticles = showSplash || ['/', '/store', '/login', '/about', '/seller/login', '/seller/register'].includes(location.pathname) || location.pathname.startsWith('/seller/dashboard');
+ 
+   if (showSplash) {
+@@ -106,7 +107,7 @@ function App() {
+   return (
+     <div className="app-container">
+       <ParticlesBackground />
+-      {!isGateway && <AnimatedDots />}
++      {!isGateway && !isAdmin && <AnimatedDots />}
+       <Routes>
+         {/* Gateway */}
+         <Route path="/" element={<GatewayPage />} />
+@@ -159,9 +160,9 @@ function App() {
+         <Route path="/settings" element={<SettingsPage />} />
+         <Route path="/wallet" element={<WalletPage />} />
+       </Routes>
+-      {!isGateway && <SmartAssistant />}
+-      {!isGateway && <FloatingSupportBtn />}
+-      <EngineerAssistant />
++      {!isGateway && !isAdmin && <SmartAssistant />}
++      {!isGateway && !isAdmin && <FloatingSupportBtn />}
++      {!isAdmin && <EngineerAssistant />}
+     </div>
+   );
+ }
+diff --git a/src/pages/AdminDashboard.jsx b/src/pages/AdminDashboard.jsx
+index f8936fe..43f97e5 100644
+--- a/src/pages/AdminDashboard.jsx
++++ b/src/pages/AdminDashboard.jsx
+@@ -1,16 +1,39 @@
+-import React, { useState, useEffect } from 'react';
++import React, { useState, useEffect, useCallback } from 'react';
+ import { useNavigate } from 'react-router-dom';
+ import { 
+   ArrowRight, Users, Store, DollarSign, AlertOctagon, TrendingUp, 
+   BarChart2, Lightbulb, MessageSquare, Bell, FileText, CheckCircle, 
+   XCircle, ShieldAlert, CreditCard, Layers, Eye, RefreshCw, Activity,
+   Server, ShieldCheck, HeartPulse, Sparkles, Percent, ShoppingBag,
+-  UserCheck, AlertCircle, Award, Star, Settings, LogOut, Key, Camera, Link, Smartphone
++  UserCheck, AlertCircle, Award, Star, Settings, LogOut, Key, Camera, Link, Github, Loader2, LockKeyhole
+ } from 'lucide-react';
+ import Logo67 from '../components/Logo67';
+ import ParticlesBackground from '../components/ParticlesBackground';
++import GitHubModule from './GitHubModule';
+ import './AdminDashboard.css';
+ 
++
++async function adminApi(path, options = {}) {
++  const response = await fetch(path, {
++    credentials: 'same-origin',
++    ...options,
++    headers: {
++      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
++      ...(options.headers || {}),
++    },
++  });
++  if (response.status === 204) return null;
++  let data = null;
++  try { data = await response.json(); } catch {}
++  if (!response.ok) {
++    const error = new Error(data?.error || `Request failed (${response.status})`);
++    error.status = response.status;
++    error.code = data?.code;
++    throw error;
++  }
++  return data;
++}
++
+ // Highly Detailed Mock Sellers Data
+ const initialSellers = [
+   { id: 'SEL-4412', name: 'تشليح القمة', email: 'qemma@mail.com', date: '2026-07-10 10:15', status: 'تحت المراجعة', completedOrders: 142, rating: 4.8, reviewsCount: 34, strength: 'قوي' },
+@@ -45,21 +68,20 @@ const AdminDashboard = () => {
+   const [activeTab, setActiveTab] = useState('overview');
+   const [logoTheme, setLogoTheme] = useState(localStorage.getItem('logoTheme') || 'car_concept');
+   
+-  // Fake/Mock Login flow states (بوابة تسجيل دخول وهمية وتجريبية سهلة التخطي)
+-  const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem('isAdminLoggedIn') === 'true');
++  // Production Superadmin session — verified server-side only.
++  const [session, setSession] = useState({ loading: true, authenticated: false, configured: true });
++  const isLoggedIn = session.authenticated;
+   const [usernameInput, setUsernameInput] = useState('');
+   const [passwordInput, setPasswordInput] = useState('');
+-  const [verificationCode, setVerificationCode] = useState('');
+-  const [verificationSent, setVerificationSent] = useState(false);
+   const [loginError, setLoginError] = useState('');
++  const [loginBusy, setLoginBusy] = useState(false);
+ 
+-  // Admin Profile Settings States
+-  const [adminUser, setAdminUser] = useState(localStorage.getItem('adminUser') || 'admin67');
+-  const [adminPass, setAdminPass] = useState(localStorage.getItem('adminPass') || '6767');
++  // Sensitive profile fields are loaded from the encrypted server-side store.
+   const [adminAvatar, setAdminAvatar] = useState('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150');
+-  const [bankName, setBankName] = useState(localStorage.getItem('adminBankName') || 'مصرف الراجحي');
+-  const [bankIBAN, setBankIBAN] = useState(localStorage.getItem('adminBankIBAN') || 'SA8080000012345678901234');
+-  const [accountHolder, setAccountHolder] = useState(localStorage.getItem('adminAccountHolder') || 'مشرف المنصة 67');
++  const [bankName, setBankName] = useState('');
++  const [bankIBAN, setBankIBAN] = useState('');
++  const [accountHolder, setAccountHolder] = useState('');
++  const [profileBusy, setProfileBusy] = useState(false);
+ 
+   const [payments, setPayments] = useState(initialPayments);
+   const [sellers, setSellers] = useState(initialSellers);
+@@ -92,46 +114,87 @@ const AdminDashboard = () => {
+     return () => window.removeEventListener('storage', loadLogs);
+   }, []);
+ 
+-  // Handle Mock Login Submit
+-  const handleLoginSubmit = (e) => {
++  const loadSession = useCallback(async () => {
++    try {
++      const data = await adminApi('/api/superadmin/session');
++      setSession({ loading: false, configured: true, ...data });
++      return data;
++    } catch (error) {
++      setSession({ loading: false, authenticated: false, configured: error.status !== 503 });
++      return null;
++    }
++  }, []);
++
++  useEffect(() => { loadSession(); }, [loadSession]);
++
++  useEffect(() => {
++    if (!session.authenticated) return;
++    let active = true;
++    adminApi('/api/superadmin/profile')
++      .then((data) => {
++        if (!active) return;
++        const profile = data?.profile || {};
++        setBankName(profile.bankName || '');
++        setBankIBAN(profile.bankIBAN || '');
++        setAccountHolder(profile.accountHolder || '');
++        if (profile.adminAvatar) setAdminAvatar(profile.adminAvatar);
++      })
++      .catch((error) => { if (error.status === 401) loadSession(); });
++    return () => { active = false; };
++  }, [session.authenticated, loadSession]);
++
++  const handleLoginSubmit = async (e) => {
+     e.preventDefault();
+-    if (usernameInput === adminUser && passwordInput === adminPass) {
+-      if (!verificationSent) {
+-        setVerificationSent(true);
+-        setLoginError('');
+-      } else {
+-        if (verificationCode === '6767') {
+-          sessionStorage.setItem('isAdminLoggedIn', 'true');
+-          setIsLoggedIn(true);
+-          setLoginError('');
+-        } else {
+-          setLoginError('كود التحقق المرسل للجوال غير صحيح! (استخدم الرمز التجريبي: 6767)');
+-        }
+-      }
+-    } else {
+-      setLoginError('اسم المستخدم أو كلمة المرور غير صحيحة! (الافتراضي: admin67 / 6767)');
++    setLoginBusy(true);
++    setLoginError('');
++    try {
++      const data = await adminApi('/api/superadmin/login', {
++        method: 'POST',
++        body: JSON.stringify({ username: usernameInput, password: passwordInput }),
++      });
++      setSession({ loading: false, configured: true, ...data });
++      setUsernameInput('');
++      setPasswordInput('');
++    } catch (error) {
++      setLoginError(error.message || 'تعذر تسجيل الدخول.');
++    } finally {
++      setLoginBusy(false);
+     }
+   };
+ 
+-  // Logout Revert
+-  const handleLogout = () => {
+-    sessionStorage.removeItem('isAdminLoggedIn');
+-    setIsLoggedIn(false);
+-    setVerificationSent(false);
++  const handleLogout = async () => {
++    try {
++      await adminApi('/api/superadmin/logout', {
++        method: 'POST',
++        headers: session.csrfToken ? { 'X-CSRF-Token': session.csrfToken } : {},
++      });
++    } catch {}
++    setSession({ loading: false, authenticated: false, configured: true });
+     setUsernameInput('');
+     setPasswordInput('');
+-    setVerificationCode('');
+   };
+ 
+-  // Update Settings
+-  const handleSaveSettings = (e) => {
++  const handleSaveSettings = async (e) => {
+     e.preventDefault();
+-    localStorage.setItem('adminUser', adminUser);
+-    localStorage.setItem('adminPass', adminPass);
+-    localStorage.setItem('adminBankName', bankName);
+-    localStorage.setItem('adminBankIBAN', bankIBAN);
+-    localStorage.setItem('adminAccountHolder', accountHolder);
+-    alert('تم حفظ إعدادات الملف الشخصي والحسابات البنكية للمشرف بنجاح! ✅');
++    setProfileBusy(true);
++    try {
++      const data = await adminApi('/api/superadmin/profile', {
++        method: 'PUT',
++        headers: session.csrfToken ? { 'X-CSRF-Token': session.csrfToken } : {},
++        body: JSON.stringify({ bankName, bankIBAN, accountHolder, adminAvatar }),
++      });
++      const profile = data?.profile || {};
++      setBankName(profile.bankName || '');
++      setBankIBAN(profile.bankIBAN || '');
++      setAccountHolder(profile.accountHolder || '');
++      if (profile.adminAvatar) setAdminAvatar(profile.adminAvatar);
++      alert('تم حفظ إعدادات الملف الشخصي والحساب البنكي بشكل مشفّر على السيرفر. ✅');
++    } catch (error) {
++      if (error.status === 401) await loadSession();
++      alert(error.message || 'تعذر حفظ الإعدادات.');
++    } finally {
++      setProfileBusy(false);
++    }
+   };
+ 
+   const handleLogoThemeToggle = (newTheme) => {
+@@ -214,8 +277,12 @@ const AdminDashboard = () => {
+   const unverifiedSellersCount = sellers.filter(s => s.status === 'تحت المراجعة').length;
+ 
+   // ==========================================
+-  // 1. MOCK/FAKE LOGIN SCREEN (Perfectly Centered Logo & Subtitle)
++  // 1. PRODUCTION SUPERADMIN LOGIN SCREEN
+   // ==========================================
++  if (session.loading) {
++    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#F8FAFC', color: '#475569', direction: 'rtl', fontFamily: 'Cairo, sans-serif' }}><div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 800 }}><Loader2 className="spin" size={26} />جاري التحقق من جلسة Superadmin…</div></div>;
++  }
++
+   // ==========================================
+   // 1. PREMIUM ADMIN LOGIN SCREEN
+   // ==========================================
+@@ -290,106 +357,26 @@ const AdminDashboard = () => {
+               }}>{loginError}</div>
+             )}
+ 
+-            <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+-              {!verificationSent ? (
+-                <>
+-                  {/* Username Input */}
+-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+-                    <label style={{ fontSize: '0.85rem', color: '#334155', fontWeight: 'bold' }}>اسم مستخدم المشرف</label>
+-                    <input 
+-                      type="text" 
+-                      placeholder="أدخل اسم المستخدم (مثال: admin67)"
+-                      value={usernameInput}
+-                      onChange={(e) => setUsernameInput(e.target.value)}
+-                      required
+-                      style={{ padding: '14px 16px', height: '52px', fontSize: '1.05rem', backgroundColor: '#F8FAFC', border: '1px solid #CBD5E1', color: '#0F172A', borderRadius: '12px', width: '100%', outline: 'none' }}
+-                    />
+-                  </div>
+-
+-                  {/* Password Input */}
+-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+-                      <label style={{ fontSize: '0.85rem', color: '#334155', fontWeight: 'bold' }}>كلمة المرور</label>
+-                      <span 
+-                        onClick={() => alert('تلميحة كلمة المرور الافتراضية هي: 6767')}
+-                        style={{ fontSize: '0.8rem', color: '#D4AF37', cursor: 'pointer', textDecoration: 'underline' }}
+-                      >
+-                        نسيت كلمة المرور؟
+-                      </span>
+-                    </div>
+-                    <input 
+-                      type="password" 
+-                      placeholder="••••••••"
+-                      value={passwordInput}
+-                      onChange={(e) => setPasswordInput(e.target.value)}
+-                      required
+-                      style={{ padding: '14px 16px', height: '52px', fontSize: '1.05rem', backgroundColor: '#F8FAFC', border: '1px solid #CBD5E1', color: '#0F172A', borderRadius: '12px', width: '100%', outline: 'none' }}
+-                    />
+-                  </div>
+-
+-                  <button 
+-                    type="submit" 
+-                    style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #B8962C 100%)', color: '#000000', fontWeight: '800', width: '100%', padding: '14px', borderRadius: '12px', border: 'none', cursor: 'pointer', fontSize: '1.05rem' }}
+-                  >
+-                    استمرار والتحقق عبر الجوال
+-                  </button>
+-                </>
+-              ) : (
+-                <>
+-                  {/* Verification PIN Code */}
+-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', textAlign: 'center' }}>
+-                    <Smartphone size={44} color="#D4AF37" />
+-                    <div>
+-                      <label style={{ fontSize: '0.9rem', color: '#0F172A', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>رمز التحقق عبر الجوال</label>
+-                      <span style={{ fontSize: '0.85rem', color: '#64748B' }}>أدخل رمز التحقق المكون من 4 أرقام المرسل إلى جوالك (الرمز: 6767)</span>
+-                    </div>
+-                    
+-                    <input 
+-                      type="text" 
+-                      placeholder="- - - -"
+-                      value={verificationCode}
+-                      onChange={(e) => setVerificationCode(e.target.value)}
+-                      required
+-                      maxLength={4}
+-                      style={{
+-                        padding: '10px',
+-                        fontSize: '1.8rem',
+-                        letterSpacing: '12px',
+-                        textAlign: 'center',
+-                        width: '150px',
+-                        marginTop: '8px',
+-                        backgroundColor: '#F8FAFC',
+-                        border: '1px solid #CBD5E1',
+-                        borderRadius: '12px',
+-                        outline: 'none',
+-                        color: '#0F172A'
+-                      }}
+-                    />
+-                  </div>
++            {!session.configured && (
++              <div style={{ background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#B91C1C', padding: '12px 14px', borderRadius: '12px', fontSize: '0.82rem', marginBottom: '18px', fontWeight: 800 }}>
++                بوابة Superadmin مقفولة Fail-Closed لأن إعدادات الأمان على السيرفر غير مكتملة.
++              </div>
++            )}
+ 
+-                  <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
+-                    <button type="button" onClick={() => setVerificationSent(false)} style={{ flex: 1, background: '#64748B', color: '#FFFFFF', fontWeight: '800', padding: '14px', borderRadius: '12px', border: 'none', cursor: 'pointer' }}>
+-                      رجوع
+-                    </button>
+-                    <button type="submit" style={{ flex: 1, background: 'linear-gradient(135deg, #D4AF37 0%, #B8962C 100%)', color: '#000000', fontWeight: '800', padding: '14px', borderRadius: '12px', border: 'none', cursor: 'pointer' }}>
+-                      تأكيد الدخول
+-                    </button>
+-                  </div>
+-                </>
+-              )}
++            <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
++              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
++                <label style={{ fontSize: '0.85rem', color: '#334155', fontWeight: 'bold' }}>اسم مستخدم Superadmin</label>
++                <input type="text" autoComplete="username" placeholder="اسم المستخدم" value={usernameInput} onChange={(e) => setUsernameInput(e.target.value)} required disabled={!session.configured || loginBusy} style={{ padding: '14px 16px', height: '52px', fontSize: '1.05rem', backgroundColor: '#F8FAFC', border: '1px solid #CBD5E1', color: '#0F172A', borderRadius: '12px', width: '100%', outline: 'none' }} />
++              </div>
++              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
++                <label style={{ fontSize: '0.85rem', color: '#334155', fontWeight: 'bold' }}>كلمة المرور</label>
++                <input type="password" autoComplete="current-password" placeholder="••••••••••••" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} required disabled={!session.configured || loginBusy} style={{ padding: '14px 16px', height: '52px', fontSize: '1.05rem', backgroundColor: '#F8FAFC', border: '1px solid #CBD5E1', color: '#0F172A', borderRadius: '12px', width: '100%', outline: 'none' }} />
++              </div>
++              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748B', fontSize: '0.78rem' }}><LockKeyhole size={15} color="#D4AF37" />المصادقة تتم على السيرفر؛ لا توجد كلمة مرور أو كود افتراضي داخل الواجهة.</div>
++              <button type="submit" disabled={!session.configured || loginBusy} style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #B8962C 100%)', color: '#000000', fontWeight: '800', width: '100%', padding: '14px', borderRadius: '12px', border: 'none', cursor: (!session.configured || loginBusy) ? 'not-allowed' : 'pointer', opacity: (!session.configured || loginBusy) ? 0.55 : 1, fontSize: '1.05rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
++                {loginBusy ? <Loader2 className="spin" size={18} /> : <Key size={18} />} دخول آمن
++              </button>
+             </form>
+-
+-            {/* Bypass Button for Mock Ease */}
+-            <button 
+-              type="button" 
+-              onClick={() => {
+-                sessionStorage.setItem('isAdminLoggedIn', 'true');
+-                setIsLoggedIn(true);
+-              }} 
+-              style={{ display: 'block', width: '100%', background: 'transparent', border: 'none', color: '#94A3B8', fontSize: '0.8rem', textDecoration: 'underline', cursor: 'pointer', marginTop: '24px', textAlign: 'center' }}
+-            >
+-              تخطي الدخول التجريبي (الدخول الفوري)
+-            </button>
+           </div>
+         </div>
+       </div>
+@@ -509,6 +496,10 @@ const AdminDashboard = () => {
+             <Bell size={18} />
+             <span>إشعارات الحركة المباشرة</span>
+           </button>
++          <button className={`admin-sidebar-button ${activeTab === 'github' ? 'active' : ''}`} onClick={() => setActiveTab('github')}>
++            <Github size={18} />
++            <span>GitHub Module</span>
++          </button>
+           <button className={`admin-sidebar-button ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
+             <Settings size={18} />
+             <span>إعدادات حسابي وأرباحي</span>
+@@ -1019,6 +1010,13 @@ const AdminDashboard = () => {
+           </div>
+         )}
+ 
++        {/* Tab Content: GITHUB DEVELOPER HUB */}
++        {activeTab === 'github' && (
++          <div className="animate-fadeIn">
++            <GitHubModule session={session} onSessionExpired={loadSession} />
++          </div>
++        )}
++
+         {/* Tab Content: SETTINGS */}
+         {activeTab === 'settings' && (
+           <div className="animate-fadeIn" style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+@@ -1034,40 +1032,21 @@ const AdminDashboard = () => {
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', background: '#F8FAFC', padding: '16px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                   <div style={{ position: 'relative' }}>
+                     <img src={adminAvatar} alt="Admin Avatar" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #FFEA00' }} />
+-                    <button type="button" onClick={() => alert('محاكاة رفع صورة جديدة...')} style={{ position: 'absolute', bottom: '0', right: '0', background: '#FFEA00', border: 'none', borderRadius: '50%', padding: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
++                    <div title="الصورة محفوظة ضمن ملف Superadmin المشفّر" style={{ position: 'absolute', bottom: '0', right: '0', background: '#FFEA00', borderRadius: '50%', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                       <Camera size={14} color="#000000" />
+-                    </button>
++                    </div>
+                   </div>
+-                  <div>
++                  <div style={{ flex: 1 }}>
+                     <h4 style={{ margin: '0 0 4px 0', fontSize: '0.95rem', fontWeight: 'bold', color: '#1E293B' }}>الصورة الشخصية للمشرف</h4>
+-                    <p style={{ margin: 0, fontSize: '0.75rem', color: '#64748B' }}>تظهر في الهيدر واللوحة الرقابية. الحجم الأقصى 2 ميجا.</p>
++                    <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', color: '#64748B' }}>أدخل رابط HTTPS للصورة؛ يتم حفظه داخل ملف Superadmin المشفّر.</p>
++                    <input type="url" value={adminAvatar} onChange={(e) => setAdminAvatar(e.target.value)} placeholder="https://…" style={{ ...adminInputStyle, padding: '8px 10px', fontSize: '0.78rem' }} />
+                   </div>
+                 </div>
+ 
+-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+-                  {/* Edit Username */}
+-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+-                    <label style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 'bold' }}>اسم مستخدم المشرف</label>
+-                    <input 
+-                      type="text" 
+-                      value={adminUser} 
+-                      onChange={(e) => setAdminUser(e.target.value)} 
+-                      style={adminInputStyle} 
+-                      required 
+-                    />
+-                  </div>
+-
+-                  {/* Edit Password */}
+-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+-                    <label style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 'bold' }}>كلمة المرور الجديدة</label>
+-                    <input 
+-                      type="password" 
+-                      value={adminPass} 
+-                      onChange={(e) => setAdminPass(e.target.value)} 
+-                      style={adminInputStyle} 
+-                      required 
+-                    />
+-                  </div>
++                <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
++                  <div style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 'bold' }}>هوية Superadmin المحمية</div>
++                  <div style={{ color: '#0F172A', fontWeight: 900 }}>{session.username || 'Superadmin'}</div>
++                  <div style={{ fontSize: '0.76rem', color: '#64748B', lineHeight: 1.7 }}>اسم المستخدم وكلمة المرور مُداران على السيرفر. تغيير كلمة المرور يتم بتوليد <code>SUPERADMIN_PASSWORD_HASH</code> جديد وإعادة تشغيل الخدمة؛ لا يتم تخزين أي Credential في المتصفح.</div>
+                 </div>
+ 
+                 <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: '15px' }} />
+@@ -1120,8 +1099,8 @@ const AdminDashboard = () => {
+                 </div>
+ 
+                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+-                  <button type="submit" style={{ ...submitButtonStyle, width: 'auto', padding: '12px 30px' }}>
+-                    حفظ التغييرات والحساب البنكي
++                  <button type="submit" disabled={profileBusy} style={{ ...submitButtonStyle, width: 'auto', padding: '12px 30px', opacity: profileBusy ? 0.6 : 1 }}>
++                    {profileBusy ? 'جاري الحفظ المشفّر…' : 'حفظ التغييرات والحساب البنكي'}
+                   </button>
+                 </div>
+ 
+diff --git a/src/pages/GitHubModule.css b/src/pages/GitHubModule.css
+new file mode 100644
+index 0000000..100dd6e
+--- /dev/null
++++ b/src/pages/GitHubModule.css
+@@ -0,0 +1,7 @@
++:root{--sa-bg:#07101c;--sa-panel:#0d1827;--sa-panel2:#111f31;--sa-line:#213148;--sa-text:#eef5ff;--sa-muted:#91a2b8;--sa-gold:#d7b660;--sa-green:#34d399;--sa-red:#fb7185;--sa-blue:#60a5fa}
++*{box-sizing:border-box}.sa-shell,.sa-login-shell,.sa-loading{font-family:Cairo,Inter,system-ui,sans-serif}.sa-shell{min-height:100vh;background:radial-gradient(circle at 85% -10%,#152b46 0,transparent 34%),var(--sa-bg);color:var(--sa-text);display:grid;grid-template-columns:260px 1fr;direction:rtl}.sa-sidebar{background:rgba(7,16,28,.94);border-left:1px solid var(--sa-line);padding:24px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}.sa-brand-row{display:flex;gap:12px;align-items:center;padding:0 8px 22px;border-bottom:1px solid var(--sa-line)}.sa-brand-row div{display:flex;flex-direction:column}.sa-brand-row strong{font-size:18px}.sa-brand-row span{font-size:11px;color:var(--sa-muted);letter-spacing:1px;text-transform:uppercase}.sa-sidebar nav{display:flex;flex-direction:column;gap:7px;padding-top:22px}.sa-sidebar nav button,.sa-sidebar-foot button{border:0;background:transparent;color:var(--sa-muted);display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:11px;cursor:pointer;font:inherit;text-align:right}.sa-sidebar nav button:hover,.sa-sidebar nav button.active{background:#14243a;color:#fff}.sa-sidebar nav button.active{box-shadow:inset -3px 0 var(--sa-gold)}.sa-sidebar-foot{margin-top:auto;border-top:1px solid var(--sa-line);padding-top:16px}.sa-sidebar-foot>span{display:block;color:var(--sa-muted);font-size:12px;padding:0 14px 7px}.sa-sidebar-foot button{width:100%}.sa-main{padding:32px;max-width:1500px;width:100%;margin:auto}.sa-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.sa-topbar h1{margin:4px 0 0;font-size:28px}.sa-kicker{font-size:11px;font-weight:800;letter-spacing:1.4px;color:var(--sa-gold)}.sa-icon-btn{width:42px;height:42px;border-radius:11px;border:1px solid var(--sa-line);background:var(--sa-panel);color:var(--sa-text);display:grid;place-items:center;cursor:pointer}.sa-content-stack{display:flex;flex-direction:column;gap:18px}.sa-grid{display:grid;gap:18px}.sa-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.sa-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.sa-card,.sa-metric{background:linear-gradient(160deg,rgba(17,31,49,.98),rgba(10,20,33,.98));border:1px solid var(--sa-line);border-radius:17px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.16)}.sa-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.sa-card-head h2{margin:3px 0 0;font-size:19px}.sa-card-head>svg{color:var(--sa-gold)}.sa-metric{display:grid;grid-template-columns:46px 1fr;gap:3px 13px;align-items:center}.sa-metric-icon{width:46px;height:46px;border-radius:13px;background:#182a41;display:grid;place-items:center;color:var(--sa-gold);grid-row:1/5}.sa-metric>span{font-size:12px;color:var(--sa-muted)}.sa-metric>strong{font-size:20px}.sa-metric>small{color:var(--sa-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sa-security-grid{display:flex;flex-wrap:wrap;gap:10px}.sa-security-badge,.sa-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;border:1px solid;padding:7px 10px;font-size:12px}.sa-security-badge.ok{color:#8bf3cd;border-color:#255947;background:#0e2a23}.sa-security-badge.bad{color:#ff9faf;border-color:#64313b;background:#2b151a}.sa-pill.success{color:#9bf7d5;background:#103229;border-color:#295f4c}.sa-pill.danger{color:#ffa4b2;background:#32171d;border-color:#68303a}.sa-pill.neutral{color:#b8c5d5;background:#182536;border-color:#34475f}.sa-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.sa-stats.compact{grid-template-columns:repeat(4,1fr)}.sa-stats>div,.sa-review-summary>div{background:#0a1523;border:1px solid #1d2c40;border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:5px;min-width:0}.sa-stats span,.sa-review-summary span{font-size:11px;color:var(--sa-muted)}.sa-stats strong,.sa-review-summary strong{font-size:13px;overflow:hidden;text-overflow:ellipsis}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.sa-account{display:flex;align-items:center;gap:12px}.sa-account>div:last-child{display:flex;flex-direction:column}.sa-account span{color:var(--sa-muted);font-size:12px}.sa-avatar{width:44px;height:44px;border-radius:50%;overflow:hidden;background:#182a41;display:grid;place-items:center}.sa-avatar img{width:100%;height:100%;object-fit:cover}.sa-connection{display:flex;align-items:center;justify-content:space-between;gap:15px}.sa-token-form{display:flex;flex-direction:column;gap:13px}.sa-token-form p{margin:0;color:var(--sa-muted);font-size:13px;line-height:1.7}.sa-shell label,.sa-login-card label{display:flex;flex-direction:column;gap:7px;font-size:12px;color:#b7c5d6;font-weight:700}.sa-shell input,.sa-shell select,.sa-login-card input{width:100%;border:1px solid #293b53;background:#091421;color:#eef5ff;border-radius:10px;padding:11px 12px;font:inherit;outline:none}.sa-shell input:focus,.sa-shell select:focus,.sa-login-card input:focus{border-color:#6783a9;box-shadow:0 0 0 3px rgba(96,165,250,.11)}.sa-primary,.sa-secondary,.sa-danger-outline{border-radius:10px;padding:10px 14px;font:inherit;font-weight:800;cursor:pointer;display:inline-flex;gap:8px;align-items:center;justify-content:center}.sa-primary{border:1px solid #e4c878;background:linear-gradient(135deg,#ddbd62,#b79339);color:#111827}.sa-primary:disabled,.sa-secondary:disabled,.sa-danger-outline:disabled,.sa-actions button:disabled,.sa-mode:disabled{opacity:.45;cursor:not-allowed}.sa-secondary{border:1px solid var(--sa-line);background:#142238;color:#dce8f7}.sa-danger-outline{border:1px solid #69303a;background:#2b151a;color:#ff9aaa}.sa-form-row{display:grid;grid-template-columns:1.4fr 1fr auto;gap:12px;align-items:end}.sa-select-wrap{position:relative}.sa-select-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--sa-muted)}.sa-select-wrap select{appearance:none;padding-left:35px}.sa-save{height:43px}.sa-mode-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.sa-mode{border:1px solid var(--sa-line);background:#0b1726;color:var(--sa-text);padding:13px;border-radius:11px;text-align:right;cursor:pointer;display:flex;flex-direction:column;gap:3px;font:inherit}.sa-mode span{color:var(--sa-muted);font-size:11px}.sa-mode.active{border-color:#b99a4a;background:#29240f;box-shadow:inset 0 0 0 1px rgba(215,182,96,.2)}.sa-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.sa-actions button{border:1px solid var(--sa-line);background:#0a1523;color:var(--sa-text);padding:14px;border-radius:12px;display:flex;align-items:center;gap:10px;text-align:right;cursor:pointer;font:inherit}.sa-actions button>svg:first-child{color:var(--sa-gold);flex:0 0 auto}.sa-actions button div{display:flex;flex-direction:column;gap:3px}.sa-actions button span{font-size:11px;color:var(--sa-muted);line-height:1.5}.sa-alert,.sa-notice{display:flex;align-items:center;gap:8px;padding:11px 13px;border-radius:10px;font-size:12px;line-height:1.5}.sa-alert{margin-top:13px}.sa-alert.error{background:#2d171c;border:1px solid #65313a;color:#ffabb8}.sa-alert.info{background:#102539;border:1px solid #264961;color:#a9d3f7}.sa-notice{margin-bottom:18px;justify-content:space-between}.sa-notice>span{display:flex;align-items:center;gap:8px}.sa-notice button{border:0;background:transparent;color:inherit;font-size:22px;cursor:pointer}.sa-notice.success{background:#0f2d25;border:1px solid #285b49;color:#9cf0d1}.sa-notice.error{background:#30181e;border:1px solid #6b303b;color:#ffacb9}.sa-review-card{border-color:#4a4734}.sa-review-summary{display:grid;grid-template-columns:1.4fr 1fr repeat(3,.8fr);gap:8px}.sa-checks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.sa-checks>div{display:flex;align-items:center;gap:7px;background:#0a1523;border:1px solid var(--sa-line);border-radius:10px;padding:10px;font-size:12px}.sa-checks svg{width:16px}.sa-checks .ok svg{color:var(--sa-green)}.sa-checks .bad svg{color:var(--sa-red)}.sa-checks b{margin-right:auto}.sa-blockers,.sa-files{margin-top:14px;border:1px solid var(--sa-line);border-radius:11px;overflow:hidden}.sa-blockers h3,.sa-files h3{font-size:13px;margin:0;padding:10px 12px;background:#111d2c;display:flex;gap:7px;align-items:center}.sa-blockers>div,.sa-files>div{display:grid;grid-template-columns:minmax(90px,.7fr) 2fr;gap:10px;padding:9px 12px;border-top:1px solid #19293d;font-size:11px}.sa-blockers code{color:#ff9cab}.sa-files code{color:#d9bd68}.sa-blockers span,.sa-files span{color:#b4c2d3;word-break:break-all}.sa-commit{margin-top:14px}.sa-review-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:16px}.sa-audit-list{display:flex;flex-direction:column}.sa-audit-row{display:grid;grid-template-columns:12px 1.5fr auto 180px;gap:12px;align-items:center;padding:12px 4px;border-bottom:1px solid #1c2b40}.sa-audit-dot{width:8px;height:8px;border-radius:50%;background:#718096}.sa-audit-dot.success{background:var(--sa-green)}.sa-audit-dot.failed,.sa-audit-dot.blocked{background:var(--sa-red)}.sa-audit-row>div{display:flex;flex-direction:column}.sa-audit-row>div span,.sa-audit-row time{font-size:11px;color:var(--sa-muted)}.sa-empty{color:var(--sa-muted);padding:30px;text-align:center}.sa-login-shell{min-height:100vh;background:var(--sa-bg);color:var(--sa-text);display:grid;grid-template-columns:1.05fr .95fr}.sa-login-brand{padding:7vw;display:flex;flex-direction:column;justify-content:center;gap:25px;background:radial-gradient(circle at 40% 40%,#1c3654 0,transparent 44%),#091321;border-left:1px solid var(--sa-line)}.sa-login-logo{width:max-content}.sa-login-brand h1{font-size:52px;margin:4px 0}.sa-login-brand p{color:var(--sa-muted);font-size:17px;max-width:520px;line-height:1.8}.sa-login-security{display:flex;align-items:center;gap:8px;color:#9adcc4;font-size:12px}.sa-login-card-wrap{display:grid;place-items:center;padding:30px}.sa-login-card{width:min(430px,100%);background:#0d1928;border:1px solid var(--sa-line);border-radius:19px;padding:30px;box-shadow:0 30px 80px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:15px}.sa-login-card h2{margin:0;font-size:25px}.sa-login-card>p{margin:-7px 0 3px;color:var(--sa-muted);font-size:13px}.sa-icon-box{width:54px;height:54px;border-radius:14px;background:#1c2b40;display:grid;place-items:center;color:var(--sa-gold)}.sa-loading{min-height:100vh;background:var(--sa-bg);color:var(--sa-muted);display:grid;place-items:center;align-content:center;gap:12px}.spin{animation:sa-spin .85s linear infinite}@keyframes sa-spin{to{transform:rotate(360deg)}}
++@media(max-width:1100px){.sa-shell{grid-template-columns:78px 1fr}.sa-sidebar{padding:20px 9px}.sa-brand-row>div,.sa-sidebar nav button{font-size:0}.sa-brand-row{justify-content:center;padding:0 0 20px}.sa-sidebar nav button{justify-content:center}.sa-sidebar nav button svg{width:21px;height:21px}.sa-sidebar-foot>span{display:none}.sa-sidebar-foot button{font-size:0;justify-content:center}.sa-grid.three,.sa-actions{grid-template-columns:repeat(2,1fr)}.sa-review-summary{grid-template-columns:repeat(3,1fr)}}
++@media(max-width:760px){.sa-shell{display:block}.sa-sidebar{position:relative;height:auto;display:flex;flex-direction:row;align-items:center;border-left:0;border-bottom:1px solid var(--sa-line);padding:10px}.sa-brand-row{border:0;padding:0}.sa-brand-row img{max-width:42px}.sa-sidebar nav{padding:0;margin-right:auto;flex-direction:row}.sa-sidebar-foot{margin:0;padding:0;border:0}.sa-sidebar-foot>span{display:none}.sa-main{padding:18px 12px}.sa-grid.two,.sa-grid.three,.sa-actions,.sa-mode-row,.sa-form-row,.sa-stats,.sa-stats.compact,.sa-checks,.sa-review-summary{grid-template-columns:1fr}.sa-login-shell{grid-template-columns:1fr}.sa-login-brand{display:none}.sa-audit-row{grid-template-columns:10px 1fr auto}.sa-audit-row time{display:none}.sa-connection{align-items:flex-start;flex-direction:column}.sa-topbar h1{font-size:22px}}
++.sa-shell-embedded{--sa-bg:#07111f;--sa-panel:#0d1928;--sa-panel2:#111f31;--sa-line:#22344b;--sa-text:#edf4ff;--sa-muted:#8ea0b5;--sa-gold:#d8b955;--sa-green:#42d7a1;--sa-red:#f16a7b;color:var(--sa-text);background:linear-gradient(145deg,#081421,#0b1a2a);padding:22px;border-radius:20px;border:1px solid #20344e;box-shadow:0 20px 55px rgba(15,23,42,.16)}
++.sa-shell-embedded .sa-module-heading{margin-bottom:0}.sa-shell-embedded .sa-module-heading p{margin:6px 0 0;color:var(--sa-muted);font-size:12px}.sa-shell-embedded .sa-card,.sa-shell-embedded .sa-metric{box-shadow:none}
++.sa-shell-embedded label{display:flex;flex-direction:column;gap:7px;font-size:12px;color:#b7c5d6;font-weight:700}.sa-shell-embedded input,.sa-shell-embedded select{width:100%;border:1px solid #293b53;background:#091421;color:#eef5ff;border-radius:10px;padding:11px 12px;font:inherit;outline:none}.sa-shell-embedded input:focus,.sa-shell-embedded select:focus{border-color:#6783a9;box-shadow:0 0 0 3px rgba(96,165,250,.11)}
+diff --git a/src/pages/GitHubModule.jsx b/src/pages/GitHubModule.jsx
+new file mode 100644
+index 0000000..958b983
+--- /dev/null
++++ b/src/pages/GitHubModule.jsx
+@@ -0,0 +1,285 @@
++import React, { useCallback, useEffect, useMemo, useState } from 'react';
++import {
++  AlertTriangle, ArrowLeftRight, CheckCircle2, ChevronDown, CircleOff, Code2,
++  FileCode2, GitBranch, Github, KeyRound, Loader2, LockKeyhole, RefreshCw,
++  Server, ShieldCheck, ShieldX, Trash2, XCircle,
++} from 'lucide-react';
++import './GitHubModule.css';
++
++async function api(path, options = {}) {
++  const response = await fetch(path, {
++    credentials: 'same-origin',
++    ...options,
++    headers: {
++      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
++      ...(options.headers || {}),
++    },
++  });
++  if (response.status === 204) return null;
++  let data = null;
++  try { data = await response.json(); } catch {}
++  if (!response.ok) {
++    const error = new Error(data?.error || `Request failed (${response.status})`);
++    error.status = response.status;
++    error.code = data?.code;
++    throw error;
++  }
++  return data;
++}
++
++function SecurityBadge({ ok, children }) {
++  return <span className={`sa-security-badge ${ok ? 'ok' : 'bad'}`}>{ok ? <ShieldCheck size={14} /> : <ShieldX size={14} />}{children}</span>;
++}
++
++function StatusPill({ tone = 'neutral', children }) {
++  return <span className={`sa-pill ${tone}`}>{children}</span>;
++}
++
++const actions = [
++  { id: 'pull', label: 'Pull', description: 'جلب آخر تحديثات الريموت بـ Fast-Forward فقط', icon: GitBranch },
++  { id: 'push', label: 'Push', description: 'مراجعة التغييرات ثم Commit + Push متحكم فيه', icon: Github },
++  { id: 'sync', label: 'Sync', description: 'تحديد الاتجاه الآمن تلقائياً حسب حالة Local/Remote', icon: ArrowLeftRight },
++  { id: 'cleanup', label: 'Safe Cleanup', description: 'Prune للـremote refs + Git GC بدون حذف ملفات العمل', icon: Trash2 },
++];
++
++export default function GitHubModule({ session, onSessionExpired }) {
++  const [status, setStatus] = useState(null);
++  const [busy, setBusy] = useState('');
++  const [notice, setNotice] = useState(null);
++  const [token, setToken] = useState('');
++  const [repositories, setRepositories] = useState([]);
++  const [branches, setBranches] = useState([]);
++  const [repo, setRepo] = useState('');
++  const [branch, setBranch] = useState('');
++  const [review, setReview] = useState(null);
++  const [commitMessage, setCommitMessage] = useState('');
++  const [auditEvents, setAuditEvents] = useState([]);
++  const csrfHeaders = useMemo(() => session?.csrfToken ? { 'X-CSRF-Token': session.csrfToken } : {}, [session?.csrfToken]);
++
++  const showNotice = (type, message) => setNotice({ type, message });
++  const handleError = useCallback(async (error) => {
++    if (error?.status === 401) await onSessionExpired?.();
++    else showNotice('error', error?.message || 'تعذر تنفيذ العملية.');
++  }, [onSessionExpired]);
++
++  const loadStatus = useCallback(async () => {
++    setBusy((current) => current || 'status');
++    try {
++      const data = await api('/api/developer-hub/status');
++      setStatus(data);
++      if (data.selection) {
++        setRepo(data.selection.repo || '');
++        setBranch(data.selection.branch || '');
++      }
++      return data;
++    } catch (error) {
++      await handleError(error);
++      return null;
++    } finally {
++      setBusy((current) => current === 'status' ? '' : current);
++    }
++  }, [handleError]);
++
++  const loadAudit = useCallback(async () => {
++    try {
++      const data = await api('/api/superadmin/audit?limit=80');
++      setAuditEvents((data.events || []).filter((event) => String(event.action || '').startsWith('GITHUB_')));
++    } catch (error) { await handleError(error); }
++  }, [handleError]);
++
++  useEffect(() => { loadStatus(); loadAudit(); }, [loadStatus, loadAudit]);
++
++  const loadRepositories = useCallback(async () => {
++    setBusy('repositories');
++    try {
++      const data = await api('/api/developer-hub/github-repositories');
++      setRepositories(data.repositories || []);
++    } catch (error) { await handleError(error); }
++    finally { setBusy(''); }
++  }, [handleError]);
++
++  const loadBranches = useCallback(async (repoName) => {
++    if (!repoName) { setBranches([]); return; }
++    setBusy('branches');
++    try {
++      const data = await api(`/api/developer-hub/github-branches?repo=${encodeURIComponent(repoName)}`);
++      setBranches(data.branches || []);
++    } catch (error) { await handleError(error); }
++    finally { setBusy(''); }
++  }, [handleError]);
++
++  useEffect(() => {
++    if (status?.github?.connected && !repositories.length) loadRepositories();
++  }, [status?.github?.connected, repositories.length, loadRepositories]);
++
++  useEffect(() => {
++    if (repo && status?.github?.connected) loadBranches(repo);
++  }, [repo, status?.github?.connected, loadBranches]);
++
++  const connectGithub = async (event) => {
++    event.preventDefault();
++    setBusy('connect');
++    try {
++      await api('/api/developer-hub/github-auth', { method: 'POST', headers: csrfHeaders, body: JSON.stringify({ token }) });
++      setToken(''); setRepositories([]); setReview(null);
++      await loadStatus(); await loadAudit();
++      showNotice('success', 'تم ربط GitHub وحفظ التوكن مشفراً على السيرفر.');
++    } catch (error) { await handleError(error); }
++    finally { setBusy(''); }
++  };
++
++  const disconnectGithub = async () => {
++    if (!window.confirm('فصل GitHub من Superadmin؟')) return;
++    setBusy('disconnect');
++    try {
++      await api('/api/developer-hub/github-connection', { method: 'DELETE', headers: csrfHeaders });
++      setRepositories([]); setBranches([]); setRepo(''); setBranch(''); setReview(null);
++      await loadStatus(); await loadAudit();
++      showNotice('success', 'تم فصل GitHub.');
++    } catch (error) { await handleError(error); }
++    finally { setBusy(''); }
++  };
++
++  const saveSelection = async () => {
++    setBusy('selection');
++    try {
++      await api('/api/developer-hub/github-selection', { method: 'POST', headers: csrfHeaders, body: JSON.stringify({ repo, branch }) });
++      setReview(null); await loadStatus(); await loadAudit();
++      showNotice('success', 'تم ربط الـrepository والـbranch بالـDeveloper Hub.');
++    } catch (error) { await handleError(error); }
++    finally { setBusy(''); }
++  };
++
++  const setPushMode = async (mode) => {
++    setBusy('pushmode');
++    try {
++      await api('/api/developer-hub/github-push-mode', { method: 'POST', headers: csrfHeaders, body: JSON.stringify({ mode }) });
++      setReview(null); await loadStatus(); await loadAudit();
++    } catch (error) { await handleError(error); }
++    finally { setBusy(''); }
++  };
++
++  const previewAction = async (action) => {
++    setBusy(`preview-${action}`); setReview(null); setCommitMessage('');
++    try {
++      const data = await api('/api/developer-hub/github-sync-preview', { method: 'POST', headers: csrfHeaders, body: JSON.stringify({ action }) });
++      setReview(data); await loadAudit();
++      showNotice(data.blockers?.length ? 'error' : 'success', data.blockers?.length ? `العملية متوقفة بسبب ${data.blockers.length} blocker.` : `Review ${action} اكتمل. راجع النتيجة قبل التنفيذ.`);
++    } catch (error) { await handleError(error); }
++    finally { setBusy(''); }
++  };
++
++  const executeReview = async () => {
++    if (!review?.authorization) return;
++    setBusy('execute');
++    try {
++      const data = await api('/api/developer-hub/github-sync-execute', {
++        method: 'POST', headers: csrfHeaders,
++        body: JSON.stringify({
++          action: review.action,
++          authorization: review.authorization,
++          executionKind: status?.pushMode === 'auto' ? 'auto' : 'review_approved',
++          commitMessage,
++        }),
++      });
++      showNotice('success', `تم التنفيذ بنجاح: ${data.operation?.expectedAction || review.expectedAction}`);
++      setReview(null); setCommitMessage(''); await loadStatus(); await loadAudit();
++    } catch (error) { await handleError(error); setReview(null); await loadStatus(); }
++    finally { setBusy(''); }
++  };
++
++  const local = status?.local || {};
++  const security = status?.security || {};
++  return <div className="sa-shell-embedded" dir="rtl">
++    <div className="sa-content-stack">
++      <div className="sa-card-head sa-module-heading">
++        <div><span className="sa-kicker">67 DEVELOPER HUB</span><h2>GitHub Module</h2><p>نفس نمط Review-before-execute مع طبقة أمان Server-side.</p></div>
++        <button className="sa-icon-btn" onClick={() => { loadStatus(); loadAudit(); }} title="Refresh"><RefreshCw size={18} className={busy === 'status' ? 'spin' : ''} /></button>
++      </div>
++
++      {notice && <div className={`sa-notice ${notice.type}`}><span>{notice.type === 'success' ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}{notice.message}</span><button onClick={() => setNotice(null)}>×</button></div>}
++
++      <div className="sa-grid three">
++        <article className="sa-metric"><div className="sa-metric-icon"><Github /></div><span>GitHub</span><strong>{status?.github?.connected ? 'Connected' : 'Disconnected'}</strong><small>{status?.github?.account?.login || 'No identity configured'}</small></article>
++        <article className="sa-metric"><div className="sa-metric-icon"><GitBranch /></div><span>Repository Binding</span><strong>{local.available ? 'Verified' : 'Not Ready'}</strong><small>{status?.selection ? `${status.selection.repo} · ${status.selection.branch}` : 'Select repository and branch'}</small></article>
++        <article className="sa-metric"><div className="sa-metric-icon"><ShieldCheck /></div><span>Controlled Push</span><strong>{status?.pushMode || 'review'}</strong><small>Signed review + checks required</small></article>
++      </div>
++
++      <article className="sa-card">
++        <div className="sa-card-head"><div><span className="sa-kicker">SECURITY BASELINE</span><h2>Production Guardrails</h2></div><LockKeyhole size={24} /></div>
++        <div className="sa-security-grid">
++          <SecurityBadge ok={security.serverSideAuth}>Server-side Superadmin auth</SecurityBadge>
++          <SecurityBadge ok={security.csrfProtection}>CSRF validation</SecurityBadge>
++          <SecurityBadge ok={security.encryptedTokenAtRest || status?.github?.tokenSource === 'environment'}>GitHub token protected</SecurityBadge>
++          <SecurityBadge ok={security.reviewBeforeExecute}>Review before execute</SecurityBadge>
++          <SecurityBadge ok={security.pushChecksRequired}>Tests + build gate</SecurityBadge>
++          <SecurityBadge ok={security.blockedSecretPaths}>Secret/runtime path blocks</SecurityBadge>
++          <SecurityBadge ok={security.gitHooksDisabled}>Git hooks disabled</SecurityBadge>
++          <SecurityBadge ok={security.outgoingHistoryScanned}>Outgoing history scan</SecurityBadge>
++          <SecurityBadge ok={security.auditLogging}>Security audit trail</SecurityBadge>
++        </div>
++      </article>
++
++      <div className="sa-grid two">
++        <article className="sa-card">
++          <div className="sa-card-head"><div><span className="sa-kicker">CONNECTION</span><h2>GitHub Identity</h2></div><Github size={24} /></div>
++          {status?.github?.connected ? <div className="sa-connection">
++            <div className="sa-account"><div className="sa-avatar">{status.github.account?.avatarUrl ? <img src={status.github.account.avatarUrl} alt="" /> : <Github />}</div><div><strong>{status.github.account?.login || 'Connected identity'}</strong><span>Token: {status.github.tokenSource === 'environment' ? 'Server Environment' : 'AES-256-GCM Encrypted Store'}</span></div></div>
++            <button className="sa-danger-outline" onClick={disconnectGithub} disabled={busy === 'disconnect' || status.github.tokenSource === 'environment'}><Trash2 size={16} />فصل الاتصال</button>
++          </div> : <form onSubmit={connectGithub} className="sa-token-form">
++            <p>استخدم Fine-grained Personal Access Token مقيّد على Repository 67 والصلاحيات المطلوبة فقط.</p>
++            <label>GitHub Token<input type="password" autoComplete="new-password" placeholder="github_pat_…" value={token} onChange={(e) => setToken(e.target.value)} /></label>
++            <button className="sa-primary" disabled={busy === 'connect' || !token}>{busy === 'connect' ? <Loader2 className="spin" size={18} /> : <KeyRound size={18} />}Connect securely</button>
++          </form>}
++        </article>
++
++        <article className="sa-card">
++          <div className="sa-card-head"><div><span className="sa-kicker">LOCAL BINDING</span><h2>Deployment Repository</h2></div><Server size={24} /></div>
++          <div className="sa-stats compact"><div><span>Binding</span><strong>{local.available ? 'Verified' : status?.selection ? 'Blocked' : 'Not selected'}</strong></div><div><span>Branch</span><strong>{local.branch || status?.selection?.branch || '—'}</strong></div><div><span>Ahead</span><strong>{local.ahead ?? '—'}</strong></div><div><span>Behind</span><strong>{local.behind ?? '—'}</strong></div></div>
++          {local.error && <div className="sa-alert error"><ShieldX size={17} /><span>{local.error}</span></div>}
++        </article>
++      </div>
++
++      {status?.github?.connected && <article className="sa-card">
++        <div className="sa-card-head"><div><span className="sa-kicker">REPOSITORY</span><h2>Repository & Branch</h2></div><GitBranch size={24} /></div>
++        <div className="sa-form-row">
++          <label>Repository<div className="sa-select-wrap"><select value={repo} onChange={(e) => { setRepo(e.target.value); setBranch(''); setReview(null); }}><option value="">اختر Repository</option>{repositories.map((item) => <option key={item.id || item.fullName} value={item.fullName}>{item.fullName}{item.private ? ' · private' : ''}</option>)}</select><ChevronDown size={16} /></div></label>
++          <label>Branch<div className="sa-select-wrap"><select value={branch} onChange={(e) => { setBranch(e.target.value); setReview(null); }} disabled={!repo || busy === 'branches'}><option value="">اختر Branch</option>{branches.map((item) => <option key={item.name} value={item.name}>{item.name}{item.protected ? ' · protected' : ''}</option>)}</select><ChevronDown size={16} /></div></label>
++          <button className="sa-primary sa-save" onClick={saveSelection} disabled={!repo || !branch || busy === 'selection'}>{busy === 'selection' ? <Loader2 className="spin" size={18} /> : <CheckCircle2 size={18} />}حفظ وربط</button>
++        </div>
++      </article>}
++
++      {status?.selection && <article className="sa-card">
++        <div className="sa-card-head"><div><span className="sa-kicker">CONTROLLED PUSH</span><h2>Push Mode</h2></div><ShieldCheck size={24} /></div>
++        <div className="sa-mode-row">{[['off','Off','لا يوجد Push'], ['review','Review','Preview + موافقة صريحة'], ['auto','Auto','تنفيذ فقط بتصريح متحقق']].map(([id,title,desc]) => <button key={id} className={`sa-mode ${status.pushMode === id ? 'active' : ''}`} onClick={() => setPushMode(id)} disabled={busy === 'pushmode'}><strong>{title}</strong><span>{desc}</span></button>)}</div>
++        <div className="sa-alert info"><ShieldCheck size={17} /><span>حتى Auto لا يتجاوز فحوص الأمان: أي Push يحتاج Tests + Production Build + fingerprint صالح قبل التنفيذ.</span></div>
++      </article>}
++
++      {status?.selection && <article className="sa-card">
++        <div className="sa-card-head"><div><span className="sa-kicker">OPERATIONS</span><h2>Review Before Execute</h2></div><Code2 size={24} /></div>
++        <div className="sa-actions">{actions.map(({ id, label, description, icon: Icon }) => <button key={id} onClick={() => previewAction(id)} disabled={Boolean(busy) || !local.available}><Icon size={20} /><div><strong>{label}</strong><span>{description}</span></div>{busy === `preview-${id}` && <Loader2 className="spin" size={18} />}</button>)}</div>
++        {!local.available && <div className="sa-alert error"><CircleOff size={17} /><span>التنفيذ مقفول حتى يطابق الـRepository المختار الـorigin والـbranch الموجودين على السيرفر.</span></div>}
++      </article>}
++
++      {review && <ReviewPanel review={review} commitMessage={commitMessage} setCommitMessage={setCommitMessage} busy={busy} onExecute={executeReview} onCancel={() => setReview(null)} />}
++
++      {local.available && <article className="sa-card"><div className="sa-card-head"><div><span className="sa-kicker">LIVE GIT STATE</span><h2>Current Checkout</h2></div><FileCode2 size={24} /></div><div className="sa-stats"><div><span>HEAD</span><strong className="mono">{local.head?.slice(0, 12)}</strong></div><div><span>Files changed</span><strong>{local.fileCount}</strong></div><div><span>Ahead</span><strong>{local.ahead}</strong></div><div><span>Behind</span><strong>{local.behind}</strong></div><div><span>Working tree</span><strong>{local.dirty ? 'Dirty' : 'Clean'}</strong></div></div></article>}
++
++      <article className="sa-card"><div className="sa-card-head"><div><span className="sa-kicker">GITHUB SECURITY EVENTS</span><h2>Audit Log</h2></div><button className="sa-icon-btn" onClick={loadAudit}><RefreshCw size={17} /></button></div><div className="sa-audit-list">{!auditEvents.length ? <div className="sa-empty">لا توجد أحداث GitHub مسجلة حتى الآن.</div> : auditEvents.map((event, index) => <div className="sa-audit-row" key={`${event.at}-${index}`}><span className={`sa-audit-dot ${event.outcome}`} /><div><strong>{event.action}</strong><span>{event.actor} · {event.meta?.repo || event.meta?.account || ''}</span></div><StatusPill tone={event.outcome === 'success' ? 'success' : event.outcome === 'failed' || event.outcome === 'blocked' ? 'danger' : 'neutral'}>{event.outcome}</StatusPill><time>{new Date(event.at).toLocaleString('ar-EG')}</time></div>)}</div></article>
++    </div>
++  </div>;
++}
++
++function ReviewPanel({ review, commitMessage, setCommitMessage, busy, onExecute, onCancel }) {
++  const canExecute = Boolean(review.authorization) && !review.blockers?.length;
++  const needsCommit = review.expectedAction === 'commit_and_push';
++  return <article className="sa-card sa-review-card">
++    <div className="sa-card-head"><div><span className="sa-kicker">SIGNED REVIEW</span><h2>{review.action.toUpperCase()} · {review.expectedAction}</h2></div><StatusPill tone={canExecute ? 'success' : 'danger'}>{canExecute ? 'READY' : 'BLOCKED'}</StatusPill></div>
++    <div className="sa-review-summary"><div><span>Repo</span><strong>{review.repo}</strong></div><div><span>Branch</span><strong>{review.branch}</strong></div><div><span>Ahead / Behind</span><strong>{review.ahead} / {review.behind}</strong></div><div><span>Files</span><strong>{review.files?.length || 0}</strong></div><div><span>Authorization</span><strong>{review.authorization ? 'Signed · 10 min max' : 'Not issued'}</strong></div></div>
++    <div className="sa-checks"><div className={review.checks.verify === 'passed' ? 'ok' : 'bad'}>{review.checks.verify === 'passed' ? <CheckCircle2 /> : <XCircle />}Verify <b>{review.checks.verify}</b></div><div className={review.checks.tests === 'passed' || review.checks.tests === 'skipped' ? 'ok' : 'bad'}>{review.checks.tests === 'failed' ? <XCircle /> : <CheckCircle2 />}Tests <b>{review.checks.tests}</b></div><div className={review.checks.build === 'passed' || review.checks.build === 'skipped' ? 'ok' : 'bad'}>{review.checks.build === 'failed' ? <XCircle /> : <CheckCircle2 />}Build <b>{review.checks.build}</b></div></div>
++    {!!review.blockers?.length && <div className="sa-blockers"><h3><ShieldX size={18} />Blockers</h3>{review.blockers.map((item, i) => <div key={`${item.path}-${i}`}><code>{item.path}</code><span>{item.reason}</span></div>)}</div>}
++    {!!review.files?.length && <div className="sa-files"><h3>Approved file set</h3>{review.files.slice(0, 100).map((file, i) => <div key={`${file.path}-${i}`}><code>{file.status}</code><span>{file.path}</span></div>)}{review.files.length > 100 && <small>+ {review.files.length - 100} files</small>}</div>}
++    {needsCommit && canExecute && <label className="sa-commit">Commit message (اختياري)<input value={commitMessage} onChange={(e) => setCommitMessage(e.target.value)} maxLength={120} placeholder="Verified 67 update…" /></label>}
++    <div className="sa-review-actions"><button className="sa-secondary" onClick={onCancel}>إلغاء</button><button className="sa-primary" onClick={onExecute} disabled={!canExecute || busy === 'execute'}>{busy === 'execute' ? <Loader2 className="spin" size={18} /> : <ShieldCheck size={18} />}Approve & Execute</button></div>
++  </article>;
++}
+diff --git a/vite.config.js b/vite.config.js
+index 2a08aaa..9ae546e 100644
+--- a/vite.config.js
++++ b/vite.config.js
+@@ -6,6 +6,9 @@ export default defineConfig({
+   server: {
+     port: 3000,
+     host: true,
+-    allowedHosts: true
++    allowedHosts: true,
++    proxy: {
++      '/api': 'http://127.0.0.1:4173'
++    }
+   }
+ })
