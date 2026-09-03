@@ -1,0 +1,188 @@
+diff --git a/QARIX/src/components/Navbar.jsx b/QARIX/src/components/Navbar.jsx
+--- a/QARIX/src/components/Navbar.jsx
++++ b/QARIX/src/components/Navbar.jsx
+@@ -1,5 +1,5 @@
+ import React, { useState } from 'react';
+-import { Bell, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
++import { Bell, Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
+ import { Link } from 'react-router-dom';
+ 
+ const Navbar = () => {
+@@ -9,34 +9,32 @@
+     <header className="site-header">
+       <div className="container site-header__inner">
+         <Link to="/" className="brand" aria-label="67 الرئيسية">
+-          <span className="brand__logo-wrap">
+-            <img src="/logo.jpg" alt="67" className="brand__logo" />
+-          </span>
+-          <span className="brand__name">67</span>
++          <img src="/logo.jpg" alt="67" className="brand__logo" />
+         </Link>
+ 
+         <nav className={`main-nav ${menuOpen ? 'main-nav--open' : ''}`} aria-label="التنقل الرئيسي">
+           <Link to="/" onClick={() => setMenuOpen(false)}>الرئيسية</Link>
++          <Link to="/request" onClick={() => setMenuOpen(false)}>قطع الغيار</Link>
++          <Link to="/request" onClick={() => setMenuOpen(false)}>التشاليح</Link>
++          <Link to="/request" onClick={() => setMenuOpen(false)}>ورش وإصلاح</Link>
++          <Link to="/request" onClick={() => setMenuOpen(false)}>خدمات الطريق</Link>
+           <Link to="/offers" onClick={() => setMenuOpen(false)}>العروض</Link>
+-          <Link to="/about" onClick={() => setMenuOpen(false)}>عن 67</Link>
+-          <Link to="/request" onClick={() => setMenuOpen(false)}>اطلب قطعة</Link>
+         </nav>
+ 
++        <div className="header-search" role="search">
++          <Search size={18} />
++          <input type="search" placeholder="ابحث عن قطعة غيار أو رقم قطعة..." aria-label="ابحث عن قطعة غيار" />
++        </div>
++
+         <div className="header-actions">
+-          <button className="icon-button icon-button--search" aria-label="بحث">
+-            <Search size={20} />
+-          </button>
++          <button className="icon-button" aria-label="المفضلة"><Heart size={20} /></button>
+           <button className="icon-button" aria-label="الإشعارات">
+             <Bell size={20} />
+             <span className="notification-dot" />
+           </button>
+-          <button className="icon-button" aria-label="السلة">
+-            <ShoppingCart size={20} />
+-          </button>
+-          <button className="icon-button icon-button--user" aria-label="حسابي">
+-            <User size={20} />
+-          </button>
+-          <Link to="/request" className="header-cta">اطلب قطعة</Link>
++          <button className="icon-button" aria-label="السلة"><ShoppingCart size={20} /></button>
++          <button className="icon-button icon-button--user" aria-label="حسابي"><User size={20} /></button>
++          <Link to="/request" className="header-cta">أضف سيارتك</Link>
+ 
+           <button
+             className="mobile-menu-button"
+diff --git a/QARIX/src/components/PromoBanner.jsx b/QARIX/src/components/PromoBanner.jsx
+--- a/QARIX/src/components/PromoBanner.jsx
++++ b/QARIX/src/components/PromoBanner.jsx
+@@ -7,12 +7,12 @@
+     <div className="promo-strip">
+       <div className="container promo-strip__inner">
+         <span className="promo-strip__message">
+-          <Sparkles size={16} />
+-          عروض وخصومات مختارة على قطع الغيار
++          <Sparkles size={15} />
++          خصومات تصل إلى 50% على قطع غيار مختارة
+         </span>
+         <Link to="/offers" className="promo-strip__link">
+           استعرض العروض
+-          <ArrowLeft size={15} />
++          <ArrowLeft size={14} />
+         </Link>
+       </div>
+     </div>
+diff --git a/QARIX/src/pages/Home.jsx b/QARIX/src/pages/Home.jsx
+--- a/QARIX/src/pages/Home.jsx
++++ b/QARIX/src/pages/Home.jsx
+@@ -1,12 +1,11 @@
+-import React, { useMemo, useRef, useState } from 'react';
++import React, { useMemo, useState } from 'react';
+ import { Link, useNavigate } from 'react-router-dom';
+ import { brands, generateYears, getModelsForBrand } from '../data/cars';
+ import {
+   ArrowLeft,
+   Car,
+-  CheckCircle,
+   ChevronLeft,
+-  Clock,
++  Clock3,
+   Headphones,
+   PackageSearch,
+   Search,
+@@ -18,73 +17,40 @@
+ } from 'lucide-react';
+ 
+ const services = [
+-  {
+-    icon: PackageSearch,
+-    title: 'قطع الغيار',
+-    text: 'ابدأ بسيارتك ووصل للقطعة المناسبة أسرع.',
+-  },
+-  {
+-    icon: Car,
+-    title: 'التشاليح',
+-    text: 'خيارات متعددة للقطع المستعملة والمتوفرة.',
+-  },
+-  {
+-    icon: Wrench,
+-    title: 'ورش وإصلاح',
+-    text: 'خدمات مساندة لسيارتك في مكان واحد.',
+-  },
+-  {
+-    icon: Truck,
+-    title: 'خدمات الطريق',
+-    text: 'وصول أسرع للخدمات وقت الحاجة.',
+-  },
++  { icon: PackageSearch, title: 'قطع الغيار', text: 'قطع أصلية وتجارية لمختلف الماركات' },
++  { icon: Car, title: 'التشاليح', text: 'قطع مستعملة بحالة ممتازة وأسعار أفضل' },
++  { icon: Wrench, title: 'ورش وإصلاح', text: 'ورش وخدمات صيانة موثوقة' },
++  { icon: Truck, title: 'خدمات الطريق', text: 'مساعدة أسرع عندما تحتاجها' },
+ ];
+ 
+ const trustItems = [
+-  { value: '+43', label: 'ماركات سيارات', icon: Car },
+-  { value: '24/7', label: 'خدمة العملاء', icon: Headphones },
+-  { value: 'فوري', label: 'استلام الطلب', icon: Clock },
+-  { value: 'موثوق', label: 'تجربة أكثر أمانًا', icon: ShieldCheck },
++  { icon: Car, value: '+43', label: 'ماركات سيارات' },
++  { icon: Headphones, value: '24/7', label: 'خدمة العملاء' },
++  { icon: Clock3, value: 'فوري', label: 'استلام الطلب' },
++  { icon: ShieldCheck, value: 'موثوق', label: 'بائعون موثوقون' },
+ ];
+ 
+ const Home = () => {
+   const navigate = useNavigate();
+-  const finderRef = useRef(null);
+-  const [step, setStep] = useState(1);
+-  const [selectedBrand, setSelectedBrand] = useState(null);
+-  const [selectedModel, setSelectedModel] = useState(null);
++  const [selectedBrand, setSelectedBrand] = useState('');
++  const [selectedModel, setSelectedModel] = useState('');
+   const [selectedYear, setSelectedYear] = useState('');
+ 
+   const years = useMemo(() => generateYears(), []);
+-
+-  const scrollToFinder = () => {
+-    finderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
++  const models = useMemo(
++    () => (selectedBrand ? getModelsForBrand(selectedBrand) : []),
++    [selectedBrand]
++  );
++
++  const handleBrandChange = (event) => {
++    setSelectedBrand(event.target.value);
++    setSelectedModel('');
++    setSelectedYear('');
+   };
+ 
+-  const handleBrandSelect = (brandName) => {
+-    setSelectedBrand(brandName);
+-    setSelectedModel(null);
++  const handleModelChange = (event) => {
++    setSelectedModel(event.target.value);
+     setSelectedYear('');
+-    setStep(2);
+-  };
+-
+-  const handleModelSelect = (modelName) => {
+-    setSelectedModel(modelName);
+-    setSelectedYear('');
+-    setStep(3);
+-  };
+-
+-  const handleBack = () => {
+-    if (step === 3) {
+-      setSelectedModel(null);
+-      setSelectedYear('');
+-    }
+-
+-    if (step === 2) {
+-      setSelectedBrand(null);
+-    }
+-
+-    set
