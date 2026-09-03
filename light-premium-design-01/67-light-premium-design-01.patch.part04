@@ -1,0 +1,297 @@
+ice-card__icon"><Icon size={26} /></div>
+-                <h3>{title}</h3>
+-                <p>{text}</p>
++                <span className="quick-service-card__arrow"><ChevronLeft size={18} /></span>
+               </article>
+             ))}
+           </div>
+         </div>
+       </section>
+ 
+-      <section className="trust-section">
+-        <div className="container">
+-          <div className="trust-strip">
+-            {trustItems.map(({ value, label, icon: Icon }) => (
+-              <div className="trust-item" key={label}>
+-                <div className="trust-item__icon"><Icon size={20} /></div>
++      <section className="light-trust-section">
++        <div className="container">
++          <div className="light-trust-strip">
++            {trustItems.map(({ icon: Icon, value, label }) => (
++              <div className="light-trust-item" key={label}>
++                <div className="light-trust-item__icon"><Icon size={22} /></div>
+                 <div>
+                   <strong>{value}</strong>
+                   <span>{label}</span>
+@@ -362,17 +217,28 @@
+         </div>
+       </section>
+ 
+-      <section className="offers-callout">
+-        <div className="container">
+-          <div className="offers-card">
+-            <div>
+-              <span className="offers-card__eyebrow">عروض 67</span>
++      <section className="light-offers-section">
++        <div className="container">
++          <div className="light-offers-card">
++            <div className="light-offers-card__art" aria-hidden="true">
++              <div className="offer-disc"><Settings size={52} /></div>
++              <div className="offer-box"><PackageSearch size={42} /></div>
++            </div>
++
++            <div className="light-offers-card__copy">
++              <span>عروض مميزة</span>
+               <h2>خصومات مختارة على قطع الغيار</h2>
+-              <p>خلّينا نخلي العروض جزء داعم للشراء بدل ما تاخد تركيز أكبر من البحث نفسه.</p>
+-            </div>
+-            <Link to="/offers" className="offers-card__button">
+-              تصفح العروض
+-              <ArrowLeft size={18} />
++              <p>استفد من عروض محدودة على مجموعة من القطع والخدمات.</p>
++            </div>
++
++            <div className="light-offers-card__discount">
++              <small>خصم حتى</small>
++              <strong>25%</strong>
++            </div>
++
++            <Link to="/offers" className="light-offers-card__button">
++              تسوق الآن
++              <ArrowLeft size={17} />
+             </Link>
+           </div>
+         </div>
+diff --git a/QARIX/src/App.css b/QARIX/src/App.css
+--- a/QARIX/src/App.css
++++ b/QARIX/src/App.css
+@@ -0,0 +1,926 @@
++/* 67 Light Premium Storefront */
++
++:root {
++  --67-gold: #c9962f;
++  --67-gold-deep: #a87719;
++  --67-gold-soft: #fbf3df;
++  --67-ink: #232220;
++  --67-muted: #7f7b74;
++  --67-line: #e8e3da;
++  --67-cream: #fbfaf7;
++  --67-warm: #f5efe5;
++  --67-white: #ffffff;
++  --67-green: #718c69;
++}
++
++.promo-strip {
++  background: #fffaf0;
++  border-bottom: 1px solid #efe6d5;
++  color: #625b4d;
++}
++
++.promo-strip__inner {
++  min-height: 34px;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  gap: 18px;
++  font-size: 12px;
++}
++
++.promo-strip__message,
++.promo-strip__link {
++  display: inline-flex;
++  align-items: center;
++  gap: 6px;
++}
++
++.promo-strip__message svg,
++.promo-strip__link {
++  color: var(--67-gold-deep);
++}
++
++.promo-strip__link {
++  font-weight: 800;
++}
++
++.site-header {
++  position: sticky;
++  top: 0;
++  z-index: 50;
++  background: rgba(255, 255, 255, 0.97);
++  backdrop-filter: blur(14px);
++  -webkit-backdrop-filter: blur(14px);
++  border-bottom: 1px solid rgba(47, 42, 34, 0.08);
++  box-shadow: 0 4px 22px rgba(48, 43, 34, 0.035);
++}
++
++.site-header__inner {
++  min-height: 76px;
++  display: flex;
++  align-items: center;
++  gap: 22px;
++}
++
++.brand {
++  display: inline-flex;
++  align-items: center;
++  flex-shrink: 0;
++}
++
++.brand__logo {
++  width: 52px;
++  height: 42px;
++  object-fit: cover;
++  border-radius: 10px;
++}
++
++.main-nav {
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  gap: 23px;
++  flex: 1;
++}
++
++.main-nav a {
++  color: #514d47;
++  font-size: 13px;
++  font-weight: 700;
++  transition: 0.2s ease;
++}
++
++.main-nav a:first-child,
++.main-nav a:hover {
++  color: var(--67-gold-deep);
++}
++
++.header-search {
++  width: min(31vw, 420px);
++  min-width: 260px;
++  height: 44px;
++  padding: 0 14px;
++  border: 1px solid #e3dfd7;
++  border-radius: 13px;
++  display: flex;
++  align-items: center;
++  gap: 9px;
++  background: #fff;
++  color: #9b968e;
++}
++
++.header-search input {
++  width: 100%;
++  border: 0;
++  outline: 0;
++  background: transparent;
++  color: #34312d;
++  font-family: inherit;
++  font-size: 12px;
++}
++
++.header-actions {
++  display: flex;
++  align-items: center;
++  gap: 6px;
++}
++
++.icon-button,
++.mobile-menu-button {
++  position: relative;
++  width: 38px;
++  height: 38px;
++  border-radius: 50%;
++  display: inline-grid;
++  place-items: center;
++  color: #5f5b55;
++  transition: 0.2s ease;
++}
++
++.icon-button:hover,
++.mobile-menu-button:hover {
++  background: #f7f3eb;
++  color: var(--67-gold-deep);
++}
++
++.notification-dot {
++  position: absolute;
++  top: 6px;
++  left: 6px;
++  width: 7px;
++  height: 7px;
++  border: 2px solid #fff;
++  background: var(--67-gold);
++  border-radius: 50%;
++}
++
++.header-cta {
++  min-height: 42px;
++  padding: 0 18px;
++  border-radius: 11px;
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  background: linear-gradient(180deg, #d8aa47, #c18e27);
++  color: #fff;
++  font-size: 12px;
++  font-weight: 900;
++  box-shadow: 0 8px 20px rgba(190, 139, 34, 0.18);
++}
++
++.mobile-menu-button {
++  display: none;
++}
++
++.home-light-premium {
++  background: #fff;
++  color: var(--67-ink);
++}
++
++.light-hero {
++  position: relative;
++  overflow: hidden;
++  background:
++    radial-gradient(circle at 15% 10%, rgba(210, 167, 76, 0.13), transparent 25%),
++    linear-gradient(105deg, #f7f0e6 0%, #fffaf4 46%, #fbf7f0 100%);
++  border-bottom: 1px solid #efe9df;
++}
++
++.light-hero::before {
++  content: '';
++  position: absolute;
++  inset: 0;
++  background-image:
++    radial-gradient(circle at 78% 24%, rgba(198, 148, 45, 0.08) 0 2px, transparent 2px),
++    linear-gradient(120deg, transparent 0 72%, rgba(207, 161, 64, 0.08) 72% 72.2%, transparent 72.2%);
++  background-size: 44px 44px, 100% 100%;
++  pointer-events: none;
++}
++
++.light-hero__grid {
++  position: relative;
++  z-index: 2;
++  min-height: 430px;
++  padding-top: 52px;
++  padding-bottom: 92px;
++  display: grid;
++  grid-template-columns: minmax(0, 0.95fr) minmax(470px, 1.05fr);
++  align-items: center;
++  gap: 58px;
++}
++
++.light-hero__copy {
++  max-width: 600px;
++}
++
++.light-eyebrow {
++  display: inline-flex;
++  align-items: center;
++  gap: 7px;
++  margin-bottom: 17px;
++  color: var(--67-gold-deep);
++  font-size: 12px;
++  font-weight: 800;
++}
++
++.light-hero__copy h1 {
++  margin: 0;
++  color: #282623;
++  font-size: clamp(43px, 5vw, 
