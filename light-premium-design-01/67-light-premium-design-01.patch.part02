@@ -1,0 +1,176 @@
+Step((currentStep) => Math.max(1, currentStep - 1));
+   };
+ 
+   const handleSubmitVehicle = () => {
+@@ -100,258 +66,147 @@
+   };
+ 
+   return (
+-    <div className="home-redesign">
+-      <section className="hero-premium">
+-        <div className="hero-premium__glow hero-premium__glow--one" />
+-        <div className="hero-premium__glow hero-premium__glow--two" />
+-
+-        <div className="container hero-premium__grid">
+-          <div className="hero-copy">
+-            <div className="eyebrow">
++    <div className="home-light-premium">
++      <section className="light-hero">
++        <div className="container light-hero__grid">
++          <div className="light-hero__copy">
++            <span className="light-eyebrow">
+               <Sparkles size={16} />
+-              منصة 67 لخدمات وقطع غيار السيارات
+-            </div>
++              منصة 67 لقطع غيار وخدمات السيارات
++            </span>
+ 
+             <h1>
+               لقطعتك الصح..
+-              <span> ابدأ بسيارتك</span>
++              <strong> ابدأ بسيارتك</strong>
+             </h1>
+ 
+             <p>
+-              اختر الماركة والموديل وسنة الصنع، وبعدها أرسل طلبك للعثور على
+-              القطعة المناسبة بخطوات واضحة وسريعة.
++              تصفح قطع الغيار والخدمات المناسبة لسيارتك، واختر من خيارات متعددة
++              بتجربة أسرع وأكثر وضوحًا.
+             </p>
+ 
+-            <div className="hero-actions">
+-              <button className="hero-btn hero-btn--primary" onClick={scrollToFinder}>
+-                <Search size={19} />
+-                ابدأ البحث عن قطعة
++            <div className="light-hero__actions">
++              <button
++                className="light-btn light-btn--primary"
++                onClick={() => document.getElementById('vehicle-finder')?.scrollIntoView({ behavior: 'smooth' })}
++              >
++                ابحث عن قطع غيار
++                <ChevronLeft size={18} />
+               </button>
+-              <Link to="/offers" className="hero-btn hero-btn--secondary">
+-                استعرض العروض
+-                <ArrowLeft size={18} />
++              <Link to="/offers" className="light-btn light-btn--outline">
++                تصفح العروض
+               </Link>
+             </div>
+-
+-            <div className="hero-proof">
+-              <span><CheckCircle size={17} /> خطوات بحث بسيطة</span>
+-              <span><CheckCircle size={17} /> خيارات متعددة لسيارتك</span>
+-            </div>
+-          </div>
+-
+-          <div className="hero-visual" aria-hidden="true">
+-            <div className="hero-visual__badge">
++          </div>
++
++          <div className="auto-showcase" aria-hidden="true">
++            <span className="auto-showcase__ring auto-showcase__ring--one" />
++            <span className="auto-showcase__ring auto-showcase__ring--two" />
++            <div className="auto-showcase__platform" />
++            <Car className="auto-showcase__car" size={245} strokeWidth={1.05} />
++            <div className="auto-part auto-part--brake">
++              <Settings size={34} />
++            </div>
++            <div className="auto-part auto-part--suspension">
++              <Wrench size={30} />
++            </div>
++            <div className="auto-showcase__badge">
+               <ShieldCheck size={18} />
+-              تجربة موثوقة
+-            </div>
+-
+-            <div className="hero-car-stage">
+-              <div className="hero-car-stage__circle" />
+-              <Car className="hero-car-icon" size={210} strokeWidth={1.1} />
+-              <div className="floating-part floating-part--one">
+-                <Settings size={18} />
+-                محرك
++              خيارات موثوقة
++            </div>
++          </div>
++        </div>
++      </section>
++
++      <section className="vehicle-finder-wrap" id="vehicle-finder">
++        <div className="container">
++          <div className="vehicle-finder-light">
++            <div className="vehicle-finder-light__head">
++              <div>
++                <span>ابحث عن قطع غيار بسيارتك</span>
++                <h2>اختر بيانات سيارتك لعرض القطع المناسبة</h2>
+               </div>
+-              <div className="floating-part floating-part--two">
+-                <Wrench size={18} />
+-                صيانة
+-              </div>
+-              <div className="floating-part floating-part--three">
+-                <PackageSearch size={18} />
+-                قطع غيار
+-              </div>
+-            </div>
+-
+-            <div className="hero-visual__footer">
+-              <span>طلبات أسرع</span>
+-              <span className="hero-visual__dot" />
+-              <span>اختيار أوضح</span>
+-              <span className="hero-visual__dot" />
+-              <span>تجربة أسهل</span>
+-            </div>
+-          </div>
+-        </div>
+-      </section>
+-
+-      <section className="finder-section" ref={finderRef}>
+-        <div className="container">
+-          <div className="vehicle-finder">
+-            <div className="vehicle-finder__header">
+-              <div>
+-                <span className="section-kicker">ابحث حسب سيارتك</span>
+-                <h2>اختر مواصفات السيارة</h2>
+-                <p>ثلاث خطوات فقط قبل إدخال تفاصيل القطعة المطلوبة.</p>
+-              </div>
+-
+-              <div className="finder-progress" aria-label={`الخطوة ${step} من 3`}>
+-                {[1, 2, 3].map((item) => (
+-                  <div
+-                    key={item}
+-                    className={`finder-progress__item ${item <= step ? 'finder-progress__item--active' : ''}`}
+-                  >
+-                    <span>{item}</span>
+-                    <small>{item === 1 ? 'الماركة' : item === 2 ? 'الموديل' : 'السنة'}</small>
+-                  </div>
+-                ))}
+-              </div>
+-            </div>
+-
+-            {(selectedBrand || selectedModel) && (
+-              <div className="selection-summary">
++              <button className="help-chip">دليل المساعدة</button>
++            </div>
++
++            <div className="vehicle-fields">
++              <label className="vehicle-field">
++                <span className="vehicle-field__step">1</span>
++                <span className="vehicle-field__label">الماركة</span>
++                <select value={selectedBrand} onChange={handleBrandChange}>
++                  <option value="">اختر الماركة</option>
++                  {brands.map((brand) => (
++                    <option key={brand.name} value={brand.name}>{brand.name}</option>
++                  ))}
++                </select>
++              </label>
++
++              <label className={`vehicle-field ${!selectedBrand ? 'vehicle-field--disabled' : ''}`}>
++                <span className="vehicle-field__step">2</span>
++                <span className="vehicle-field__label">الموديل</span>
++                <select
++                  value={selectedModel}
++                  onChange={handleModelChange}
++                  disabled={!selectedBrand}
++                >
++                  <option value="">اختر الموديل</opt
