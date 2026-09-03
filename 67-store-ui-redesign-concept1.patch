@@ -1,0 +1,1023 @@
+diff --git a/QARIX/src/App.jsx b/QARIX/src/App.jsx
+--- a/QARIX/src/App.jsx
++++ b/QARIX/src/App.jsx
+@@ -6,6 +6,7 @@
+ import Home from './pages/Home';
+ import RequestPart from './pages/RequestPart';
+ import Offers from './pages/Offers';
++import './App.css';
+ 
+ // Simple placeholder for other static pages
+ const PlaceholderPage = ({ title, content }) => (
+@@ -31,8 +32,8 @@
+             <Route path="/offers" element={<Offers />} />
+ 
+             <Route path="/about" element={
+-              <PlaceholderPage 
+-                title="نبذة عنا" 
++              <PlaceholderPage
++                title="نبذة عنا"
+                 content={
+                   <>
+                     <p><strong>QARIX</strong> هي منصة رقمية متخصصة في بيع وشراء قطع غيار السيارات، تجمع جميع المتاجر والعملاء في مكان واحد، بهدف تسهيل الوصول إلى أفضل الأسعار، وتسريع عملية الشراء، وتعزيز الثقة بين البائع والمشتري، من خلال نظام تقييم احترافي وشارة "متجر موثوق".</p>
+@@ -46,7 +47,7 @@
+             <Route path="return-policy" element={<PlaceholderPage title="سياسة الاسترجاع" content={<p>إمكانية إرجاع المنتج في حال وجود عيب. عدم استرجاع القطع المركبة أو التالفة...</p>} />} />
+           </Routes>
+         </main>
+-
++        
+         <Footer />
+       </div>
+     </Router>
+diff --git a/QARIX/src/components/Navbar.jsx b/QARIX/src/components/Navbar.jsx
+--- a/QARIX/src/components/Navbar.jsx
++++ b/QARIX/src/components/Navbar.jsx
+@@ -1,39 +1,58 @@
+-import React from 'react';
+-import { Search, Bell, User, Wrench } from 'lucide-react';
++import React, { useState } from 'react';
++import { Bell, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
+ import { Link } from 'react-router-dom';
+ 
+ const Navbar = () => {
++  const [menuOpen, setMenuOpen] = useState(false);
++
+   return (
+-    <header style={{ backgroundColor: 'var(--color-primary)', color: 'white', padding: '15px 0' }}>
+-      <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px' }}>
+-        
+-        {/* Logo */}
+-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'white' }}>
+-          <img src="/logo.jpg" alt="QARIX Logo" style={{ height: '40px', borderRadius: '8px' }} />
+-          <h1 style={{ fontSize: '24px', fontWeight: '900', letterSpacing: '1px', margin: 0 }}>QARIX</h1>
++    <header className="site-header">
++      <div className="container site-header__inner">
++        <Link to="/" className="brand" aria-label="67 الرئيسية">
++          <span className="brand__logo-wrap">
++            <img src="/logo.jpg" alt="67" className="brand__logo" />
++          </span>
++          <span className="brand__name">67</span>
+         </Link>
+ 
+-        {/* Search Bar */}
+-        <div style={{ flex: 1, maxWidth: '500px', position: 'relative', display: 'none' }} className="search-desktop">
+-           {/* In a real app this might be active, but for now our search flow is separate */}
+-        </div>
++        <nav className={`main-nav ${menuOpen ? 'main-nav--open' : ''}`} aria-label="التنقل الرئيسي">
++          <Link to="/" onClick={() => setMenuOpen(false)}>الرئيسية</Link>
++          <Link to="/offers" onClick={() => setMenuOpen(false)}>العروض</Link>
++          <Link to="/about" onClick={() => setMenuOpen(false)}>عن 67</Link>
++          <Link to="/request" onClick={() => setMenuOpen(false)}>اطلب قطعة</Link>
++        </nav>
+ 
+-        {/* Icons */}
+-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+-          <button style={{ color: 'white', padding: '8px' }}>
+-            <Bell size={24} />
++        <div className="header-actions">
++          <button className="icon-button icon-button--search" aria-label="بحث">
++            <Search size={20} />
+           </button>
+-          <button style={{ color: 'white', padding: '8px' }}>
+-            <User size={24} />
++          <button className="icon-button" aria-label="الإشعارات">
++            <Bell size={20} />
++            <span className="notification-dot" />
+           </button>
++          <button className="icon-button" aria-label="السلة">
++            <ShoppingCart size={20} />
++          </button>
++          <button className="icon-button icon-button--user" aria-label="حسابي">
++            <User size={20} />
++          </button>
++          <Link to="/request" className="header-cta">اطلب قطعة</Link>
++
++          <button
++            className="mobile-menu-button"
++            aria-label={menuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
++            onClick={() => setMenuOpen((open) => !open)}
++          >
++            {menuOpen ? <X size={22} /> : <Menu size={22} />}
++          </button>
+         </div>
+-        
+       </div>
+     </header>
+   );
+diff --git a/QARIX/src/components/PromoBanner.jsx b/QARIX/src/components/PromoBanner.jsx
+--- a/QARIX/src/components/PromoBanner.jsx
++++ b/QARIX/src/components/PromoBanner.jsx
+@@ -1,21 +1,19 @@
+ import React from 'react';
++import { Link } from 'react-router-dom';
++import { ArrowLeft, Sparkles } from 'lucide-react';
+ 
+ const PromoBanner = () => {
+   return (
+-    <div style={{
+-      background: 'linear-gradient(90deg, var(--color-primary) 0%, #d4a373 100%)',
+-      color: 'white',
+-      padding: '12px 0',
+-      textAlign: 'center',
+-      overflow: 'hidden',
+-      position: 'relative'
+-    }}>
+-      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+-        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+-          ✨ عروض حصرية كل يوم ✨
+-        </h3>
++    <div className="promo-strip">
++      <div className="container promo-strip__inner">
++        <span className="promo-strip__message">
++          <Sparkles size={16} />
++          عروض وخصومات مختارة على قطع الغيار
++        </span>
++        <Link to="/offers" className="promo-strip__link">
++          استعرض العروض
++          <ArrowLeft size={15} />
++        </Link>
+       </div>
+     </div>
+   );
+diff --git a/QARIX/src/pages/Home.jsx b/QARIX/src/pages/Home.jsx
+--- a/QARIX/src/pages/Home.jsx
++++ b/QARIX/src/pages/Home.jsx
+@@ -1,106 +1,314 @@
+-import React, { useState } from 'react';
++import React, { useMemo, useRef, useState } from 'react';
++import { Link, useNavigate } from 'react-router-dom';
+ import { useNavigate } from 'react-router-dom';
+-import { brands, getModelsForBrand, generateYears } from '../data/cars';
+-import { ChevronLeft, AlertTriangle } from 'lucide-react';
++import { brands, generateYears, getModelsForBrand } from '../data/cars';
++import {
++  ArrowLeft,
++  Car,
++  CheckCircle,
++  ChevronLeft,
++  Clock,
++  Headphones,
++  PackageSearch,
++  Search,
++  Settings,
++  ShieldCheck,
++  Sparkles,
++  Truck,
++  Wrench,
++} from 'lucide-react';
++
++const services = [
++  {
++    icon: PackageSearch,
++    title: 'قطع الغيار',
++    text: 'ابدأ بسيارتك ووصل للقطعة المناسبة أسرع.',
++  },
++  {
++    icon: Car,
++    title: 'التشاليح',
++    text: 'خيارات متعددة للقطع المستعملة والمتوفرة.',
++  },
++  {
++    icon: Wrench,
++    title: 'ورش وإصلاح',
++    text: 'خدمات مساندة لسيارتك في مكان واحد.',
++  },
++  {
++    icon: Truck,
++    title: 'خدمات الطريق',
++    text: 'وصول أسرع للخدمات وقت الحاجة.',
++  },
++];
++
++const trustItems = [
++  { value: '+43', label: 'ماركات سيارات', icon: Car },
++  { value: '24/7', label: 'خدمة العملاء', icon: Headphones },
++  { value: 'فوري', label: 'استلام الطلب', icon: Clock },
++  { value: 'موثوق', label: 'تجربة أكثر أمانًا', icon: ShieldCheck },
++];
+ 
+ const Home = () => {
+   const navigate = useNavigate();
++  const finderRef = useRef(null);
+   const [step, setStep] = useState(1);
+   const [selectedBrand, setSelectedBrand] = useState(null);
+   const [selectedModel, setSelectedModel] = useState(null);
+-  const [selectedYear, setSelectedYear] = useState(null);
++  const [selectedYear, setSelectedYear] = useState('');
+ 
+-  const years = generateYears();
++  const years = useMemo(() => generateYears(), []);
++
++  const scrollToFinder = () => {
++    finderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
++  };
+ 
+   const handleBrandSelect = (brandName) => {
+     setSelectedBrand(brandName);
++    setSelectedModel(null);
++    setSelectedYear('');
+     setStep(2);
+   };
+ 
+   const handleModelSelect = (modelName) => {
+     setSelectedModel(modelName);
++    setSelectedYear('');
+     setStep(3);
+   };
+ 
+-  const handleYearSelect = (year) => {
+-    setSelectedYear(year);
++  const handleBack = () => {
++    if (step === 3) {
++      setSelectedModel(null);
++      setSelectedYear('');
++    }
++
++    if (step === 2) {
++      setSelectedBrand(null);
++    }
++
++    setStep((currentStep) => Math.max(1, currentStep - 1));
++  };
++
++  const handleSubmitVehicle = () => {
++    if (!selectedBrand || !selectedModel || !selectedYear) return;
++
+     navigate('/request', {
+-      state: { brand: selectedBrand, model: selectedModel, year }
++      state: {
++        brand: selectedBrand,
++        model: selectedModel,
++        year: Number(selectedYear),
++      },
+     });
+   };
+ 
+   return (
+-    <div className="container" style={{ padding: '40px 16px', minHeight: '60vh' }}>
+-      
+-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+-        <h2 style={{ fontSize: '28px', color: 'var(--color-primary)', marginBottom: '8px' }}>ابحث عن قطعة غيار لسيارتك</h2>
+-        <p style={{ color: 'var(--color-text-muted)' }}>اختر مواصفات سيارتك للبدء</p>
+-      </div>
+-
+-      {step > 1 && (
+-        <button 
+-          onClick={() => setStep(step - 1)} 
+-          style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: 'var(--color-primary)', fontWeight: 'bold' }}
+-        >
+-          <ChevronLeft size={20} />
+-          رجوع
+-        </button>
+-      )}
+-
+-      {step === 1 && (
+-        <div className="animate-fade-in">
+-          <h3 style={{ marginBottom: '20px', fontSize: '20px' }}>1. اختر الماركة</h3>
+-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '20px' }}>
+-            {brands.map((brand) => (
+-              <div 
+-                key={brand.name} 
+-                className="card"
+-                style={{ cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '24px 10px' }}
+-                onClick={() => handleBrandSelect(brand.name)}
+-              >
+-                <div style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', borderRadius: '50%', padding: '4px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+-                  <img 
+-                    src={brand.logo} 
+-                    alt={brand.name} 
+-                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+-                    onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${brand.name}&background=1e3a29&color=fff&rounded=true` }}
+-                  />
++    <div className="home-redesign">
++      <section className="hero-premium">
++        <div className="hero-premium__glow hero-premium__glow--one" />
++        <div className="hero-premium__glow hero-premium__glow--two" />
++
++        <div className="container hero-premium__grid">
++          <div className="hero-copy">
++            <div className="eyebrow">
++              <Sparkles size={16} />
++              منصة 67 لخدمات وقطع غيار السيارات
++            </div>
++
++            <h1>
++              لقطعتك الصح..
++              <span> ابدأ بسيارتك</span>
++            </h1>
++
++            <p>
++              اختر الماركة والموديل وسنة الصنع، وبعدها أرسل طلبك للعثور على
++              القطعة المناسبة بخطوات واضحة وسريعة.
++            </p>
++
++            <div className="hero-actions">
++              <button className="hero-btn hero-btn--primary" onClick={scrollToFinder}>
++                <Search size={19} />
++                ابدأ البحث عن قطعة
++              </button>
++              <Link to="/offers" className="hero-btn hero-btn--secondary">
++                استعرض العروض
++                <ArrowLeft size={18} />
++              </Link>
++            </div>
++
++            <div className="hero-proof">
++              <span><CheckCircle size={17} /> خطوات بحث بسيطة</span>
++              <span><CheckCircle size={17} /> خيارات متعددة لسيارتك</span>
++            </div>
++          </div>
++
++          <div className="hero-visual" aria-hidden="true">
++            <div className="hero-visual__badge">
++              <ShieldCheck size={18} />
++              تجربة موثوقة
++            </div>
++
++            <div className="hero-car-stage">
++              <div className="hero-car-stage__circle" />
++              <Car className="hero-car-icon" size={210} strokeWidth={1.1} />
++              <div className="floating-part floating-part--one">
++                <Settings size={18} />
++                محرك
++              </div>
++              <div className="floating-part floating-part--two">
++                <Wrench size={18} />
++                صيانة
++              </div>
++              <div className="floating-part floating-part--three">
++                <PackageSearch size={18} />
++                قطع غيار
++              </div>
++            </div>
++
++            <div className="hero-visual__footer">
++              <span>طلبات أسرع</span>
++              <span className="hero-visual__dot" />
++              <span>اختيار أوضح</span>
++              <span className="hero-visual__dot" />
++              <span>تجربة أسهل</span>
++            </div>
++          </div>
++        </div>
++      </section>
++
++      <section className="finder-section" ref={finderRef}>
++        <div className="container">
++          <div className="vehicle-finder">
++            <div className="vehicle-finder__header">
++              <div>
++                <span className="section-kicker">ابحث حسب سيارتك</span>
++                <h2>اختر مواصفات السيارة</h2>
++                <p>ثلاث خطوات فقط قبل إدخال تفاصيل القطعة المطلوبة.</p>
++              </div>
++
++              <div className="finder-progress" aria-label={`الخطوة ${step} من 3`}>
++                {[1, 2, 3].map((item) => (
++                  <div
++                    key={item}
++                    className={`finder-progress__item ${item <= step ? 'finder-progress__item--active' : ''}`}
++                  >
++                    <span>{item}</span>
++                    <small>{item === 1 ? 'الماركة' : item === 2 ? 'الموديل' : 'السنة'}</small>
++                  </div>
++                ))}
++              </div>
++            </div>
++
++            {(selectedBrand || selectedModel) && (
++              <div className="selection-summary">
++                <div>
++                  {selectedBrand && <span>{selectedBrand}</span>}
++                  {selectedModel && <span>{selectedModel}</span>}
+                 </div>
+-                <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{brand.name}</span>
++                {step > 1 && (
++                  <button onClick={handleBack} className="back-button">
++                    <ChevronLeft size={17} />
++                    رجوع
++                  </button>
++                )}
+               </div>
+-            ))}
+-          </div>
+-        </div>
+-      )}
+-
+-      {step === 2 && (
+-        <div className="animate-fade-in">
+-          <h3 style={{ marginBottom: '20px', fontSize: '20px' }}>2. اختر الفئة - {selectedBrand}</h3>
+-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '24px' }}>
+-            {getModelsForBrand(selectedBrand).map((model) => (
+-              <div 
+-                key={model.name} 
+-                className="card"
+-                style={{ cursor: 'pointer', padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+-                onClick={() => handleModelSelect(model.name)}
+-              >
+-                <div style={{ height: '140px', backgroundColor: '#f0f0f0', width: '100%' }}>
+-                  <img 
+-                    src={model.image} 
+-                    alt={model.name} 
+-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+-                  />
++            )}
++
++            {step === 1 && (
++              <div className="finder-step animate-fade-in">
++                <div className="finder-step__title">
++                  <span>01</span>
++                  <div>
++                    <h3>اختر ماركة سيارتك</h3>
++                    <p>اختر من الماركات المتاحة للانتقال إلى الموديل.</p>
++                  </div>
+                 </div>
+-                <div style={{ padding: '16px', textAlign: 'center' }}>
+-                  <span style={{ fontWeight: 'bold', fontSize: '18px' }}>{model.name}</span>
++
++                <div className="brand-grid">
++                  {brands.map((brand) => (
++                    <button
++                      key={brand.name}
++                      className="brand-card"
++                      onClick={() => handleBrandSelect(brand.name)}
++                    >
++                      <span className="brand-card__logo">
++                        <span className="brand-card__fallback">{brand.name.slice(0, 2)}</span>
++                        <img
++                          src={brand.logo}
++                          alt=""
++                          onError={(event) => {
++                            event.currentTarget.style.display = 'none';
++                          }}
++                        />
++                      </span>
++                      <strong>{brand.name}</strong>
++                    </button>
++                  ))}
+                 </div>
+               </div>
+-            ))}
+-          </div>
+-        </div>
+-      )}
+-
+-      {step === 3 && (
+-        <div className="animate-fade-in">
+-          <h3 style={{ marginBottom: '20px', fontSize: '20px' }}>3. اختر سنة الصنع - {selectedBrand} {selectedModel}</h3>
+-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '16px' }}>
+-            {years.map((year) => (
+-              <div 
+-                key={year} 
+-                className="card"
+-                style={{ cursor: 'pointer', textAlign: 'center', fontWeight: 'bold', padding: '16px' }}
+-                onClick={() => handleYearSelect(year)}
+-              >
+-                {year}
++            )}
++
++            {step === 2 && (
++              <div className="finder-step animate-fade-in">
++                <div className="finder-step__title">
++                  <span>02</span>
++                  <div>
++                    <h3>اختر الموديل</h3>
++                    <p>الموديلات المتاحة لماركة {selectedBrand}.</p>
++                  </div>
++                </div>
++
++                <div className="model-grid">
++                  {getModelsForBrand(selectedBrand).map((model) => (
++                    <button
++                      key={model.name}
++                      className="model-card"
++                      onClick={() => handleModelSelect(model.name)}
++                    >
++                      <span className="model-card__icon">
++                        <Car size={24} />
++                      </span>
++                      <span>
++                        <small>{selectedBrand}</small>
++                        <strong>{model.name}</strong>
++                      </span>
++                      <ArrowLeft size={18} />
++                    </button>
++                  ))}
++                </div>
++              </div>
++            )}
++
++            {step === 3 && (
++              <div className="finder-step finder-step--year animate-fade-in">
++                <div className="finder-step__title">
++                  <span>03</span>
++                  <div>
++                    <h3>اختر سنة الصنع</h3>
++                    <p>آخر خطوة قبل الانتقال إلى تفاصيل القطعة.</p>
++                  </div>
++                </div>
++
++                <div className="year-selector-card">
++                  <div className="year-selector-card__car">
++                    <Car size={34} />
++                    <div>
++                      <small>السيارة المختارة</small>
++                      <strong>{selectedBrand} {selectedModel}</strong>
++                    </div>
++                  </div>
++
++                  <label className="year-field">
++                    <span>سنة الصنع</span>
++                    <select
++                      value={selectedYear}
++                      onChange={(event) => setSelectedYear(event.target.value)}
++                    >
++                      <option value="">اختر السنة</option>
++                      {years.map((year) => (
++                        <option key={year} value={year}>{year}</option>
++                      ))}
++                    </select>
++                  </label>
++
++                  <button
++                    className="finder-submit"
++                    onClick={handleSubmitVehicle}
++                    disabled={!selectedYear}
++                  >
++                    متابعة لطلب القطعة
++                    <ArrowLeft size={19} />
++                  </button>
++                </div>
++              </div>
++            )}
++          </div>
++        </div>
++      </section>
++
++      <section className="services-section">
++        <div className="container">
++          <div className="section-heading">
++            <div>
++              <span className="section-kicker">كل خدمات سيارتك</span>
++              <h2>ابدأ من الخدمة التي تحتاجها</h2>
++            </div>
++            <p>واجهة أبسط تضع أهم الخدمات أمام المستخدم بدون تشتيت.</p>
++          </div>
++
++          <div className="services-grid">
++            {services.map(({ icon: Icon, title, text }, index) => (
++              <article className="service-card" key={title}>
++                <div className="service-card__number">0{index + 1}</div>
++                <div className="service-card__icon"><Icon size={26} /></div>
++                <h3>{title}</h3>
++                <p>{text}</p>
++              </article>
++            ))}
++          </div>
++        </div>
++      </section>
++
++      <section className="trust-section">
++        <div className="container">
++          <div className="trust-strip">
++            {trustItems.map(({ value, label, icon: Icon }) => (
++              <div className="trust-item" key={label}>
++                <div className="trust-item__icon"><Icon size={20} /></div>
++                <div>
++                  <strong>{value}</strong>
++                  <span>{label}</span>
++                </div>
+               </div>
+             ))}
+           </div>
+         </div>
+-      )}
++      </section>
+ 
++      <section className="offers-callout">
++        <div className="container">
++          <div className="offers-card">
++            <div>
++              <span className="offers-card__eyebrow">عروض 67</span>
++              <h2>خصومات مختارة على قطع الغيار</h2>
++              <p>خلّينا نخلي العروض جزء داعم للشراء بدل ما تاخد تركيز أكبر من البحث نفسه.</p>
++            </div>
++            <Link to="/offers" className="offers-card__button">
++              تصفح العروض
++              <ArrowLeft size={18} />
++            </Link>
++          </div>
++        </div>
++      </section>
+     </div>
+   );
+ };
+diff --git a/QARIX/src/App.css b/QARIX/src/App.css
+--- a/QARIX/src/App.css
++++ b/QARIX/src/App.css
+@@ -1,164 +1,834 @@
+-.counter {
+-  font-size: 16px;
+-  padding: 5px 10px;
+-  border-radius: 5px;
+-  color: var(--accent);
+-  background: var(--accent-bg);
+-  border: 2px solid transparent;
+-  transition: border-color 0.3s;
+-  margin-bottom: 24px;
+-
+-  &:hover {
+-    border-color: var(--accent-border);
+-  }
+-  &:focus-visible {
+-    outline: 2px solid var(--accent);
+-    outline-offset: 2px;
+-  }
+-}
+-
+-.hero {
+-  position: relative;
+-
+-  .base,
+-  .framework,
+-  .vite {
+-    inset-inline: 0;
+-    margin: 0 auto;
+-  }
+-
+-  .base {
+-    width: 170px;
+-    position: relative;
+-    z-index: 0;
+-  }
+-
+-  .framework,
+-  .vite {
+-    position: absolute;
+-  }
+-
+-  .framework {
+-    z-index: 1;
+-    top: 34px;
+-    height: 28px;
+-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
+-      scale(1.4);
+-  }
+-
+-  .vite {
+-    z-index: 0;
+-    top: 107px;
+-    height: 26px;
+-    width: auto;
+-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
+-      scale(0.8);
+-  }
+-}
+-
+-#center {
+-  display: flex;
+-  flex-direction: column;
+-  gap: 25px;
+-  place-content: center;
+-  place-items: center;
+-  flex-grow: 1;
+-
+-  @media (max-width: 1024px) {
+-    padding: 32px 20px 24px;
+-    gap: 18px;
+-  }
+-}
+-
+-#next-steps {
+-  display: flex;
+-  border-top: 1px solid var(--border);
+-  text-align: left;
+-
+-  & > div {
+-    flex: 1 1 0;
+-    padding: 32px;
+-    @media (max-width: 1024px) {
+-      padding: 24px 20px;
+-    }
+-  }
+-
+-  .icon {
+-    margin-bottom: 16px;
+-    width: 22px;
+-    height: 22px;
+-  }
+-
+-  @media (max-width: 1024px) {
+-    flex-direction: column;
+-    text-align: center;
+-  }
+-}
+-
+-#docs {
+-  border-right: 1px solid var(--border);
+-
+-  @media (max-width: 1024px) {
+-    border-right: none;
+-    border-bottom: 1px solid var(--border);
+-  }
+-}
+-
+-#next-steps ul {
+-  list-style: none;
+-  padding: 0;
+-  display: flex;
+-  gap: 8px;
+-  margin: 32px 0 0;
+-
+-  .logo {
+-    height: 18px;
+-  }
+-
+-  a {
+-    color: var(--text-h);
+-    font-size: 16px;
+-    border-radius: 6px;
+-    background: var(--social-bg);
+-    display: flex;
+-    padding: 6px 12px;
+-    align-items: center;
+-    gap: 8px;
+-    text-decoration: none;
+-    transition: box-shadow 0.3s;
+-
+-    &:hover {
+-      box-shadow: var(--shadow);
+-    }
+-    .button-icon {
+-      height: 18px;
+-      width: 18px;
+-    }
+-  }
+-
+-  @media (max-width: 1024px) {
+-    margin-top: 20px;
+-    flex-wrap: wrap;
+-    justify-content: center;
+-
+-    li {
+-      flex: 1 1 calc(50% - 8px);
+-    }
+-
+-    a {
+-      width: 100%;
+-      justify-content: center;
+-      box-sizing: border-box;
+-    }
+-  }
+-}
+-
+-#spacer {
+-  height: 88px;
+-  border-top: 1px solid var(--border);
+-  @media (max-width: 1024px) {
+-    height: 48px;
+-  }
+-}
+-
+-.ticks {
+-  position: relative;
+-  width: 100%;
+-
+-  &::before,
+-  &::after {
+-    content: '';
+-    position: absolute;
+-    top: -4.5px;
+-    border: 5px solid transparent;
+-  }
+-
+-  &::before {
+-    left: 0;
+-    border-left-color: var(--border);
+-  }
+-  &::after {
+-    right: 0;
+-    border-right-color: var(--border);
+-  }
+-}
++/* 67 storefront redesign — homepage, navbar and promo strip */
++
++:root {
++  --67-charcoal: #171715;
++  --67-charcoal-soft: #24231f;
++  --67-gold: #d7aa35;
++  --67-gold-hover: #c49726;
++  --67-gold-soft: #fff6dc;
++  --67-cream: #f7f5ef;
++  --67-line: #e8e4da;
++  --67-copy: #262522;
++  --67-muted: #77736b;
++  --67-white: #ffffff;
++}
++
++.promo-strip { position: relative; z-index: 50; background: var(--67-charcoal); color: #fff; border-bottom: 1px solid rgba(255,255,255,.07); }
++.promo-strip__inner { min-height: 38px; display:flex; align-items:center; justify-content:center; gap:22px; font-size:13px; }
++.promo-strip__message,.promo-strip__link { display:inline-flex; align-items:center; gap:7px; }
++.promo-strip__message { color:rgba(255,255,255,.78); }
++.promo-strip__message svg,.promo-strip__link { color:var(--67-gold); }
++.promo-strip__link { font-weight:800; }
++.site-header { position:sticky; top:0; z-index:45; background:rgba(255,255,255,.94); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid rgba(30,30,30,.07); }
++.site-header__inner { min-height:76px; display:flex; align-items:center; gap:30px; }
++.brand { display:inline-flex; align-items:center; gap:10px; flex-shrink:0; }
++.brand__logo-wrap { width:43px; height:43px; border-radius:13px; overflow:hidden; background:#fff; border:1px solid var(--67-line); display:grid; place-items:center; }
++.brand__logo { width:100%; height:100%; object-fit:cover; }
++.brand__name { font-size:20px; font-weight:900; color:var(--67-charcoal); letter-spacing:.5px; }
++.main-nav { flex:1; display:flex; align-items:center; justify-content:center; gap:30px; }
++.main-nav a { color:#57544e; font-size:14px; font-weight:700; transition:.2s ease; }
++.main-nav a:hover { color:var(--67-charcoal); }
++.header-actions { display:flex; align-items:center; gap:8px; }
++.icon-button,.mobile-menu-button { position:relative; width:40px; height:40px; border-radius:50%; display:inline-grid; place-items:center; color:#4d4a45; transition:.2s ease; }
++.icon-button:hover,.mobile-menu-button:hover { background:var(--67-cream); color:var(--67-charcoal); }
++.notification-dot { position:absolute; top:7px; left:7px; width:7px; height:7px; background:#d84a43; border-radius:50%; border:2px solid #fff; }
++.header-cta { min-height:42px; padding:0 20px; border-radius:999px; background:var(--67-charcoal); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; margin-inline-start:4px; transition:.2s ease; }
++.header-cta:hover { background:#000; transform:translateY(-1px); }
++.mobile-menu-button { display:none; }
++
++.home-redesign { background:radial-gradient(circle at 10% 15%,rgba(215,170,53,.08),transparent 22%),var(--67-cream); color:var(--67-copy); overflow:hidden; }
++.hero-premium { position:relative; isolation:isolate; background:var(--67-charcoal); color:#fff; overflow:hidden; }
++.hero-premium::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px); background-size:42px 42px; mask-image:linear-gradient(to bottom,rgba(0,0,0,.6),transparent 95%); z-index:-2; }
++.hero-premium__glow { position:absolute; border-radius:50%; filter:blur(4px); opacity:.55; z-index:-1; }
++.hero-premium__glow--one { width:410px; height:410px; background:radial-gradient(circle,rgba(215,170,53,.22),transparent 70%); top:-190px; right:8%; }
++.hero-premium__glow--two { width:440px; height:440px; background:radial-gradient(circle,rgba(215,170,53,.12),transparent 70%); bottom:-260px; left:7%; }
++.hero-premium__grid { min-height:520px; padding-top:74px; padding-bottom:104px; display:grid; grid-template-columns:minmax(0,1.05fr) minmax(420px,.95fr); gap:60px; align-items:center; }
++.hero-copy { max-width:650px; }
++.eyebrow,.section-kicker { display:inline-flex; align-items:center; gap:8px; color:var(--67-gold); font-size:13px; font-weight:800; letter-spacing:.1px; }
++.eyebrow { margin-bottom:20px; padding:8px 12px; border:1px solid rgba(215,170,53,.26); border-radius:999px; background:rgba(215,170,53,.06); }
++.hero-copy h1 { margin:0; max-width:610px; font-size:clamp(42px,5.2vw,68px); line-height:1.15; font-weight:900; letter-spacing:-1.5px; }
++.hero-copy h1 span { color:var(--67-gold); }
++.hero-copy>p { max-width:610px; margin:22px 0 0; color:rgba(255,255,255,.67); font-size:17px; line-height:1.95; }
++.hero-actions { display:flex; align-items:center; gap:12px; margin-top:32px; flex-wrap:wrap; }
++.hero-btn { min-height:52px; padding:0 22px; border-radius:14px; display:inline-flex; align-items:center; justify-content:center; gap:9px; font-size:14px; font-weight:900; transition:.22s ease; }
++.hero-btn--primary { background:var(--67-gold); color:#171715; box-shadow:0 14px 36px rgba(215,170,53,.2); }
++.hero-btn--primary:hover { background:var(--67-gold-hover); transform:translateY(-2px); }
++.hero-btn--secondary { color:#fff; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.035); }
++.hero-btn--secondary:hover { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.26); }
++.hero-proof { display:flex; gap:20px; flex-wrap:wrap; margin-top:26px; color:rgba(255,255,255,.58); font-size:13px; font-weight:700; }
++.hero-proof span { display:inline-flex; align-items:center; gap:7px; }
++.hero-proof svg { color:var(--67-gold); }
++.hero-visual { position:relative; min-height:360px; padding:24px; border:1px solid rgba(255,255,255,.11); border-radius:30px; background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025)),#1e1d1a; box-shadow:0 30px 90px rgba(0,0,0,.26); overflow:hidden; }
++.hero-visual::after { content:''; position:absolute; width:230px; height:230px; border:1px solid rgba(215,170,53,.15); border-radius:50%; left:-100px; bottom:-130px; }
++.hero-visual__badge { position:relative; z-index:3; display:inline-flex; align-items:center; gap:7px; padding:8px 11px; border-radius:999px; color:#f3dfaa; background:rgba(215,170,53,.09); border:1px solid rgba(215,170,53,.18); font-size:12px; font-weight:800; }
++.hero-car-stage { position:relative; min-height:238px; display:grid; place-items:center; }
++.hero-car-stage__circle { position:absolute; width:240px; height:240px; border-radius:50%; background:radial-gradient(circle,rgba(215,170,53,.2) 0%,rgba(215,170,53,.04) 55%,transparent 72%); }
++.hero-car-stage__circle::before,.hero-car-stage__circle::after { content:''; position:absolute; inset:22px; border:1px dashed rgba(215,170,53,.2); border-radius:50%; }
++.hero-car-stage__circle::after { inset:52px; border-style:solid; opacity:.35; }
++.hero-car-icon { position:relative; z-index:2; color:#f1d486; filter:drop-shadow(0 14px 26px rgba(215,170,53,.16)); }
++.floating-part { position:absolute; z-index:4; min-height:39px; padding:0 11px; border-radius:11px; display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,.94); color:#26231e; box-shadow:0 12px 24px rgba(0,0,0,.18); font-size:12px; font-weight:900; }
++.floating-part svg { color:#b7881b; }
++.floating-part--one { top:27px; right:10px; }
++.floating-part--two { bottom:24px; right:30px; }
++.floating-part--three { left:6px; top:48%; }
++.hero-visual__footer { position:relative; z-index:3; display:flex; align-items:center; justify-content:center; gap:9px; color:rgba(255,255,255,.52); font-size:11px; font-weight:800; }
++.hero-visual__dot { width:4px; height:4px; border-radius:50%; background:var(--67-gold); }
++
++.finder-section { position:relative; z-index:5; margin-top:-56px; }
++.vehicle-finder { background:#fff; border:1px solid rgba(30,30,30,.06); border-radius:26px; box-shadow:0 26px 70px rgba(37,33,24,.1); padding:30px; }
++.vehicle-finder__header { display:flex; align-items:flex-start; justify-content:space-between; gap:28px; padding-bottom:24px; border-bottom:1px solid var(--67-line); }
++.vehicle-finder__header h2,.section-heading h2,.offers-card h2 { margin:7px 0 0; color:var(--67-charcoal); font-size:clamp(25px,3vw,34px); line-height:1.3; font-weight:900; }
++.vehicle-finder__header p,.section-heading>p { margin:7px 0 0; color:var(--67-muted); font-size:14px; }
++.finder-progress { min-width:330px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position:relative; }
++.finder-progress::before { content:''; position:absolute; top:17px; right:16%; left:16%; height:1px; background:#e9e5db; z-index:0; }
++.finder-progress__item { position:relative; z-index:1; min-width:72px; display:grid; justify-items:center; gap:6px; color:#aaa59b; }
++.finder-progress__item span { width:35px; height:35px; border-radius:50%; display:grid; place-items:center; background:#f2f0ea; border:1px solid #e8e4da; font-size:12px; font-weight:900; }
++.finder-progress__item small { font-size:11px; font-weight:800; }
++.finder-progress__item--active { color:#2b2925; }
++.finder-progress__item--active span { background:var(--67-charcoal); border-color:var(--67-charcoal); color:var(--67-gold); box-shadow:0 8px 18px rgba(23,23,21,.12); }
++.selection-summary { margin-top:18px; padding:11px 14px; border-radius:14px; background:#faf9f6; display:flex; align-items:center; justify-content:space-between; gap:15px; }
++.selection-summary>div { display:flex; gap:8px; flex-wrap:wrap; }
++.selection-summary span { padding:7px 11px; border-radius:999px; background:#fff; border:1px solid var(--67-line); color:#4b4842; font-size:12px; font-weight:800; }
++.back-button { display:inline-flex; align-items:center; gap:5px; color:#6f6a61; font-size:12px; font-weight:800; }
++.finder-step { padding-top:26px; }
++.finder-step__title { display:flex; align-items:center; gap:13px; margin-bottom:20px; }
++.finder-step__title>span { width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:var(--67-gold-soft); color:#a87a0e; font-size:12px; font-weight:900; }
++.finder-step__title h3 { margin:0; color:var(--67-charcoal); font-size:19px; font-weight:900; }
++.finder-step__title p { margin:3px 0 0; color:var(--67-muted); font-size:12px; }
++.brand-grid { display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:10px; }
++.brand-card { min-height:115px; padding:13px 8px; border:1px solid #ece8de; border-radius:16px; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; transition:.2s ease; }
++.brand-card:hover { transform:translateY(-3px); border-color:rgba(215,170,53,.66); box-shadow:0 12px 30px rgba(33,30,24,.07); }
++.brand-card__logo { width:48px; height:48px; border-radius:13px; background:#faf9f6; border:1px solid #efebe2; display:grid; place-items:center; position:relative; overflow:hidden; }
++.brand-card__fallback { position:absolute; inset:0; display:grid; place-items:center; color:#8e887d; font-size:11px; font-weight:900; text-transform:uppercase; }
++.brand-card__logo img { position:relative; z-index:2; width:36px; height:36px; object-fit:contain; background:#faf9f6; }
++.brand-card strong { color:#37342f; font-size:12px; font-weight:900; }
++.model-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
++.model-card { min-height:88px; padding:15px; border:1px solid #ebe7dd; border-radius:16px; background:#fff; display:grid; grid-template-columns:46px 1fr auto; align-items:center; gap:12px; text-align:right; transition:.2s ease; }
++.model-card:hover { border-color:rgba(215,170,53,.65); box-shadow:0 10px 26px rgba(37,33,24,.07); transform:translateY(-2px); }
++.model-card__icon { width:46px; height:46px; border-radius:13px; display:grid; place-items:center; background:var(--67-gold-soft); color:#a77910; }
++.model-card>span:nth-child(2) { display:grid; gap:2px; }
++.model-card small { color:#8b867d; font-size:10px; }
++.model-card strong { color:#302e29; font-size:14px; font-weight:900; }
++.model-card>svg { color:#a7a198; }
++.finder-step--year { max-width:760px; margin:0 auto; }
++.year-selector-card { padding:22px; border-radius:20px; background:#faf9f6; border:1px solid #ece8de; display:grid; grid-template-columns:1fr 1fr auto; align-items:end; gap:18px; }
++.year-selector-card__car { min-height:58px; display:flex; align-items:center; gap:12px; color:#9b7417; }
++.year-selector-card__car>div { display:grid; gap:3px; }
++.year-selector-card__car small { color:#8f897e; font-size:11px; }
++.year-selector-card__car strong { color:#2d2a26; font-size:14px; }
++.year-field { display:grid; gap:7px; }
++.year-field span { color:#4f4a43; font-size:12px; font-weight:800; }
++.year-field select { width:100%; min-height:48px; border:1px solid #ddd7ca; border-radius:12px; background:#fff; color:#302e29; padding:0 13px; font-family:inherit; font-size:13px; font-weight:700; outline:none; }
++.year-field select:focus { border-color:var(--67-gold); box-shadow:0 0 0 3px rgba(215,170,53,.12); }
++.finder-submit { min-height:48px; padding:0 17px; border-radius:12px; background:var(--67-charcoal); color:#fff; display:inline-flex; align-items:center; justify-content:center; gap:8px; white-space:nowrap; font-weight:900; font-size:12px; transition:.2s ease; }
++.finder-submit:hover:not(:disabled) { background:#000; transform:translateY(-1px); }
++.finder-submit:disabled { cursor:not-allowed; opacity:.42; }
++.services-section { padding:88px 0 28px; }
++.section-heading { display:flex; align-items:end; justify-content:space-between; gap:30px; margin-bottom:24px; }
++.section-heading>p { max-width:390px; text-align:left; }
++.services-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
++.service-card { position:relative; min-height:218px; padding:24px; border:1px solid var(--67-line); border-radius:20px; background:rgba(255,255,255,.82); transition:.22s ease; overflow:hidden; }
++.service-card::after { content:''; position:absolute; width:90px; height:90px; left:-45px; bottom:-45px; border-radius:50%; background:var(--67-gold-soft); opacity:.65; }
++.service-card:hover { transform:translateY(-4px); box-shadow:0 18px 38px rgba(36,32,24,.08); border-color:rgba(215,170,53,.42); }
++.service-card__number { position:absolute; top:22px; left:22px; color:#d3cec4; font-size:12px; font-weight:900; }
++.service-card__icon { width:48px; height:48px; border-radius:14px; display:grid; place-items:center; background:var(--67-charcoal); color:var(--67-gold); margin-bottom:28px; }
++.service-card h3 { margin:0; color:var(--67-charcoal); font-size:17px; font-weight:900; }
++.service-card p { margin:9px 0 0; color:var(--67-muted); font-size:12px; line-height:1.8; }
++.trust-section { padding:26px 0 70px; }
++.trust-strip { padding:18px 22px; border:1px solid var(--67-line); border-radius:20px; background:#fff; display:grid; grid-template-columns:repeat(4,1fr); }
++.trust-item { min-height:64px; display:flex; align-items:center; justify-content:center; gap:11px; border-left:1px solid #eeeae1; }
++.trust-item:last-child { border-left:0; }
++.trust-item__icon { width:38px; height:38px; border-radius:11px; display:grid; place-items:center; background:var(--67-gold-soft); color:#a77910; }
++.trust-item>div:last-child { display:grid; gap:1px; }
++.trust-item strong { color:var(--67-charcoal); font-size:16px; font-weight:900; }
++.trust-item span { color:#8c867d; font-size:10px; font-weight:700; }
++.offers-callout { padding:0 0 84px; }
++.offers-card { position:relative; overflow:hidden; min-height:205px; padding:38px 42px; border-radius:26px; background:var(--67-charcoal); color:#fff; display:flex; align-items:center; justify-content:space-between; gap:40px; }
++.offers-card::after { content:'67'; position:absolute; left:34px; top:50%; transform:translateY(-51%); color:rgba(215,170,53,.08); font-size:150px; line-height:1; font-weight:900; letter-spacing:-10px; }
++.offers-card>div,.offers-card__button { position:relative; z-index:2; }
++.offers-card__eyebrow { color:var(--67-gold); font-size:12px; font-weight:900; }
++.offers-card h2 { color:#fff; margin-top:6px; }
++.offers-card p { max-width:650px; margin:10px 0 0; color:rgba(255,255,255,.58); font-size:13px; }
++.offers-card__button { min-width:145px; min-height:48px; padding:0 18px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--67-gold); color:var(--67-charcoal); font-size:13px; font-weight:900; transition:.2s ease; }
++.offers-card__button:hover { background:var(--67-gold-hover); transform:translateY(-2px); }
++
++@media (max-width:1100px) {
++  .main-nav { gap:18px; }
++  .hero-premium__grid { grid-template-columns:1fr .85fr; gap:34px; }
++  .brand-grid { grid-template-columns:repeat(5,minmax(0,1fr)); }
++  .services-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
++}
++@media (max-width:860px) {
++  .promo-strip__inner { justify-content:space-between; }
++  .main-nav { position:absolute; top:calc(100% + 1px); right:16px; left:16px; padding:12px; border:1px solid var(--67-line); border-radius:16px; background:#fff; box-shadow:0 18px 40px rgba(30,28,23,.12); display:none; flex-direction:column; align-items:stretch; gap:2px; }
++  .main-nav--open { display:flex; }
++  .main-nav a { padding:11px 12px; border-radius:10px; }
++  .main-nav a:hover { background:var(--67-cream); }
++  .mobile-menu-button { display:inline-grid; }
++  .header-cta,.icon-button--search { display:none; }
++  .hero-premium__grid { grid-template-columns:1fr; padding-top:58px; padding-bottom:94px; }
++  .hero-copy { max-width:none; }
++  .hero-copy h1,.hero-copy>p { max-width:700px; }
++  .hero-visual { min-height:315px; }
++  .vehicle-finder__header { flex-direction:column; }
++  .finder-progress { width:100%; min-width:0; }
++  .brand-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
++  .model-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
++  .year-selector-card { grid-template-columns:1fr 1fr; }
++  .finder-submit { grid-column:1/-1; }
++  .trust-strip { grid-template-columns:repeat(2,1fr); gap:0; }
++  .trust-item { border-left:0; border-bottom:1px solid #eeeae1; }
++  .trust-item:nth-last-child(-n+2) { border-bottom:0; }
++  .offers-card { align-items:flex-start; flex-direction:column; }
++}
++@media (max-width:620px) {
++  .promo-strip__message { max-width:205px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
++  .promo-strip__link { font-size:11px; }
++  .site-header__inner { min-height:66px; }
++  .brand__logo-wrap { width:38px; height:38px; }
++  .brand__name,.icon-button--user { display:none; }
++  .header-actions { margin-inline-start:auto; }
++  .hero-premium__grid { padding-top:44px; padding-bottom:78px; gap:34px; }
++  .hero-copy h1 { font-size:38px; letter-spacing:-.7px; }
++  .hero-copy>p { font-size:14px; }
++  .hero-btn { width:100%; }
++  .hero-proof { display:grid; gap:9px; }
++  .hero-visual { min-height:280px; padding:18px; border-radius:22px; }
++  .hero-car-icon { width:160px; }
++  .hero-car-stage__circle { width:200px; height:200px; }
++  .floating-part { font-size:10px; }
++  .finder-section { margin-top:-42px; }
++  .vehicle-finder { padding:20px 14px; border-radius:20px; }
++  .vehicle-finder__header h2,.section-heading h2,.offers-card h2 { font-size:24px; }
++  .finder-progress__item { min-width:58px; }
++  .selection-summary { align-items:flex-start; }
++  .brand-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
++  .brand-card { min-height:104px; }
++  .model-grid { grid-template-columns:1fr; }
++  .year-selector-card { grid-template-columns:1fr; padding:16px; }
++  .finder-submit { grid-column:auto; width:100%; }
++  .services-section { padding-top:64px; }
++  .section-heading { align-items:flex-start; flex-direction:column; gap:8px; }
++  .section-heading>p { text-align:right; }
++  .services-grid { grid-template-columns:1fr; }
++  .service-card { min-height:190px; }
++  .trust-strip { grid-template-columns:1fr; padding:10px 16px; }
++  .trust-item,.trust-item:nth-last-child(-n+2) { justify-content:flex-start; padding:12px 2px; border-bottom:1px solid #eeeae1; }
++  .trust-item:last-child { border-bottom:0; }
++  .offers-card { min-height:260px; padding:30px 24px; border-radius:20px; }
++  .offers-card::after { left:12px; font-size:120px; }
++  .offers-card__button { width:100%; }
++}
