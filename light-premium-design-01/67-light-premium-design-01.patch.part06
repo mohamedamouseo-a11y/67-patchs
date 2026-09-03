@@ -1,0 +1,328 @@
+}
++
++.light-trust-item__icon {
++  color: var(--67-gold);
++}
++
++.light-trust-item > div:last-child {
++  display: grid;
++}
++
++.light-trust-item strong {
++  color: #2f2c28;
++  font-size: 15px;
++  font-weight: 900;
++}
++
++.light-trust-item span {
++  color: #918b82;
++  font-size: 10px;
++}
++
++.light-offers-section {
++  padding: 0 0 64px;
++}
++
++.light-offers-card {
++  position: relative;
++  min-height: 154px;
++  padding: 26px 30px;
++  border: 1px solid #eadfca;
++  border-radius: 18px;
++  overflow: hidden;
++  display: grid;
++  grid-template-columns: 1fr 1.5fr auto auto;
++  align-items: center;
++  gap: 26px;
++  background:
++    radial-gradient(circle at 3% 0%, rgba(208, 167, 75, 0.16), transparent 24%),
++    linear-gradient(105deg, #fffaf1, #f8f0e4 55%, #fffaf3);
++}
++
++.light-offers-card__art {
++  display: flex;
++  align-items: end;
++  gap: 0;
++  min-height: 90px;
++}
++
++.offer-disc,
++.offer-box {
++  display: grid;
++  place-items: center;
++  color: #9c7623;
++  background: linear-gradient(145deg, #fff, #e7d4ae);
++  border: 1px solid #e1c98f;
++  box-shadow: 0 10px 24px rgba(109, 79, 20, 0.1);
++}
++
++.offer-disc {
++  width: 82px;
++  height: 82px;
++  border-radius: 50%;
++}
++
++.offer-box {
++  width: 70px;
++  height: 64px;
++  border-radius: 14px;
++  margin-right: -12px;
++  transform: translateY(7px) rotate(-4deg);
++}
++
++.light-offers-card__copy > span {
++  color: var(--67-gold-deep);
++  font-size: 11px;
++  font-weight: 900;
++}
++
++.light-offers-card__copy h2 {
++  margin: 4px 0 0;
++  color: #302c26;
++  font-size: 21px;
++  font-weight: 900;
++}
++
++.light-offers-card__copy p {
++  margin: 5px 0 0;
++  color: #857e73;
++  font-size: 11px;
++}
++
++.light-offers-card__discount {
++  display: grid;
++  justify-items: center;
++  color: var(--67-gold-deep);
++}
++
++.light-offers-card__discount small {
++  font-size: 10px;
++}
++
++.light-offers-card__discount strong {
++  font-size: 33px;
++  line-height: 1;
++}
++
++.light-offers-card__button {
++  min-width: 132px;
++  min-height: 44px;
++  border-radius: 11px;
++  background: linear-gradient(180deg, #d6a642, #bd871e);
++  color: #fff;
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  gap: 7px;
++  font-size: 12px;
++  font-weight: 900;
++}
++
++@media (max-width: 1180px) {
++  .header-search {
++    display: none;
++  }
++
++  .main-nav {
++    gap: 17px;
++  }
++
++  .light-hero__grid {
++    grid-template-columns: 1fr 0.9fr;
++    gap: 34px;
++  }
++
++  .quick-services__grid {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
++}
++
++@media (max-width: 900px) {
++  .main-nav {
++    position: absolute;
++    top: calc(100% + 1px);
++    right: 16px;
++    left: 16px;
++    display: none;
++    flex-direction: column;
++    align-items: stretch;
++    gap: 2px;
++    padding: 12px;
++    border: 1px solid #e7e1d8;
++    border-radius: 15px;
++    background: #fff;
++    box-shadow: 0 18px 40px rgba(50, 43, 33, 0.11);
++  }
++
++  .main-nav--open {
++    display: flex;
++  }
++
++  .main-nav a {
++    padding: 10px 11px;
++    border-radius: 9px;
++  }
++
++  .mobile-menu-button {
++    display: inline-grid;
++  }
++
++  .header-cta {
++    display: none;
++  }
++
++  .light-hero__grid {
++    grid-template-columns: 1fr;
++    padding-top: 44px;
++    padding-bottom: 78px;
++  }
++
++  .light-hero__copy {
++    max-width: 680px;
++  }
++
++  .auto-showcase {
++    min-height: 280px;
++  }
++
++  .vehicle-fields {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
++
++  .vehicle-search-btn {
++    min-height: 58px;
++  }
++
++  .light-offers-card {
++    grid-template-columns: auto 1fr auto;
++  }
++
++  .light-offers-card__button {
++    grid-column: 1 / -1;
++    justify-self: stretch;
++  }
++}
++
++@media (max-width: 620px) {
++  .promo-strip__message {
++    max-width: 210px;
++    overflow: hidden;
++    white-space: nowrap;
++    text-overflow: ellipsis;
++  }
++
++  .site-header__inner {
++    min-height: 66px;
++  }
++
++  .brand__logo {
++    width: 44px;
++    height: 36px;
++  }
++
++  .icon-button:first-child,
++  .icon-button--user {
++    display: none;
++  }
++
++  .header-actions {
++    margin-inline-start: auto;
++  }
++
++  .light-hero__grid {
++    padding-top: 36px;
++    gap: 16px;
++  }
++
++  .light-hero__copy h1 {
++    font-size: 38px;
++  }
++
++  .light-hero__copy p {
++    font-size: 13px;
++  }
++
++  .light-hero__actions {
++    display: grid;
++  }
++
++  .light-btn {
++    width: 100%;
++  }
++
++  .auto-showcase {
++    min-height: 235px;
++  }
++
++  .auto-showcase__car {
++    width: 280px;
++  }
++
++  .auto-showcase__ring--one {
++    width: 215px;
++    height: 215px;
++  }
++
++  .auto-showcase__ring--two {
++    width: 155px;
++    height: 155px;
++  }
++
++  .vehicle-finder-wrap {
++    margin-top: -34px;
++  }
++
++  .vehicle-finder-light {
++    padding: 16px 13px;
++  }
++
++  .vehicle-finder-light__head {
++    align-items: flex-start;
++    flex-direction: column;
++    gap: 9px;
++  }
++
++  .vehicle-fields {
++    grid-template-columns: 1fr;
++  }
++
++  .vehicle-field {
++    min-height: 68px;
++  }
++
++  .vehicle-search-btn {
++    min-height: 52px;
++    width: 100%;
++  }
++
++  .quick-services__grid {
++    grid-template-columns: 1fr;
++  }
++
++  .light-trust-strip {
++    grid-template-columns: repeat(2, 1fr);
++  }
++
++  .light-trust-item {
++    padding: 10px 4px;
++    border-bottom: 1px solid #eee9e1;
++  }
++
++  .light-trust-item:nth-last-child(-n + 2) {
++    border-bottom: 0;
++  }
++
++  .light-offers-card {
++    grid-template-columns: 1fr;
++    gap: 16px;
++    padding: 22px;
++  }
++
++  .light-offers-card__art {
++    display: none;
++  }
++
++  .light-offers-card__discount {
++    justify-items: start;
++  }
++}
