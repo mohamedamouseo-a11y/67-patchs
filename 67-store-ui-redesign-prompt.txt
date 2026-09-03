@@ -1,0 +1,15 @@
+نفّذ باتش الـ UI Redesign الموجود في هذا الريبو على مشروع 67 داخل:
+mohamedamouseo-a11y/developer-hub-67
+المسار الأساسي للتطبيق:
+QARIX/
+
+المطلوب:
+- استخدم 67-store-ui-redesign-concept1.patch.
+- لا تعمل Push أو Commit مباشرة على main في developer-hub-67.
+- أنشئ Branch منفصل باسم مناسب مثل redesign/store-home-concept-1.
+- حافظ على الـ functionality الحالية بالكامل، خصوصًا Flow: الماركة → الموديل → سنة الصنع → /request.
+- لا تغيّر RequestPart أو Offers أو بيانات السيارات في src/data/cars.js.
+- حافظ على RTL واللغة العربية.
+- اختبر Desktop / Tablet / Mobile.
+- بعد التطبيق شغّل npm run build و npm run lint إن أمكن.
+- لا تعمل merge إلى main.
