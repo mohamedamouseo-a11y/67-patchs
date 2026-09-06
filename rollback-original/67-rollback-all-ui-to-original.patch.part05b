@@ -1,0 +1,66 @@
+e={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: 'var(--color-primary)', fontWeight: 'bold' }}
++        >
++          <ChevronLeft size={20} />
++          رجوع
++        </button>
++      )}
+ 
+-            <div className="light-hero__actions">
+-              <button
+-                className="light-btn light-btn--primary"
+-                onClick={() => document.getElementById('vehicle-finder')?.scrollIntoView({ behavior: 'smooth' })}
++      {step === 1 && (
++        <div className="animate-fade-in">
++          <h3 style={{ marginBottom: '20px', fontSize: '20px' }}>1. اختر الماركة</h3>
++          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '20px' }}>
++            {brands.map((brand) => (
++              <div 
++                key={brand.name} 
++                className="card"
++                style={{ cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '24px 10px' }}
++                onClick={() => handleBrandSelect(brand.name)}
+               >
+-                ابحث عن قطع غيار
+-                <ChevronLeft size={18} />
+-              </button>
+-              <Link to="/offers" className="light-btn light-btn--outline">
+-                تصفح العروض
+-              </Link>
+-            </div>
+-          </div>
+-
+-          <div className="auto-showcase" aria-hidden="true">
+-            <span className="auto-showcase__ring auto-showcase__ring--one" />
+-            <span className="auto-showcase__ring auto-showcase__ring--two" />
+-            <div className="auto-showcase__platform" />
+-            <Car className="auto-showcase__car" size={245} strokeWidth={1.05} />
+-            <div className="auto-part auto-part--brake">
+-              <Settings size={34} />
+-            </div>
+-            <div className="auto-part auto-part--suspension">
+-              <Wrench size={30} />
+-            </div>
+-            <div className="auto-showcase__badge">
+-              <ShieldCheck size={18} />
+-              خيارات موثوقة
+-            </div>
+-          </div>
+-        </div>
+-      </section>
+-
+-      <section className="vehicle-finder-wrap" id="vehicle-finder">
+-        <div className="container">
+-          <div className="vehicle-finder-light">
+-            <div className="vehicle-finder-light__head">
+-              <div>
+-                <span>ابحث عن قطع غيار بسيارتك</span>
+-                <h2>اختر بيانات سيارتك لعرض القطع المناسبة</h2>
++                <div style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', borderRadius: '50%', padding: '4px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
++                  <img 
++                    src={brand.logo} 
++                    alt={brand.name} 
++                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
++                    onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${brand.name}&background=1e3a29&color=fff&rounded=true` }}
++                  />
++                </div>
++                <span style={{ fontWeigh
