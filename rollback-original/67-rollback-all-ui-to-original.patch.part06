@@ -1,0 +1,155 @@
+t: 'bold', fontSize: '16px' }}>{brand.name}</span>
+               </div>
+-              <button className="help-chip">دليل المساعدة</button>
+-            </div>
+-
+-            <div className="vehicle-fields">
+-              <label className="vehicle-field">
+-                <span className="vehicle-field__step">1</span>
+-                <span className="vehicle-field__label">الماركة</span>
+-                <select value={selectedBrand} onChange={handleBrandChange}>
+-                  <option value="">اختر الماركة</option>
+-                  {brands.map((brand) => (
+-                    <option key={brand.name} value={brand.name}>{brand.name}</option>
+-                  ))}
+-                </select>
+-              </label>
+-
+-              <label className={`vehicle-field ${!selectedBrand ? 'vehicle-field--disabled' : ''}`}>
+-                <span className="vehicle-field__step">2</span>
+-                <span className="vehicle-field__label">الموديل</span>
+-                <select
+-                  value={selectedModel}
+-                  onChange={handleModelChange}
+-                  disabled={!selectedBrand}
+-                >
+-                  <option value="">اختر الموديل</option>
+-                  {models.map((model) => (
+-                    <option key={model.name} value={model.name}>{model.name}</option>
+-                  ))}
+-                </select>
+-              </label>
+-
+-              <label className={`vehicle-field ${!selectedModel ? 'vehicle-field--disabled' : ''}`}>
+-                <span className="vehicle-field__step">3</span>
+-                <span className="vehicle-field__label">السنة</span>
+-                <select
+-                  value={selectedYear}
+-                  onChange={(event) => setSelectedYear(event.target.value)}
+-                  disabled={!selectedModel}
+-                >
+-                  <option value="">اختر سنة الصنع</option>
+-                  {years.map((year) => (
+-                    <option key={year} value={year}>{year}</option>
+-                  ))}
+-                </select>
+-              </label>
+-
+-              <button
+-                className="vehicle-search-btn"
+-                onClick={handleSubmitVehicle}
+-                disabled={!selectedBrand || !selectedModel || !selectedYear}
+-              >
+-                <Search size={18} />
+-                ابحث
+-              </button>
+-            </div>
+-          </div>
+-        </div>
+-      </section>
+-
+-      <section className="quick-services">
+-        <div className="container">
+-          <div className="quick-services__grid">
+-            {services.map(({ icon: Icon, title, text }) => (
+-              <article className="quick-service-card" key={title}>
+-                <div className="quick-service-card__icon"><Icon size={28} /></div>
+-                <div>
+-                  <h3>{title}</h3>
+-                  <p>{text}</p>
+-                </div>
+-                <span className="quick-service-card__arrow"><ChevronLeft size={18} /></span>
+-              </article>
+             ))}
+           </div>
+         </div>
+-      </section>
++      )}
+ 
+-      <section className="light-trust-section">
+-        <div className="container">
+-          <div className="light-trust-strip">
+-            {trustItems.map(({ icon: Icon, value, label }) => (
+-              <div className="light-trust-item" key={label}>
+-                <div className="light-trust-item__icon"><Icon size={22} /></div>
+-                <div>
+-                  <strong>{value}</strong>
+-                  <span>{label}</span>
++      {step === 2 && (
++        <div className="animate-fade-in">
++          <h3 style={{ marginBottom: '20px', fontSize: '20px' }}>2. اختر الفئة - {selectedBrand}</h3>
++          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '24px' }}>
++            {getModelsForBrand(selectedBrand).map((model) => (
++              <div 
++                key={model.name} 
++                className="card"
++                style={{ cursor: 'pointer', padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
++                onClick={() => handleModelSelect(model.name)}
++              >
++                <div style={{ height: '140px', backgroundColor: '#f0f0f0', width: '100%' }}>
++                  <img 
++                    src={model.image} 
++                    alt={model.name} 
++                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
++                  />
++                </div>
++                <div style={{ padding: '16px', textAlign: 'center' }}>
++                  <span style={{ fontWeight: 'bold', fontSize: '18px' }}>{model.name}</span>
+                 </div>
+               </div>
+             ))}
+           </div>
+         </div>
+-      </section>
++      )}
+ 
+-      <section className="light-offers-section">
+-        <div className="container">
+-          <div className="light-offers-card">
+-            <div className="light-offers-card__art" aria-hidden="true">
+-              <div className="offer-disc"><Settings size={52} /></div>
+-              <div className="offer-box"><PackageSearch size={42} /></div>
+-            </div>
+-
+-            <div className="light-offers-card__copy">
+-              <span>عروض مميزة</span>
+-              <h2>خصومات مختارة على قطع الغيار</h2>
+-              <p>استفد من عروض محدودة على مجموعة من القطع والخدمات.</p>
+-            </div>
+-
+-            <div className="light-offers-card__discount">
+-              <small>خصم حتى</small>
+-              <strong>25%</strong>
+-            </div>
+-
+-            <Link to="/offers" className="light-offers-card__button">
+-              تسوق الآن
+-              <ArrowLeft size={17} />
+-            </Link>
++      {step === 3 && (
++        <div className="animate-fade-in">
++          <h3 style={{ marginBottom: '20px', fontSize: '20px' }}>3. اختر سنة الصنع - {selectedBrand} {selectedModel}</h3>
++          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '16px' }}>
++            {years.map((year) => (
++              <div 
++                key={year} 
++                className="card"
++                style={{ cursor: 'pointer', textAlign: 'center', fontWeight: 'bold', padding: '16px' }}
++                onClick={() => handleYearSelect(year)}
++              >
++                {year}
++              </div>
++            ))}
+           </div>
+         </div>
+-      </sect
