@@ -1,0 +1,184 @@
+ion: column;
+-    gap: 9px;
+-  }
+-
+-  .vehicle-fields {
+-    grid-template-columns: 1fr;
+-  }
+-
+-  .vehicle-field {
+-    min-height: 68px;
+-  }
+-
+-  .vehicle-search-btn {
+-    min-height: 52px;
+-    width: 100%;
+-  }
+-
+-  .quick-services__grid {
+-    grid-template-columns: 1fr;
+-  }
+-
+-  .light-trust-strip {
+-    grid-template-columns: repeat(2, 1fr);
+-  }
+-
+-  .light-trust-item {
+-    padding: 10px 4px;
+-    border-bottom: 1px solid #eee9e1;
+-  }
+-
+-  .light-trust-item:nth-last-child(-n + 2) {
+-    border-bottom: 0;
+-  }
+-
+-  .light-offers-card {
+-    grid-template-columns: 1fr;
+-    gap: 16px;
+-    padding: 22px;
+-  }
+-
+-  .light-offers-card__art {
+-    display: none;
+-  }
+-
+-  .light-offers-card__discount {
+-    justify-items: start;
++  &::after {
++    right: 0;
++    border-right-color: var(--border);
+   }
+ }
+diff --git a/QARIX/src/components/Navbar.jsx b/QARIX/src/components/Navbar.jsx
+--- a/QARIX/src/components/Navbar.jsx
++++ b/QARIX/src/components/Navbar.jsx
+@@ -1,49 +1,33 @@
+-import React, { useState } from 'react';
+-import { Bell, Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
++import React from 'react';
++import { Search, Bell, User, Wrench } from 'lucide-react';
+ import { Link } from 'react-router-dom';
+ 
+ const Navbar = () => {
+-  const [menuOpen, setMenuOpen] = useState(false);
++  return (
++    <header style={{ backgroundColor: 'var(--color-primary)', color: 'white', padding: '15px 0' }}>
++      <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px' }}>
+ 
+-  return (
+-    <header className="site-header">
+-      <div className="container site-header__inner">
+-        <Link to="/" className="brand" aria-label="67 الرئيسية">
+-          <img src="/logo.jpg" alt="67" className="brand__logo" />
++        {/* Logo */}
++        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'white' }}>
++          <img src="/logo.jpg" alt="QARIX Logo" style={{ height: '40px', borderRadius: '8px' }} />
++          <h1 style={{ fontSize: '24px', fontWeight: '900', letterSpacing: '1px', margin: 0 }}>QARIX</h1>
+         </Link>
+ 
+-        <nav className={`main-nav ${menuOpen ? 'main-nav--open' : ''}`} aria-label="التنقل الرئيسي">
+-          <Link to="/" onClick={() => setMenuOpen(false)}>الرئيسية</Link>
+-          <Link to="/request" onClick={() => setMenuOpen(false)}>قطع الغيار</Link>
+-          <Link to="/request" onClick={() => setMenuOpen(false)}>التشاليح</Link>
+-          <Link to="/request" onClick={() => setMenuOpen(false)}>ورش وإصلاح</Link>
+-          <Link to="/request" onClick={() => setMenuOpen(false)}>خدمات الطريق</Link>
+-          <Link to="/offers" onClick={() => setMenuOpen(false)}>العروض</Link>
+-        </nav>
+-
+-        <div className="header-search" role="search">
+-          <Search size={18} />
+-          <input type="search" placeholder="ابحث عن قطعة غيار أو رقم قطعة..." aria-label="ابحث عن قطعة غيار" />
++        {/* Search Bar */}
++        <div style={{ flex: 1, maxWidth: '500px', position: 'relative', display: 'none' }} className="search-desktop">
++           {/* In a real app this might be active, but for now our search flow is separate */}
+         </div>
+ 
+-        <div className="header-actions">
+-          <button className="icon-button" aria-label="المفضلة"><Heart size={20} /></button>
+-          <button className="icon-button" aria-label="الإشعارات">
+-            <Bell size={20} />
+-            <span className="notification-dot" />
++        {/* Icons */}
++        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
++          <button style={{ color: 'white', padding: '8px' }}>
++            <Bell size={24} />
+           </button>
+-          <button className="icon-button" aria-label="السلة"><ShoppingCart size={20} /></button>
+-          <button className="icon-button icon-button--user" aria-label="حسابي"><User size={20} /></button>
+-          <Link to="/request" className="header-cta">أضف سيارتك</Link>
+-
+-          <button
+-            className="mobile-menu-button"
+-            aria-label={menuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
+-            onClick={() => setMenuOpen((open) => !open)}
+-          >
+-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
++          <button style={{ color: 'white', padding: '8px' }}>
++            <User size={24} />
+           </button>
+         </div>
++
+       </div>
+     </header>
+   );
+diff --git a/QARIX/src/components/PromoBanner.jsx b/QARIX/src/components/PromoBanner.jsx
+--- a/QARIX/src/components/PromoBanner.jsx
++++ b/QARIX/src/components/PromoBanner.jsx
+@@ -1,19 +1,19 @@
+ import React from 'react';
+-import { Link } from 'react-router-dom';
+-import { ArrowLeft, Sparkles } from 'lucide-react';
+ 
+ const PromoBanner = () => {
+   return (
+-    <div className="promo-strip">
+-      <div className="container promo-strip__inner">
+-        <span className="promo-strip__message">
+-          <Sparkles size={15} />
+-          خصومات تصل إلى 50% على قطع غيار مختارة
+-        </span>
+-        <Link to="/offers" className="promo-strip__link">
+-          استعرض العروض
+-          <ArrowLeft size={14} />
+-        </Link>
++    <div style={{
++      background: 'linear-gradient(90deg, var(--color-primary) 0%, #d4a373 100%)',
++      color: 'white',
++      padding: '12px 0',
++      textAlign: 'center',
++      overflow: 'hidden',
++      position: 'relative'
++    }}>
++      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
++        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
++          ✨ عروض حصرية كل يوم ✨
++        </h3>
+       </div>
+     </div>
+   );
+diff --git a/QARIX/src/pages/Home.jsx b/QARIX/src/pages/Home.jsx
+--- a/QARIX/src/pages/Home.jsx
++++ b/QARIX/src/pages/Home.jsx
+@@ -1,248 +1,123 @@
+-import React, { useMemo, useState } from 'react';
+-import { Link, useNavigate } from 'react-router-dom';
+-import { brands, generateYears, getModelsForBrand } from '../data/cars';
+-import {
+-  ArrowLeft,
+-  Car,
+-  ChevronLeft,
+-  Clock3,
+-  Headphones,
+-  PackageSearch,
+-  Search,
+-  Settings,
+-  ShieldCheck,
+-  Sparkles,
+-  Truck,
+-  Wrench,
+-} from 'lucide-react';
+-
+-const services = [
+-  { icon: PackageSearch, title: 'قطع الغيار', text: 'قطع أصلية وتجارية لمختلف الماركات' },
+-  { icon: Car, title: 'التشاليح', text: 'قطع مستعملة بحالة ممتازة وأسعار أفضل' },
+-  { icon: Wrench, title: 'ورش وإصلاح', text: 
