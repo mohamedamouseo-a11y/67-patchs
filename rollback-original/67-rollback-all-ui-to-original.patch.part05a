@@ -1,0 +1,92 @@
+'ورش وخدمات صيانة موثوقة' },
+-  { icon: Truck, title: 'خدمات الطريق', text: 'مساعدة أسرع عندما تحتاجها' },
+-];
+-
+-const trustItems = [
+-  { icon: Car, value: '+43', label: 'ماركات سيارات' },
+-  { icon: Headphones, value: '24/7', label: 'خدمة العملاء' },
+-  { icon: Clock3, value: 'فوري', label: 'استلام الطلب' },
+-  { icon: ShieldCheck, value: 'موثوق', label: 'بائعون موثوقون' },
+-];
++import React, { useState } from 'react';
++import { useNavigate } from 'react-router-dom';
++import { brands, getModelsForBrand, generateYears } from '../data/cars';
++import { ChevronLeft, AlertTriangle } from 'lucide-react';
+ 
+ const Home = () => {
+   const navigate = useNavigate();
+-  const [selectedBrand, setSelectedBrand] = useState('');
+-  const [selectedModel, setSelectedModel] = useState('');
+-  const [selectedYear, setSelectedYear] = useState('');
++  const [step, setStep] = useState(1);
++  const [selectedBrand, setSelectedBrand] = useState(null);
++  const [selectedModel, setSelectedModel] = useState(null);
++  const [selectedYear, setSelectedYear] = useState(null);
+ 
+-  const years = useMemo(() => generateYears(), []);
+-  const models = useMemo(
+-    () => (selectedBrand ? getModelsForBrand(selectedBrand) : []),
+-    [selectedBrand]
+-  );
++  const years = generateYears();
+ 
+-  const handleBrandChange = (event) => {
+-    setSelectedBrand(event.target.value);
+-    setSelectedModel('');
+-    setSelectedYear('');
++  const handleBrandSelect = (brandName) => {
++    setSelectedBrand(brandName);
++    setStep(2);
+   };
+ 
+-  const handleModelChange = (event) => {
+-    setSelectedModel(event.target.value);
+-    setSelectedYear('');
++  const handleModelSelect = (modelName) => {
++    setSelectedModel(modelName);
++    setStep(3);
+   };
+ 
+-  const handleSubmitVehicle = () => {
+-    if (!selectedBrand || !selectedModel || !selectedYear) return;
+-
++  const handleYearSelect = (year) => {
++    setSelectedYear(year);
+     navigate('/request', {
+-      state: {
+-        brand: selectedBrand,
+-        model: selectedModel,
+-        year: Number(selectedYear),
+-      },
++      state: { brand: selectedBrand, model: selectedModel, year }
+     });
+   };
+ 
+   return (
+-    <div className="home-light-premium">
+-      <section className="light-hero">
+-        <div className="container light-hero__grid">
+-          <div className="light-hero__copy">
+-            <span className="light-eyebrow">
+-              <Sparkles size={16} />
+-              منصة 67 لقطع غيار وخدمات السيارات
+-            </span>
++    <div className="container" style={{ padding: '40px 16px', minHeight: '60vh' }}>
+ 
+-            <h1>
+-              لقطعتك الصح..
+-              <strong> ابدأ بسيارتك</strong>
+-            </h1>
++      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
++        <h2 style={{ fontSize: '28px', color: 'var(--color-primary)', marginBottom: '8px' }}>ابحث عن قطعة غيار لسيارتك</h2>
++        <p style={{ color: 'var(--color-text-muted)' }}>اختر مواصفات سيارتك للبدء</p>
++      </div>
+ 
+-            <p>
+-              تصفح قطع الغيار والخدمات المناسبة لسيارتك، واختر من خيارات متعددة
+-              بتجربة أسرع وأكثر وضوحًا.
+-            </p>
++      {step > 1 && (
++        <button 
++          onClick={() => setStep(step - 1)} 
++          styl
