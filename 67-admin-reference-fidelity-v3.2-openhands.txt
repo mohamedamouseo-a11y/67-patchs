@@ -1,0 +1,165 @@
+Sixty Seven Admin Overview — Reference Fidelity V3.2
+
+GOAL
+Bring the authenticated /admin overview materially closer to the approved Saudi automotive luxury reference. This is a VISUAL FIDELITY pass, not a backend rewrite.
+
+WORKING DIRECTORY
+/67
+
+ALLOWED FILES
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+
+DO NOT TOUCH
+- backend/server code
+- APIs/auth/session logic
+- routes
+- GitHub module behavior
+- data mutation logic
+- package.json/dependencies
+- src/App.jsx unless you discover an actual regression in the already-working admin particle suppression (otherwise leave it untouched)
+
+IMPORTANT WORKFLOW
+- Work on the existing /67 checkout only.
+- No clone, pull, npm install, broad scan, commit, or push.
+- Inspect only the current AdminDashboard.jsx/css plus the minimum nearby code needed to understand the existing revenue chart markup/data.
+- Any large CSS write must be atomic via SCP/base64/temp-file+mv. DO NOT use a long heredoc.
+- Preserve every existing admin tab, click handler, auth/session behavior, live state, export/filter/search control and data source.
+- Do not invent fake backend values.
+
+CURRENT VISUAL STATE VS APPROVED REFERENCE
+The current screenshot is improved structurally but still visibly below the reference:
+1) Sidebar is dark now, but it ends around mid-page instead of visually owning the full viewport height. The approved reference has a full-height premium right rail, stronger gold iconography, footer admin identity block and logout area.
+2) Header is dark but flat. The reference is cinematic Saudi automotive: stronger depth, warm gold glow, road/vehicle language, skyline/palm/Kingdom-Tower feeling, better date/control treatment, and richer visual hierarchy.
+3) KPI cards are too sparse/basic. Reference cards have larger premium icon medallions, stronger number hierarchy, green change figures/microtrend accents and warmer ivory surfaces.
+4) System Health is dark but still generic. Reference has an automotive/Saudi visual zone on the right plus stronger status-card treatment and tighter premium spacing.
+5) Revenue card is the biggest failure: it still has a huge blank area. A visible chart MUST render and occupy the lower ~60% of the card like the reference.
+6) Middle 3-column grid exists, but the cards are too tall/empty and visually unbalanced. The reference is compact and information-dense.
+7) Live Operations currently has only two visible activity blocks and too much dead space. Keep the real existing items/data, but re-layout them as a compact timeline/list so the card feels intentionally filled without fabricating events.
+8) Current Operations card needs stronger compact metric tiles + status rows, closer to the approved reference.
+9) Financial Ledger is acceptable structurally but still too plain. Reference has stronger section title, compact toolbar, clearer row rhythm and premium controls.
+10) Overall background is too pure-white/flat. Reference uses warm ivory, subtle gold/automotive texture, deep black, champagne gold and restrained green.
+
+REFERENCE FIDELITY REQUIREMENTS
+
+A. FULL-HEIGHT DARK SIDEBAR
+- Ensure the right sidebar visually spans the viewport: min-height:100vh and sticky/fixed behavior only if it does not break existing layout/scrolling.
+- Deep near-black #090d12 / #0b0f14 base.
+- Champagne gold active item, subtle border/glow, icons aligned consistently.
+- Improve grouping labels and vertical rhythm.
+- Add/restore a compact admin identity/footer area ONLY using already-available profile/session info; do not create new auth state. If no safe existing identity data is available, keep footer decorative/minimal rather than inventing user data.
+- Do not let the dark rail stop halfway down the page on desktop.
+
+B. CINEMATIC SAUDI AUTOMOTIVE HEADER
+- Keep the existing title/content and period/export/refresh controls functional.
+- Create depth with layered CSS gradients, subtle road-line arcs, soft gold glow, automotive silhouette/watermark using existing Lucide CarFront or CSS shapes only.
+- Add a Saudi skyline/palm/urban mood through abstract CSS silhouettes/pseudo-elements; do not fetch external assets.
+- Header should feel like a premium automotive command center, not a plain dark rectangle.
+- Keep text readable and avoid excessive decorative noise.
+- Target height roughly 120–145px desktop.
+
+C. KPI ROW PREMIUM FINISH
+- Four equal cards remain.
+- Warm ivory/white surface, soft shadow, 14–18px radius.
+- Larger icon medallion with subtle gold-tinted background.
+- Stronger value typography.
+- Retain the real labels/values.
+- Use any already-existing comparison/status text to create the green microtrend line; do not invent percentages.
+- Reduce empty interior space.
+
+D. SYSTEM HEALTH SIGNATURE BAND
+- Keep full-width dark band.
+- Split visual composition: metrics section + decorative automotive/Saudi visual zone.
+- Metrics stay real and readable.
+- Stronger card contrast, compact bars, restrained green/gold highlights.
+- Add a subtle CarFront/road/skyline visual treatment on the decorative side with CSS/Lucide only.
+- Avoid huge unused dark space.
+
+E. REVENUE CHART — MUST ACTUALLY RENDER
+This is NON-NEGOTIABLE.
+- Inspect current JSX and determine why the chart area is blank despite height CSS.
+- If current Recharts ResponsiveContainer can be made reliable, fix parent width/height/min-width/min-height and render it.
+- If Recharts still renders blank in this layout, replace ONLY the visualization body with an inline SVG chart generated from the SAME EXISTING revenue series/data already used by the component. No new dependency and no fake values.
+- SVG fallback should include: grid lines, gold line, soft area fill/gradient, visible points, basic x labels and optional tooltip only if already easy to preserve.
+- Chart must visually occupy at least ~190px height and most of the card width.
+- The card should not have a large empty white block.
+
+F. COMPACT 3-COLUMN COMMAND CENTER
+Desktop target proportions approximately:
+- Revenue/performance: 2.0fr
+- Live operations: 1.05fr
+- Current operations: 1.05fr
+All three in one row and similar visual height.
+
+Revenue card:
+- top summary tiles compact
+- visible chart beneath
+- bottom total/growth summary integrated tightly
+
+Live Operations:
+- convert existing events into compact timeline rows with icon/status/time alignment where existing data allows
+- do not fabricate events
+- if only two real events exist, use compact supporting existing status chips/summary already present in the component to eliminate dead space, not fake event rows
+
+Current Operations:
+- compact top metric tiles
+- stacked status rows with icons/chips
+- final green healthy-state strip at bottom if this status already exists
+
+G. FINANCIAL LEDGER POLISH
+- Keep all existing search/filter/export behavior.
+- Stronger heading hierarchy and small gold accent.
+- Toolbar should be compact and aligned.
+- Table rows slightly tighter; amounts stronger; status pills refined.
+- Keep light premium surface rather than making the whole table dark.
+
+H. PAGE COMPOSITION
+- Warm ivory page background (#f7f4ee / similar), not stark white.
+- Reduce excessive vertical dead space.
+- Use consistent 16–20px section gaps.
+- Main content should feel dense but luxurious at 1440–1920px desktop widths.
+- Preserve responsive behavior.
+
+STRICT ACCEPTANCE CRITERIA
+After implementation, verify at code/build level:
+- SIDEBAR_MIN_HEIGHT_100VH=YES
+- HEADER_CINEMATIC_LAYERS=YES
+- KPI_ROW=4
+- SYSTEM_HEALTH_DECORATIVE_ZONE=YES
+- COMMAND_GRID_COLUMNS=3
+- REVENUE_CHART_VISIBLE_IMPLEMENTATION=YES
+- REVENUE_CHART_HEIGHT>=190px
+- REVENUE_CHART_NO_BLANK_BODY=YES
+- LIVE_OPERATIONS_COMPACT=YES
+- CURRENT_OPERATIONS_COMPACT=YES
+- LEDGER_FUNCTIONS_PRESERVED=YES
+- ADMIN_PARTICLES_RENDERED=NO
+- BACKEND_CHANGED=NO
+
+BUILD/DEPLOY
+1. npm run build
+2. systemctl restart sixty-seven.service
+3. Verify service active.
+4. curl local /admin => 200.
+5. Verify built AdminDashboard CSS/JS contains the new V3.2 markers.
+6. If browser session is authenticated, visually inspect /admin. If browser only shows login, DO NOT claim visual pass; report auth-blocked visual verification.
+
+RETURN ONLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+SIDEBAR_FULL_HEIGHT=
+HEADER_CINEMATIC=
+KPI_PREMIUM_FINISH=
+SYSTEM_HEALTH_DECORATIVE_ZONE=
+COMMAND_GRID_COLUMNS=
+REVENUE_CHART_METHOD=RECHARTS|INLINE_SVG
+REVENUE_CHART_VISIBLE_IMPLEMENTATION=
+REVENUE_CHART_HEIGHT=
+LIVE_OPERATIONS_COMPACT=
+CURRENT_OPERATIONS_COMPACT=
+LEDGER_POLISHED=
+BACKEND_CHANGED=
+VISUAL_VERIFICATION=PASS|AUTH_BLOCKED|NOT_AVAILABLE
+ERROR=
