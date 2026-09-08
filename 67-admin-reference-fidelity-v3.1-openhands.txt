@@ -1,0 +1,237 @@
+67 ADMIN — REFERENCE FIDELITY V3.1
+
+PROJECT: /67
+TARGET: /admin -> overview only
+GOAL: Push the live Admin Overview significantly closer to the approved Saudi Automotive Luxury reference. This is NOT another broad redesign and NOT a rollback. Build on the current V3 CSS Recovery state.
+
+REFERENCE DIRECTION TO MATCH
+The approved visual target is a premium Saudi automotive command center:
+- full-height dark black/charcoal right sidebar with gold active state
+- dark cinematic executive header with automotive/speed-line character and Saudi-market identity
+- four clean ivory KPI cards immediately below
+- full-width dark System Health band with strong depth and four internal health metrics
+- one compact three-column command-center row directly below System Health
+- revenue analytics card with a clearly visible gold area/line chart
+- live operations timeline card
+- current operations/alerts card
+- full-width premium financial ledger below
+- no detached operations block below the ledger
+- no particles/dots in admin
+- minimal empty white space
+- strong black / warm ivory / champagne-gold / healthy-green visual language
+
+IMPORTANT BASELINE
+The previous root cause was stale/truncated CSS. V3 CSS Recovery is now confirmed live. DO NOT overwrite it with Phase 1 styles and DO NOT use long heredoc writes. Any large CSS write must be atomic (local temp + scp/base64/mv) and verified after writing.
+
+ALLOWED FILES
+Primary:
+- /67/src/pages/AdminDashboard.jsx
+- /67/src/pages/AdminDashboard.css
+Optional ONLY if needed for one lightweight local decorative SVG:
+- /67/src/assets/admin-saudi-automotive.svg
+Do not edit backend, routes, auth, APIs, server files, package files, or other pages.
+
+DO NOT
+- clone
+- pull
+- npm install
+- add dependencies
+- change API contracts
+- change session/login/logout/profile/GitHub behavior
+- remove tabs
+- use particles in /admin
+- use huge blank decorative areas
+- create a detached Current Operations section below the ledger
+- use neon yellow
+- use a white sidebar
+- use remote stock imagery if a CSS/inline-SVG decorative treatment can achieve the effect
+- commit or push
+
+IMPLEMENTATION TARGET
+
+1) PAGE SHELL / DENSITY
+- Desktop reference target: 1920x1080.
+- Right sidebar width: approximately 260-285px.
+- Main content should feel dense but premium; reduce oversized vertical gaps.
+- At 1920x1080 the user should see: executive header, KPI row, System Health, full command-center row, and at least the header + first rows of the ledger without huge blank areas.
+- Use a centered main canvas with max width appropriate to the viewport; avoid stretched empty whitespace.
+
+2) SIDEBAR — ACTUALLY LUXURY DARK
+- Background: deep charcoal/black around #080c11 / #0b1016.
+- Full visual height and visually separate from the ivory main content.
+- Brand/identity block at top with Logo67, "الإدارة الذكية" or current superadmin identity, connected status.
+- Navigation labels high contrast.
+- Section labels subtle but readable.
+- Active item: dark graphite surface + thin champagne-gold edge/accent + soft gold shadow; no flat yellow rectangle.
+- Icons muted white/gold.
+- Bottom account/logout area should feel like a premium control-console footer.
+- Keep existing navigation functionality and activeTab behavior unchanged.
+
+3) EXECUTIVE HEADER — AUTOMOTIVE + SAUDI CHARACTER
+The current header must become a visually strong signature area, not a plain text strip.
+- Dark cinematic gradient surface, approximately 118-150px tall.
+- Large title around 30-36px: "مرحباً بك في لوحة الأداء والاستقرار" or existing equivalent.
+- Supporting line referencing operations / automotive parts market in Saudi Arabia.
+- Add subtle automotive visual language using CSS or one lightweight local SVG only:
+  - flowing road/speed curves
+  - grille / gauge / lane-line geometry
+  - abstract luxury car silhouette or roofline
+  - subtle Riyadh/Saudi urban skyline motif (abstract, not an official emblem)
+- Visual decoration must stay low contrast behind content and never hurt readability.
+- Keep toolbar/date-range controls in one coherent cluster; no controls floating disconnected in blank white space.
+
+4) KPI ROW — FOUR PREMIUM EXECUTIVE CARDS
+Keep existing live values and logic:
+- Total Sales
+- Successful Payments / Operations
+- Active Sellers
+- Registered Customers
+
+Visual target:
+- 4 equal cards in one row.
+- Warm ivory/white surface.
+- 1px warm border, subtle layered shadow.
+- Gold icon tile.
+- Value 30-36px desktop.
+- Small green positive trend where appropriate.
+- Compact height approximately 120-145px.
+- No excessive padding or empty space.
+
+5) SYSTEM HEALTH — SIGNATURE DARK BAND
+- Full width under KPI row.
+- Deep black/charcoal premium band with 18-22px radius.
+- Strong title/subtitle and "stable/no issues" green status pill.
+- Four internal metric cards in one row:
+  server load, response time, errors/revenue loss, platform stability.
+- Each metric gets stronger contrast, icon tile, value, short helper text, and slim progress line.
+- Add very subtle automotive/technical geometry on one edge (gauge rings, road/grid lines, or small abstract server/car visual).
+- Keep the whole section compact; do not make it dominate half the viewport.
+
+6) COMMAND CENTER — TRUE THREE-COLUMN ROW
+This row MUST contain exactly three sibling cards inside the same CSS grid and same vertical band:
+A. Revenue & Performance — largest column
+B. Live Operations — medium column
+C. Current Operations / Alerts — smaller column
+
+Desktop grid target:
+- roughly 50% / 27% / 23%, or a close proportion that matches content
+- equal card heights around 310-350px
+- gap 14-18px
+
+No card from this group may render below the ledger.
+
+7) REVENUE ANALYTICS CARD — CHART MUST BE VISIBLY PRESENT
+- Keep existing Recharts dependency already in package.json.
+- Use AreaChart/LineChart already available.
+- Fixed nonzero wrapper height around 215-245px.
+- Gold/champagne line around #b8862e / #c89738, stroke width about 2.5-3.
+- Soft warm area gradient.
+- Meaningful Arabic day labels, not arbitrary numbers.
+- Grid lines very subtle.
+- Tooltip dark and premium with revenue + operations.
+- Three small summary metrics above chart.
+- Chart should fill the card horizontally and vertically; NO blank white chart body.
+- If ResponsiveContainer is used, parent must have explicit width/height/min-height.
+
+8) LIVE OPERATIONS CARD
+- At least 4 live activity rows if liveNotifications has enough items.
+- Each row: icon, strong event title/summary, timestamp.
+- Different visual treatment for payment, registration, document/review events using restrained gold/green/neutral accents.
+- Small premium button/footer: "عرض جميع الأنشطة" if already safe to render.
+- Fill the vertical space intentionally; no half-empty card.
+
+9) CURRENT OPERATIONS / ALERTS CARD
+- Must remain INSIDE the three-column command grid.
+- Top 2 compact summary tiles (for example pending stores / pending documents) sourced from existing state.
+- Below: concise list of 3-4 current alerts / pending review items using existing data only.
+- Healthy system footer or quick status at bottom.
+- No duplicate card below the financial table.
+
+10) FINANCIAL LEDGER
+- Full-width card immediately after command grid.
+- Premium banking/fintech treatment.
+- Header: "السجل المالي — أحدث العمليات".
+- Toolbar grouped cleanly: search, filter/status, export.
+- Stronger column header contrast, row hover, amounts bold, refined status pills.
+- Keep all existing row data/filter behavior.
+- Avoid oversized row heights.
+
+11) COLOR / TYPE SYSTEM
+Use a disciplined palette:
+- Charcoal: #080c11 / #0d1218 / #171c24
+- Ivory: #fbfaf7 / #f7f4ee
+- Champagne gold: #c99a3d / #b8862e
+- Muted gold surface: rgba(201,154,61,.10-.16)
+- Healthy green only for healthy/success states
+- Red/orange only for real warning/error states
+Typography:
+- Arabic hierarchy must be stronger than current small SaaS appearance.
+- Section titles 17-21px.
+- Primary dashboard title 30-36px.
+- KPI values 30-36px.
+- Body labels 12.5-14px with sufficient contrast.
+
+12) RESPONSIVE
+- Keep RTL.
+- At <= 1200px, command grid may become 2 columns then 1 column.
+- At mobile widths, sidebar/nav should not cover content and cards must stack cleanly.
+- Do not sacrifice desktop fidelity to over-engineer mobile.
+
+13) PRESERVE FUNCTIONALITY
+Must keep intact:
+- session loading/auth
+- login/logout
+- profile load/save
+- activeTab switching
+- GitHub module
+- live notifications logic
+- current payment/seller/customer/document state
+- settings tab including logo switcher
+- all existing admin tabs
+
+IMPLEMENT SAFELY
+1. Inspect only current AdminDashboard.jsx, AdminDashboard.css and App.jsx if needed to understand existing V3 markers.
+2. Make targeted JSX changes only where structure does not match the target.
+3. Update CSS atomically; do NOT use a long heredoc through SSH.
+4. Verify CSS on disk contains all new V3.1 selectors before building.
+5. Run npm run build.
+6. Restart sixty-seven.service only after build passes.
+7. Verify /admin returns HTTP 200.
+8. Verify built AdminDashboard CSS/JS assets contain V3.1 markers.
+
+VISUAL ACCEPTANCE CHECK — REQUIRED
+After restart, inspect /admin at desktop width if browser tooling is available. Do not rely only on BUILD=PASS.
+Confirm visually/computed-style that:
+- sidebar background is actually dark
+- executive header is actually dark and visually automotive
+- four KPI cards are one row
+- System Health is full width
+- command grid has three cards on the same row
+- revenue chart is visibly drawn (not blank)
+- Live Operations and Current Operations are filled and balanced
+- ledger starts directly below command grid
+- no particles/dots exist on /admin
+- no detached operations block exists below ledger
+- white empty space is materially reduced
+
+RETURN ONLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+ADMIN_HTTP=
+SIDEBAR_COMPUTED_BG=
+HEADER_COMPUTED_BG=
+KPI_ROW_COUNT=
+SYSTEM_HEALTH_FULL_WIDTH=
+COMMAND_GRID_CHILDREN=
+COMMAND_GRID_COLUMNS=
+REVENUE_CHART_VISIBLE=
+REVENUE_CHART_HEIGHT=
+LIVE_OPERATIONS_FILLED=
+CURRENT_OPERATIONS_IN_GRID=
+DETACHED_OPERATIONS_BLOCK=
+ADMIN_PARTICLES_RENDERED=
+BUILT_V31_MARKERS_PRESENT=
+FUNCTIONALITY_REMOVED=
+VISUAL_FIDELITY_NOTES=
+ERROR=
