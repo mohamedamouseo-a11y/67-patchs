@@ -1,0 +1,35 @@
+TASK: Apply 67 Admin UX/UI Phase 1 to the EXISTING project checkout on this server.
+
+STRICT CREDIT-SAVING MODE:
+- Do NOT clone/re-clone the project, inspect git history, scan the whole repo, browse unrelated files, or do broad analysis.
+- Read ONLY: src/pages/AdminDashboard.jsx and src/pages/AdminDashboard.css. Read package.json only if needed for the build command.
+- Do NOT touch backend/server/API/auth/session/data logic.
+- Preserve every existing admin tab, action, state variable, API call, login/logout/profile flow, GitHub module, notifications and transaction behavior.
+- Modify ONLY the Admin sidebar presentation and activeTab === 'overview' UI, plus CSS required for them.
+
+DESIGN TARGET: premium executive automotive/fintech command center; Arabic RTL; strong, elegant and clean. Use off-white/white + deep charcoal/navy + restrained champagne gold. NO neon/loud yellow, no cartoon styling, no excessive glow.
+
+IMPLEMENT DIRECTLY:
+1) Sidebar: cleaner compact hierarchy; keep identity + online status; group navigation visually into Overview / Management / Monitoring / System; classy active item with subtle gold line/tint/glow; remove visual clutter. Move logo-style switcher and low-priority platform summary widgets out of the main navigation flow (prefer Settings; otherwise a subtle bottom utility area).
+2) Overview header: title/subtitle + compact refresh/export actions and optional Today / 7d / 30d visual chips.
+3) KPI row: Total Sales, successful/payment operations, active sellers, registered customers. Compact premium cards with strong numbers, small icon, supporting trend/status.
+4) System Health: compact premium dark card, not a huge banner. Show server load, response time, errors/revenue-loss, platform stability with refined indicators.
+5) Main body: responsive 2-column layout: larger analytics/revenue card + smaller live operations/alerts card. Do not leave large dead empty areas. If no real chart data is already available, build a polished CSS/summary visualization without adding libraries.
+6) Latest Transactions: premium card header + small search/filter/export toolbar (UI-only is acceptable if no existing handlers), cleaner rows, strong amount hierarchy and refined status badges.
+7) Move repeated visual styles from JSX into AdminDashboard.css where practical. Keep responsive desktop/mobile behavior reasonable.
+
+DO NOT:
+- add dependencies
+- rename routes
+- remove tabs/features
+- rewrite unrelated code
+- make backend/schema changes
+- commit or push
+
+VALIDATION: run only `npm run build` after edits. If it fails because of your changes, fix only the affected files and run it once more.
+
+FINAL RESPONSE ONLY:
+CHANGED_FILES=<comma-separated>
+BUILD=<PASS/FAIL>
+FUNCTIONALITY_REMOVED=NO
+SUMMARY=<max 5 short bullets>
