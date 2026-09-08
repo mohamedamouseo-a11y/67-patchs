@@ -1,0 +1,145 @@
+67 ADMIN OVERVIEW PREMIUM POLISH V1.1 — LOW-CREDIT EXECUTION
+
+PROJECT: existing checkout already on server at /67
+TARGET: /admin default overview tab only
+BUILD ON TOP OF: current Phase 1 code already applied on server. DO NOT revert/rebuild from old repo state.
+
+STRICT CREDIT-SAVING RULES
+1) Do NOT clone, pull, scan, index, or analyze the whole project.
+2) Read ONLY these files:
+   - /67/src/pages/AdminDashboard.jsx
+   - /67/src/pages/AdminDashboard.css
+3) Modify ONLY those same two files.
+4) Do NOT inspect other tabs/components unless a compile error directly requires it.
+5) No new dependencies. Recharts is already available in the project, but prefer the simplest implementation using existing project capabilities.
+6) Do NOT touch backend, routes, auth/session/profile APIs, GitHub module, data logic, or non-overview tabs.
+7) Do NOT git commit/push.
+8) After edits run ONLY: cd /67 && npm run build
+
+MISSION
+Polish the CURRENT Phase 1 admin overview from a clean SaaS dashboard into a strong premium automotive-fintech executive command center. Keep all current functionality.
+
+VISUAL PROBLEMS TO FIX FROM CURRENT SCREENSHOT
+- Header is visually weak/small; actions are detached on the far left.
+- KPI cards are too soft; numbers and hierarchy need more presence.
+- System Health is good but needs stronger premium detailing without becoming neon.
+- Revenue & Performance card is mostly empty and looks unfinished.
+- Live Operations card is too sparse.
+- Latest Transactions still looks flat/default.
+- Sidebar is improved but still too wide/quiet; section labels are tiny; logo switcher should not live in main sidebar flow.
+- Typography is generally too small for 1920x1080.
+- Too much dead white space; dashboard should be denser but still elegant.
+- Gold currently feels matte/mustard; use refined champagne gold with subtle luminous accents only.
+
+REQUIRED V1.1 CHANGES
+
+A) EXECUTIVE HEADER
+- Make title significantly stronger (larger/bolder) with a compact premium subtitle.
+- Keep period chips + refresh + export together as one cohesive action cluster aligned with the header.
+- Improve spacing and vertical rhythm.
+- Add subtle premium divider/accent, not a large banner.
+
+B) KPI ROW
+Keep the same 4 KPIs and live values, but improve presentation:
+- Bigger KPI numbers.
+- Stronger label/value contrast.
+- Small premium icon tile.
+- Thin champagne-gold accent line or top edge.
+- Subtle hover/lift only.
+- Reduce wasted vertical space.
+- Preserve current data calculations.
+
+C) SYSTEM HEALTH
+Keep the existing dark system-health section but polish it:
+- Stronger header and status treatment.
+- Cleaner 4 health metrics with better visual hierarchy.
+- Use restrained champagne-gold accents plus green only for healthy states.
+- Keep progress indicators compact and refined.
+- No neon yellow.
+
+D) REVENUE & PERFORMANCE — MUST NOT BE EMPTY
+Replace the empty white area with a real, visible analytics visualization.
+Preferred: use existing `recharts` already installed if AdminDashboard.jsx can import it directly without touching other files.
+Create a polished responsive area/line chart using lightweight local derived/demo series from the existing totalSales/paymentCount state.
+Requirements:
+- 30-day style trend visualization.
+- Champagne-gold primary series.
+- Soft gradient fill.
+- Minimal axes/grid.
+- Tooltip styling matching dashboard.
+- Small summary metrics above chart (revenue today / transaction count / trend).
+- NO new dependency install.
+If using Recharts introduces unnecessary complexity, create a high-quality CSS/SVG sparkline/area visualization inside this file instead. Do not leave empty space.
+
+E) LIVE OPERATIONS
+Turn this card into a richer compact activity timeline using existing `liveNotifications` data:
+- Show up to 4 recent events.
+- Distinct icon/type marker for payment vs registration.
+- Time shown clearly.
+- Add a compact pending-review summary using existing sellers/documents data when available.
+- No fake external API calls.
+
+F) LATEST TRANSACTIONS
+Polish the existing table without changing underlying data behavior:
+- Stronger card header.
+- Keep search functionality.
+- Make toolbar one cohesive compact row.
+- Better column header contrast.
+- Stronger amount typography.
+- Refined success/pending badges.
+- Better row hover and separators.
+- Keep current transaction rendering/filter logic.
+- Make it feel like a premium financial ledger.
+
+G) SIDEBAR V1.1
+- Slightly reduce visual width/density if safe without breaking layout.
+- Increase readability of nav labels and section captions.
+- Premium active state: dark/neutral tinted surface + slim champagne-gold indicator + subtle glow, never a flat bright yellow block.
+- Keep identity + online status at top.
+- Keep logout.
+- MOVE the platform logo-style switcher out of the main navigation/sidebar visual flow into the existing Settings tab content if practical within the same file. Preserve its functionality. If moving it risks breaking settings, keep it only as a minimal utility block at the very bottom separated from nav.
+
+H) TYPOGRAPHY / DENSITY
+- Increase desktop readability for 1920x1080.
+- Reduce excessive dead space.
+- Tighten section gaps.
+- Keep RTL correct.
+- Keep responsive behavior reasonable.
+
+DESIGN LANGUAGE
+- Base: warm off-white / white.
+- Dark: deep charcoal/navy-black.
+- Accent: champagne gold (refined, not mustard, not neon).
+- Healthy state: restrained emerald/green.
+- Radius: consistent premium 14–18px.
+- Borders: fine warm-gray/gold-tinted.
+- Shadows: low-opacity, layered, sophisticated.
+- Optional subtle luminous gold edge on focal elements only.
+- No glass overload, no gradients everywhere, no cyberpunk, no excessive animation.
+
+FUNCTIONALITY THAT MUST REMAIN UNCHANGED
+- superadmin session/login/logout
+- profile load/save
+- activeTab switching
+- users/documents/transactions/community/notifications/github/settings tabs
+- GitHubModule
+- live data updates
+- current transactions/search behavior
+- routes and backend APIs
+
+ACCEPTANCE
+- The /admin overview visibly feels more premium and powerful than current Phase 1.
+- Revenue card contains a real visible chart/analytics visualization.
+- Header and KPIs have stronger executive hierarchy.
+- Live activity is richer but compact.
+- Transactions feel like a premium financial ledger.
+- Sidebar is cleaner and more premium.
+- No functionality removed.
+- Only the two allowed files changed.
+- `npm run build` passes.
+
+FINAL RESPONSE FORMAT ONLY
+CHANGED_FILES=...
+BUILD=PASS|FAIL
+FUNCTIONALITY_REMOVED=NO
+POLISH_SUMMARY=<short bullets>
