@@ -1,0 +1,93 @@
+67 ADMIN OVERVIEW PREMIUM V1.2 — MICRO POLISH ONLY
+
+TARGET SERVER PROJECT: /67
+TARGET SCREEN: /admin -> overview
+
+IMPORTANT: Build on the CURRENT V1.1 already present on the server. Do NOT revert, clone, pull, scan the full repo, or redesign other screens.
+
+READ/EDIT ONLY:
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+
+GOAL
+Final micro-polish of the current premium executive dashboard based on the latest visual QA screenshot. Keep all V1.1 functionality and design direction. This is NOT a redesign from scratch.
+
+ONLY 5 REQUIRED CHANGES
+
+1) REVENUE CHART — MAKE IT EXECUTIVE, NOT DECORATIVE
+- Keep Recharts already used in V1.1; no new dependency.
+- Improve the chart readability and credibility:
+  - use meaningful Arabic period labels for the current 30-day view instead of bare 1/6/11/16/etc where practical (e.g. يوم 1, 6, 11... or short date labels).
+  - make tooltip clearer and premium, showing revenue and operations for the hovered point.
+  - slightly deepen the champagne-gold line contrast while keeping it refined, not neon.
+  - keep a soft area gradient and subtle horizontal grid lines.
+  - ensure chart fills its card well without excessive whitespace.
+- Do NOT invent backend APIs; use the same derived/live values already used in V1.1.
+
+2) LIVE OPERATIONS CARD — MATCH VISUAL WEIGHT/HEIGHT OF ANALYTICS CARD
+- The current live operations card is too short relative to the revenue card.
+- Make the two-column row visually balanced on desktop.
+- Enrich the existing live card using CURRENT data only:
+  - latest activity timeline (up to 4 items)
+  - pending documents count
+  - sellers pending review count
+  - compact quick-alert/status row
+- No new backend calls.
+- Avoid empty filler space; use concise premium blocks.
+
+3) EXECUTIVE HEADER TOOLBAR — TIGHTER COMPOSITION
+- Visually bind title/subtitle and controls into one coherent executive header.
+- Period chips (Today / 7 days / 30 days) + Refresh + Export should read as one compact toolbar, not disconnected controls at the far edge.
+- Keep RTL correct.
+- Preserve current button handlers/functionality.
+- Maintain strong title hierarchy and subtle gold divider/accent.
+
+4) REMOVE DISTRACTING ADMIN BACKGROUND DOTS
+- On /admin only, suppress/remove the scattered animated/gold background dots or decorative particles visible behind the dashboard.
+- Do NOT change customer/seller pages globally.
+- Prefer a local admin CSS/layout override rather than modifying unrelated components/files.
+- Admin background should become calm, clean, premium off-white.
+
+5) SIDEBAR FINAL POLISH
+- Keep current narrow V1.1 sidebar structure and grouping.
+- Increase contrast/readability of small section labels slightly.
+- Strengthen top identity block subtly (logo/admin identity/online state) without increasing clutter.
+- Keep active item premium: neutral/dark tinted background + thin champagne gold indicator + very soft glow.
+- Keep logo switcher OUT of the sidebar (it stays inside Settings as in V1.1).
+
+VISUAL RULES
+- Premium automotive-fintech command center.
+- White/off-white + deep charcoal/navy + champagne gold.
+- Gold = refined accent, never bright yellow/neon.
+- No excessive shadows/glow.
+- Desktop 1920x1080 is the primary QA target.
+- Maintain responsive behavior and RTL.
+- Keep density high but comfortable.
+
+PRESERVE 100%
+- login/session/logout
+- profile load/save
+- all existing admin tabs
+- GitHubModule
+- notifications/live updates
+- transactions/users/documents/community/settings behavior
+- all current handlers and API contracts
+- existing Recharts dependency only
+
+DO NOT
+- edit any file other than the two listed
+- add dependencies
+- change routes
+- change backend/server files
+- remove functionality
+- commit or push
+
+VALIDATION
+1. Run npm run build only after edits.
+2. Confirm build passes.
+3. Confirm exactly these two files changed.
+4. Report concise summary with:
+   CHANGED_FILES=
+   BUILD=
+   FUNCTIONALITY_REMOVED=NO
+   V1_2_SUMMARY=
