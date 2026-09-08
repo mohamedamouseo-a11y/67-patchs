@@ -1,0 +1,270 @@
+67 ADMIN OVERVIEW — REFERENCE FIDELITY V2.1
+===========================================
+
+MISSION
+-------
+Apply a focused fidelity correction to the CURRENT `/67` project on the server so `/admin` visually moves much closer to the approved Saudi Automotive Luxury Command Center reference.
+
+IMPORTANT: this is NOT a new redesign and NOT a project-wide task. Build directly on the latest V2 already present on the server.
+
+STRICT SCOPE / LOW-CREDIT MODE
+------------------------------
+Project: /67
+Target route: /admin
+Target view: default overview tab only
+
+READ/MODIFY ONLY:
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+
+DO NOT:
+- clone
+- pull
+- scan the whole repository
+- inspect unrelated pages/components
+- add dependencies
+- change routes
+- change backend/API/auth/session/profile/GitHub behavior
+- commit
+- push
+
+If you need to locate an exact overview/sidebar block inside AdminDashboard.jsx, use only targeted grep/search in that file.
+
+CURRENT VISUAL PROBLEMS TO FIX
+------------------------------
+The latest rendered screenshot is still too close to a plain white SaaS dashboard and does NOT match the approved reference closely enough.
+
+The following mismatches are visible and MUST be corrected:
+1) Sidebar is still visually white/light instead of true luxury charcoal/black.
+2) Executive header is still too white/plain and lacks automotive/Saudi presence.
+3) Revenue chart area renders blank/empty.
+4) The intended 3-column command center is not actually laid out as 3 columns; “العمليات الجارية” falls below the table.
+5) Gold particles/dots are still visible in /admin.
+6) KPI cards are too basic/lightweight compared with the reference.
+7) There is too much empty white space; density is too low.
+8) System Health is the strongest section but still lacks enough depth and automotive character.
+
+APPROVED VISUAL TARGET
+----------------------
+Aim for a premium Saudi automotive executive command center:
+- RTL Arabic first
+- deep charcoal / near-black sidebar
+- ivory / warm-white content surfaces
+- champagne / metallic gold accents
+- green only for healthy/success states
+- subtle Saudi/automotive character: road-line geometry, dashboard/gauge motifs, understated Riyadh-inspired premium geometry, NOT literal flags and NOT cheesy car graphics
+- compact information density
+- strong executive typography
+- polished banking/fintech table quality
+- refined shadows and borders
+- no neon yellow
+- no noisy animated particles in admin
+
+The target should feel like a high-end automotive marketplace control center operating in Saudi Arabia.
+
+REQUIRED IMPLEMENTATION
+=======================
+
+A) SIDEBAR — MUST BE ACTUALLY DARK IN THE RENDERED UI
+-----------------------------------------------------
+Do not rely on CSS selectors that lose against existing inline styles.
+
+Ensure the REAL rendered sidebar container uses a deep charcoal/black treatment, e.g. around:
+- #090d12
+- #0d1117
+- #11161d
+
+Requirements:
+- dark background from top to bottom
+- light primary nav text
+- muted secondary group labels
+- gold/cream icon treatment
+- active item: dark tinted premium state with a thin champagne-gold edge/indicator and very soft glow
+- identity/logo area at top should look premium and integrated into the dark rail
+- logout stays clearly red but refined
+- do not reintroduce logo-switcher into sidebar; it stays in Settings
+
+If current sidebar background is controlled by JSX inline styles, change the JSX so the dark style definitely applies.
+
+B) EXECUTIVE HEADER — DARK AUTOMOTIVE SIGNATURE
+------------------------------------------------
+Rebuild the overview top header into a stronger premium automotive band, while keeping all current controls/handlers.
+
+Target structure:
+- title block on RTL side
+- title remains “لوحة الأداء والاستقرار”
+- subtitle should mention executive monitoring / platform performance
+- small automotive descriptor such as “سوق قطع السيارات في المملكة العربية السعودية”
+- existing period controls (today / 7 days / 30 days), refresh, export remain functional
+
+Visual treatment:
+- dark charcoal-to-black background OR dark split-header treatment that visually anchors the top area
+- subtle CSS-only gold road/gauge/contour lines in the background
+- use existing Lucide icon(s), e.g. CarFront/Gauge/BarChart3 if already available or imported from lucide-react
+- no external image dependency
+- no huge hero height; keep it compact and executive
+
+C) KPI CARDS — MORE PREMIUM / HIGH-CONTRAST
+--------------------------------------------
+Keep existing KPI values/data live.
+Improve only presentation:
+- 4 cards remain in one compact row on desktop
+- ivory/white cards with warm border
+- slightly larger values
+- clearer gold icon tile
+- subtle top accent or edge lighting
+- compact trend/support text
+- tighter vertical spacing
+- hover lift should be subtle, not playful
+
+D) SYSTEM HEALTH — SIGNATURE DARK BAND
+---------------------------------------
+Keep existing health data/logic.
+Make the band visually closer to the reference:
+- full-width dark luxury surface
+- stronger title/subtitle hierarchy
+- 4 inner health metrics aligned evenly
+- gold icons, green health progress only
+- add CSS-only automotive/gauge geometric accents to one edge/background
+- avoid literal photos/assets
+- remove dead space
+
+E) FIX REVENUE CHART — IT MUST BE VISIBLE
+-----------------------------------------
+The chart currently appears blank. Fix the actual layout cause.
+
+Requirements:
+- preserve Recharts already in the project
+- parent analytics/chart container must have an explicit usable height/min-height
+- `ResponsiveContainer` must have measurable width/height
+- avoid overflow/clipping that hides the SVG
+- render AreaChart/Line/Area visibly in desktop screenshot
+- use deeper champagne gold line, around #b8862e / #c6922f
+- soft gold gradient fill
+- visible X-axis labels in Arabic/date-friendly form
+- subtle grid
+- polished tooltip showing revenue and operations if data supports it
+- chart should fill the card, not float inside a huge blank area
+
+DO NOT add a chart library. Recharts already exists.
+
+F) TRUE THREE-COLUMN COMMAND CENTER
+------------------------------------
+The reference target has a real 3-column executive section beneath System Health.
+
+On wide desktop (roughly >= 1200px), create ONE grid row with:
+1. Revenue & Performance analytics card — largest column
+2. Live Operations card — medium column
+3. Current Operations / Alerts / Pending Review card — smaller column
+
+Recommended desktop proportions approximately:
+- 1.55fr / 0.82fr / 0.82fr
+or similar that visually matches the reference.
+
+Requirements:
+- all three cards align at the top
+- same visual height or balanced height
+- no “العمليات الجارية” section should fall below the financial table
+- move/reuse the existing current-operations/pending-review content into the third column
+- do not duplicate data unnecessarily
+- live operations should show the latest 4–5 existing events
+- third column should summarize pending docs/sellers and quick alerts from existing state
+
+For narrower screens, collapse responsibly to 2/1 columns.
+
+G) REMOVE ADMIN PARTICLES FROM SOURCE, NOT WITH A FRAGILE CSS GUESS
+-------------------------------------------------------------------
+Gold dots are still visible.
+
+Fix robustly:
+- remove/disable the admin particle/background rendering at the JSX/render decision level for `/admin` if it is within these allowed files
+- if the particles originate outside these two files and cannot be removed without violating scope, make AdminDashboard render an opaque full-page admin root background that fully covers them, including scrolling areas
+- ensure no gold floating dots are visible anywhere around the admin page in the final render
+- do not affect other routes
+
+H) DENSITY / WHITE-SPACE CONTROL
+--------------------------------
+Current V2 has excessive blank areas.
+Tighten:
+- section gaps
+- card padding
+- analytics whitespace
+- live operations whitespace
+- table vertical rhythm
+
+Goal: premium compact command-center density, not cramped.
+The main useful content should occupy the viewport strongly on 1920×1080.
+
+I) FINANCIAL TABLE — KEEP FUNCTIONAL, VISUALLY STRONGER
+-------------------------------------------------------
+Preserve current search/filter/export behavior.
+Polish:
+- stronger section heading
+- warm border and subtle shadow
+- tighter rows
+- clearer amounts
+- premium status pills
+- refined hover state
+- no structural rewrite beyond what is needed for layout fidelity
+
+J) DO NOT BREAK OTHER ADMIN TABS
+--------------------------------
+Must preserve all existing admin functionality and tabs, including:
+- overview
+- users/customers/sellers
+- documents
+- transactions
+- community
+- notifications
+- github module
+- settings
+- login/logout/session/profile behavior
+- live updates
+
+No backend changes.
+
+RESPONSIVE REQUIREMENTS
+-----------------------
+Desktop priority: 1920×1080 / large desktop.
+- Sidebar fixed/persistent on desktop as currently intended.
+- Command-center 3-column layout on large desktop.
+- At tablet widths collapse cleanly.
+- RTL alignment must remain correct.
+
+ACCEPTANCE CHECKLIST
+--------------------
+Before finishing, verify from the code/result that:
+- SIDEBAR_DARK_ACTUAL=YES
+- EXECUTIVE_HEADER_DARK_AUTOMOTIVE=YES
+- KPI_PREMIUM=YES
+- SYSTEM_HEALTH_SIGNATURE=YES
+- REVENUE_CHART_VISIBLE=YES
+- THREE_COLUMN_COMMAND_CENTER_ACTUAL=YES
+- CURRENT_OPERATIONS_NOT_BELOW_TABLE=YES
+- ADMIN_PARTICLES_VISIBLE=NO
+- WHITE_SPACE_REDUCED=YES
+- FINANCIAL_TABLE_PREMIUM=YES
+- OTHER_TABS_PRESERVED=YES
+
+VALIDATION
+----------
+Run only:
+`npm run build`
+
+Do not run broad test suites unless build fails and a targeted check is necessary.
+
+FINAL RESPONSE FORMAT
+---------------------
+Return exactly a concise status block like:
+
+CHANGED_FILES=src/pages/AdminDashboard.jsx,src/pages/AdminDashboard.css
+BUILD=PASS|FAIL
+FUNCTIONALITY_REMOVED=NO
+SIDEBAR_DARK_ACTUAL=YES|NO
+EXECUTIVE_HEADER_DARK_AUTOMOTIVE=YES|NO
+REVENUE_CHART_VISIBLE=YES|NO
+THREE_COLUMN_COMMAND_CENTER_ACTUAL=YES|NO
+CURRENT_OPERATIONS_NOT_BELOW_TABLE=YES|NO
+ADMIN_PARTICLES_VISIBLE=NO|YES
+WHITE_SPACE_REDUCED=YES|NO
+ERROR=NONE|<short reason>
