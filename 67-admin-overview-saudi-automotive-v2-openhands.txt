@@ -1,0 +1,185 @@
+67 ADMIN OVERVIEW — SAUDI AUTOMOTIVE PREMIUM V2
+
+MISSION
+Move the existing /67 admin overview much closer to the approved visual reference: premium Saudi automotive command center, black/charcoal + ivory + champagne gold, strong executive hierarchy, dark right sidebar, white KPI cards, dark system-health band, rich analytics/live-ops area, and premium finance table.
+
+LOW-CREDIT EXECUTION RULES
+- Work ONLY on the existing server checkout: /67
+- Build on the CURRENT V1.2 state; DO NOT revert or recreate from an older version.
+- DO NOT clone, pull, scan the repo, inspect unrelated files, or redesign other screens.
+- Read/edit ONLY:
+  1) src/pages/AdminDashboard.jsx
+  2) src/pages/AdminDashboard.css
+- Do not inspect package.json. Recharts and lucide-react are already present and already used.
+- No new dependencies, no backend/API changes, no route changes, no auth/session changes.
+- No commit, no push.
+- Final validation: npm run build only.
+
+VISUAL TARGET
+Think: luxury Saudi automotive + fintech operations center.
+The screen should feel closer to a premium Saudi dealership/automotive marketplace command center than a generic SaaS dashboard.
+
+CORE PALETTE
+- Page canvas: warm ivory / soft off-white (#f7f4ee or close)
+- Sidebar / hero / system blocks: near-black charcoal (#090d12 / #11161c)
+- Primary gold: champagne / burnished gold (#c28b2c / #d1a14a)
+- Success: emerald green only for positive states
+- Warning: restrained amber
+- Borders: warm neutral with low opacity
+- Avoid neon yellow, loud gradients, or cheap glow.
+
+REFERENCE-LIKE STRUCTURE — DESKTOP 1920×1080 FIRST
+
+1) RIGHT SIDEBAR — DARK LUXURY
+Transform the current right sidebar from white into a deep black/charcoal premium navigation rail.
+- Keep 67 logo and admin identity at top.
+- Add compact connected/online status.
+- Navigation items in clean Arabic RTL rows with muted icons.
+- Active item: dark-gold tinted surface + 1px champagne-gold edge + subtle glow, not a flat yellow button.
+- Keep grouped sections (Overview / Management / Monitoring / System).
+- Bottom area: Admin identity mini-card + logout action.
+- Keep logo switcher only in Settings, not sidebar.
+- Target width around 250–270px.
+
+2) EXECUTIVE HERO / HEADER — AUTOMOTIVE + SAUDI CHARACTER
+Replace the plain white header feel with a premium executive top region.
+- Keep title: لوحة الأداء والاستقرار
+- Subtitle should mention executive visibility into platform health, operations and revenue.
+- Keep date/range chips + refresh/export together as one compact toolbar.
+- Introduce a restrained automotive/Saudi visual language WITHOUT adding external assets:
+  - use CSS pseudo-elements, thin gold road-line arcs, subtle grid/contour lines, and a dark premium panel treatment.
+  - use an existing lucide automotive icon such as CarFront / Car / Gauge if useful.
+  - optional small supporting text such as: سوق قطع السيارات في المملكة
+  - Saudi feel should be subtle and premium, not flag-heavy or decorative clutter.
+- Remove ALL stray floating gold dots/particles from the admin page.
+
+3) KPI ROW — PREMIUM WHITE CARDS
+Keep the same live values/data and 4 KPI concepts:
+- إجمالي المبيعات
+- عمليات دفع ناجحة
+- التجار النشطون
+- العملاء المسجلون
+Design closer to the approved reference:
+- crisp white/ivory cards
+- large bold values
+- small gold icon tile
+- compact green trend below where applicable
+- subtle warm border and soft shadow
+- consistent equal heights
+- no oversized dead space
+
+4) SYSTEM HEALTH — SIGNATURE DARK AUTOMOTIVE BAND
+This must become the strongest section on screen.
+- Full-width dark charcoal/black panel with premium depth.
+- Header: صحة النظام واستقرار المنصة
+- Add a short supporting line about live infrastructure monitoring.
+- Keep 4 health metrics using existing values:
+  - system/platform stability 100%
+  - error/revenue-loss 0.01%
+  - response time 124ms (live value)
+  - server/system load 14% (live value)
+- Each metric: dark inner card, gold icon, strong white number, thin progress line, compact helper text.
+- Include one compact green status pill: مستقر — بدون مشاكل
+- Add subtle automotive visual motif to the far side of this band using CSS/iconography only: road contour / car silhouette / gauge-like geometry. Do not use external image URLs.
+
+5) MAIN CONTENT — 3-COLUMN COMMAND CENTER
+On wide desktop, mirror the approved reference hierarchy:
+- LARGE revenue/analytics card (roughly 50–55%)
+- MEDIUM live operations timeline (roughly 25%)
+- SMALL current operations / alerts card (roughly 20–25%)
+Stack responsibly on narrower screens.
+
+A) REVENUE / PERFORMANCE CARD
+- Keep the existing Recharts AreaChart and existing live-derived data.
+- Ensure chart is ALWAYS visible; give its parent a reliable explicit/min-height.
+- Gold/burnished line, soft warm area fill, light grid, meaningful Arabic day labels.
+- Tooltip: dark premium box, revenue + transactions.
+- Above chart: 3 small summary cells (today revenue, transaction count, trend %).
+- Chart must occupy the card visually; no blank white dead zone.
+
+B) LIVE OPERATIONS CARD
+Use existing liveNotifications / data only.
+- Show up to 5 timeline rows if data exists.
+- Rows: icon, title, supporting text, time.
+- Different icon treatments for payment / registration / document/review when inferable.
+- Bottom CTA row: عرض جميع الأنشطة
+- Keep existing handlers/logic; UI-only CTA is okay if no handler exists.
+
+C) CURRENT OPERATIONS / ALERTS CARD
+Use existing data already available in AdminDashboard:
+- merchants pending review
+- documents pending review
+- error/system state
+- recent alerts/notifications summary
+Create compact summary tiles at top + short alert list below.
+End with a green system-good strip if there are no critical errors.
+Do NOT fabricate backend behavior; derive counts from existing arrays/state.
+
+6) FINANCIAL REGISTER / LATEST TRANSACTIONS
+Keep the existing transactions data and filtering/search behavior.
+Style much closer to premium banking/automotive ops table:
+- section title: السجل المالي — أحدث العمليات
+- toolbar: search + filter + export compactly aligned
+- warm white card, clean header row, subtle separators
+- stronger amount typography
+- polished success/pending badges
+- gentle row hover
+- preserve RTL and existing actions/behavior
+
+7) TYPOGRAPHY / DENSITY
+- Make headings stronger and more confident.
+- Main title around 1.9–2.1rem desktop.
+- KPI values around 1.9–2.2rem.
+- Section headings 1.05–1.2rem with bold weight.
+- Body/supporting text readable; do not make everything tiny.
+- Reduce dead space while keeping luxurious breathing room.
+
+8) SAUDI AUTOMOTIVE DESIGN LANGUAGE
+Apply only as subtle visual cues:
+- champagne gold + black luxury palette
+- road/gauge/car iconography
+- small references to المملكة / automotive marketplace context
+- optionally a very subtle geometric/road contour background using CSS pseudo-elements
+- NO external images or URLs in this phase
+- NO Saudi government emblems
+- NO overuse of flags/patterns
+
+FUNCTIONAL PRESERVATION — MUST NOT BREAK
+Preserve exactly:
+- superadmin session loading
+- login/logout
+- profile loading/saving
+- tab switching
+- all existing admin tabs
+- GitHubModule
+- live notifications updates
+- users/sellers/documents/transactions/community/settings state/data
+- existing transaction search/filter behavior
+- all existing API calls and handlers
+
+DO NOT TOUCH
+- Other pages
+- Seller app
+- Customer app
+- Backend/server files
+- Authentication logic
+- GitHub integration logic
+- Routes
+
+ACCEPTANCE CHECK
+At 1920×1080 the screen should immediately read as:
+"Premium Saudi Automotive Executive Command Center"
+not generic SaaS.
+It should visually approach the approved reference via layout, palette, hierarchy, dark sidebar, dark system-health band, automotive motifs, richer 3-column operations zone, and premium finance table.
+
+FINAL RESPONSE FORMAT ONLY
+CHANGED_FILES=...
+BUILD=PASS|FAIL
+FUNCTIONALITY_REMOVED=NO
+REFERENCE_ALIGNMENT=SAUDI_AUTOMOTIVE_PREMIUM_V2
+SIDEBAR_DARK=YES|NO
+SYSTEM_HEALTH_SIGNATURE=YES|NO
+THREE_COLUMN_COMMAND_CENTER=YES|NO
+REVENUE_CHART_VISIBLE=YES|NO
+ADMIN_PARTICLES_REMOVED=YES|NO
+ERROR=NONE|<short error>
