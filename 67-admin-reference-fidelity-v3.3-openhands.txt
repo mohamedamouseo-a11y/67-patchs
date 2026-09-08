@@ -1,0 +1,149 @@
+PROJECT=/67
+PHASE=Admin Overview Reference Fidelity V3.3
+GOAL=Close the remaining visible gap between the authenticated /admin dashboard and the approved Saudi automotive luxury reference.
+
+SOURCE_OF_TRUTH
+- Work on the CURRENT /67 checkout only.
+- Do NOT clone, pull, reset, checkout older commits, or scan the entire repo.
+- Preserve all current V3/V3.1/V3.2 functional work.
+- Current visual screenshot is structurally improved but still materially behind the approved reference.
+
+FILES_ALLOWED
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+Do not touch backend, APIs, auth, routes, data stores, server files, or App.jsx unless absolutely required to fix a verified regression. Particles are already suppressed and must remain suppressed.
+
+CURRENT VS REFERENCE — VISIBLE GAPS TO FIX
+1. REVENUE CHART IS STILL VISUALLY BLANK.
+   The reference has a prominent gold area/line chart with axis labels, grid, dots, and a visible tooltip-style data callout. The current live screen still shows a large empty white rectangle.
+   REQUIREMENT: stop relying on ResponsiveContainer/Recharts for this specific chart if it can still render blank. Replace the visible chart body with a guaranteed inline SVG chart rendered directly from the SAME existing revenue/performance data already available in AdminDashboard. No new backend data and no hardcoded fake API response.
+   - SVG viewBox must be responsive.
+   - Visible gold line + subtle gold gradient area fill.
+   - Horizontal grid lines.
+   - 5-6 Arabic x-axis labels such as day/date labels derived from the existing dataset.
+   - 3-4 y-axis value labels.
+   - Visible circular points.
+   - One premium dark floating callout around a mid/late point containing the value and date label.
+   - Chart area must occupy the majority of the revenue card, not an empty spacer.
+
+2. HEADER IS TOO PLAIN COMPARED WITH REFERENCE.
+   The reference header feels cinematic: premium Saudi automotive command center, car silhouette, Riyadh skyline/Kingdom Centre, warm champagne lighting, road geometry.
+   REQUIREMENT: create this using LOCAL inline SVG/CSS only, with no external URLs/dependencies.
+   - Add an aria-hidden decorative inline SVG scene inside the existing executive header.
+   - Stylized luxury sedan side/front silhouette (abstract, not brand-specific).
+   - Riyadh skyline cue including a simple Kingdom Centre silhouette, plus 1-2 palm silhouettes.
+   - Subtle road perspective lines.
+   - Keep text readable with dark overlay.
+   - Add warm champagne/gold highlights, not bright yellow.
+   - The graphic should visually occupy roughly 35-45% of the header, similar to the reference, while title/subtitle remain clear.
+   - Keep toolbar/date controls integrated into the same dark hero instead of looking detached.
+
+3. SYSTEM HEALTH NEEDS A STRONGER AUTOMOTIVE/SAUDI VISUAL ZONE.
+   Current bar is improved but still reads mainly as a dark rectangle.
+   REQUIREMENT: add a compact visual scene on one side of the health band using inline SVG/CSS (car tail/rear silhouette + skyline/palm/road glow) while preserving the four health metric cards.
+   - Keep metrics fully legible.
+   - Add stronger green/gold status hierarchy.
+   - Add a compact CTA/status chip similar in visual weight to the reference, without adding new navigation or changing functionality.
+
+4. SIDEBAR IS DARK NOW BUT STILL TOO FLAT/NARROW IN VISUAL CHARACTER.
+   REQUIREMENT: refine ONLY appearance, preserving all tabs/actions.
+   - Premium near-black panel with subtle inner border and faint texture/grid line treatment.
+   - Slightly stronger width and spacing so labels/icons feel deliberate, not cramped.
+   - Active nav item should be a gold-tinted outlined capsule similar to reference, not a plain flat button.
+   - Section labels smaller/muted gold.
+   - Add a bottom identity block only if current authenticated admin identity/logout handlers already exist in this component. Reuse existing handlers/data only; do not invent auth behavior. The block should show Admin/Super Admin and existing logout action if available.
+   - Full-height remains mandatory.
+
+5. KPI CARDS STILL LOOK LIKE NORMAL WHITE SAAS CARDS.
+   REQUIREMENT: make them closer to the reference while staying ivory/light.
+   - More premium ivory background, stronger soft shadow, gold icon medallion.
+   - Larger primary number, tighter label/value hierarchy.
+   - Green trend line / micro-bars decoration using CSS or tiny inline SVG.
+   - Equal height and consistent internal alignment.
+   - Keep actual values and current functionality unchanged.
+
+6. COMMAND CENTER DENSITY / BALANCE.
+   Reference packs useful information into one strong row. Current command grid is structurally 3 columns but revenue dominates with blank space and side cards still feel sparse.
+   REQUIREMENT:
+   - Revenue column approx 52-55%.
+   - Live operations approx 24%.
+   - Current operations approx 21-24%.
+   - Equal outer height for all 3 cards.
+   - Revenue chart must visually fill its card.
+   - Live operations: compact rows with icon/status/time hierarchy; use existing items only.
+   - Current operations: compact summary tiles + latest items/statuses using existing data only.
+   - Remove dead vertical whitespace. No detached operations block below the ledger.
+
+7. LEDGER / TRANSACTIONS TABLE.
+   Current table is clean but still less premium than reference.
+   REQUIREMENT:
+   - Slightly denser vertical rhythm.
+   - Stronger toolbar/search treatment.
+   - More distinct header row.
+   - Status pills more polished.
+   - Keep all search/filter/export functionality and all current columns/data intact.
+
+8. OVERALL DENSITY / VIEWPORT.
+   The approved reference fits substantially more of the dashboard within one desktop viewport.
+   REQUIREMENT:
+   - Reduce unnecessary vertical whitespace between hero, KPI row, health band, command grid, and ledger.
+   - Desktop target should feel like a compact executive command center, not a long scrolling SaaS page.
+   - Do not make text tiny; improve hierarchy instead.
+
+DESIGN TOKENS
+- Near black: #080b10 / #0b1017
+- Charcoal: #151b24 / #1c2330
+- Ivory: #fbfaf6 / #f7f3ea
+- Champagne gold: #c89b3c / #d4ad5a
+- Deep gold line: #b8862e
+- Success green: #18a76f / #1fb77c
+- Warning amber: #d79a2b
+- Red only for genuine critical states.
+Avoid neon yellow.
+
+DO NOT
+- Do not remove or fake any existing functionality.
+- Do not change values, API calls, auth/session logic, GitHub module, tabs, routes, or backend behavior.
+- Do not install dependencies.
+- Do not add external image URLs.
+- Do not reintroduce particles.
+- Do not use a huge heredoc for CSS. Any large CSS write must be atomic (file_editor + SCP/base64 or equivalent reliable method).
+- Do not commit or push.
+
+IMPLEMENTATION NOTES
+- Current chart failure is a VISUAL acceptance failure even if Recharts code exists. If the chart is not guaranteed visible, replace only the visible revenue chart renderer with inline SVG.
+- Inline SVG decorative scenes must be pointer-events:none and aria-hidden=true.
+- Keep RTL correctness.
+- Preserve responsive behavior; at narrower widths the command grid may stack gracefully.
+
+VERIFY
+1. Run npm run build.
+2. Restart existing systemd service sixty-seven.service.
+3. Confirm /admin returns HTTP 200.
+4. Verify built CSS/JS contain the new V3.3 markers.
+5. Since auth may block browser verification, code/build verification is acceptable for execution, but DO NOT claim visual success if you cannot see authenticated dashboard.
+
+RETURN EXACTLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+HEADER_INLINE_SVG=
+HEADER_SAUDI_AUTOMOTIVE_SCENE=
+SYSTEM_HEALTH_VISUAL_SCENE=
+SIDEBAR_PREMIUM_POLISH=
+KPI_REFERENCE_POLISH=
+COMMAND_GRID_COLUMNS=
+REVENUE_CHART_METHOD=
+REVENUE_CHART_GUARANTEED_VISIBLE=
+REVENUE_CHART_HAS_AXIS_LABELS=
+REVENUE_CHART_HAS_POINTS=
+REVENUE_CHART_HAS_CALLOUT=
+LIVE_OPERATIONS_COMPACT=
+CURRENT_OPERATIONS_COMPACT=
+LEDGER_DENSITY_POLISHED=
+EXCESS_WHITE_SPACE_REDUCED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_VERIFICATION=
+ERROR=
