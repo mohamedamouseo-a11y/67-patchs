@@ -1,0 +1,194 @@
+PROJECT=/67
+PHASE=Admin Overview Reference Fidelity V3.4
+GOAL=Converge the live authenticated /admin screen toward the approved Saudi automotive reference using the ACTUAL V3.3 screenshot as the current baseline.
+
+SOURCE OF TRUTH
+- Work on the CURRENT /67 checkout only.
+- Build on V3.3. Do not revert any current working structure.
+- Do NOT clone, pull, reset, checkout old code, or scan the entire repository.
+- Preserve all existing functionality, data, APIs, auth/session behavior, tabs, routes, GitHub Module, filters, export, search, and logout behavior.
+
+FILES ALLOWED
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+Do not touch backend/server files. Do not touch App.jsx; admin particles are already suppressed.
+
+ACTUAL V3.3 VISUAL BASELINE
+The live screenshot now confirms:
+- Revenue chart is finally visible and working.
+- Dark sidebar exists.
+- Dark header exists.
+- Four KPI cards exist.
+- Full-width health band exists.
+- Three cards exist in command center.
+- Ledger exists.
+
+The remaining problem is VISUAL FIDELITY, not missing structure.
+
+APPROVED REFERENCE CHARACTER
+The target is a compact premium Saudi automotive executive command center:
+- Full-height near-black right sidebar with gold detailing and a bottom Admin identity/logout block.
+- Cinematic top hero with an OBVIOUS luxury sedan + Riyadh skyline/Kingdom Centre + palms + warm champagne lighting.
+- Ivory KPI cards with stronger hierarchy, gold medallions and visible green trend micro-bars.
+- Dark System Health band with four compact metrics PLUS a clearly visible car/Riyadh visual zone on the physical right side.
+- Physical layout of command center: REVENUE large card on LEFT, LIVE OPERATIONS in MIDDLE, CURRENT OPERATIONS on RIGHT next to sidebar.
+- Dense executive layout that fits much more within one desktop viewport.
+- Ivory/off-white canvas with subtle premium gold geometry, not a flat white SaaS page.
+
+V3.4 REQUIRED CHANGES
+
+1) FIX PHYSICAL COMMAND GRID ORDER — MANDATORY
+Current live screenshot has Revenue on the physical RIGHT and Current Operations on the physical LEFT. This is opposite the approved reference.
+At desktop widths, force PHYSICAL left-to-right placement exactly:
+LEFT = Revenue & Performance (largest ~52-55%)
+MIDDLE = Live Operations (~23-25%)
+RIGHT = Current Operations (~21-23%, directly adjacent to sidebar)
+Because the page is RTL, do not rely on implicit grid placement. Use explicit CSS placement. Recommended robust approach:
+- admin-command-grid { direction:ltr; grid-template-columns:minmax(0,2.35fr) minmax(230px,1fr) minmax(230px,.95fr); }
+- each card itself { direction:rtl; }
+- explicitly assign revenue/live/current grid-column or named areas.
+Preserve responsive stacking below desktop.
+
+2) HERO SCENE MUST BE VISUALLY OBVIOUS, NOT JUST PRESENT IN JSX
+The current live header still looks like a plain navy/black bar. The V3.3 inline SVG exists but is visually imperceptible.
+Make the Saudi automotive scene CLEARLY VISIBLE in the live header:
+- Decorative scene should occupy about 45-50% of the hero width on desktop.
+- Luxury sedan silhouette must be large enough to recognize immediately.
+- Kingdom Centre silhouette + 1-2 palm shapes must be visible.
+- Add warm gold/champagne skyline glow and road perspective lines.
+- Scene opacity should be visibly useful (~0.45-0.70 depending on element), not 0.05/0.1.
+- Put scene in a dedicated absolute layer with a known z-index.
+- Hero content/toolbar must sit above it with z-index and readable dark overlay.
+- Prevent overflow clipping that hides the car.
+- Do not use external image URLs or new dependencies.
+- Keep it tasteful: cinematic, not cartoonish.
+
+3) SYSTEM HEALTH MUST HAVE A REAL VISIBLE VISUAL ZONE
+Current live health section still reads as four dark metrics across the whole band; the automotive scene is barely/non visible.
+Desktop health layout should visually resemble the reference:
+- Physical RIGHT 28-32% = decorative scene area with visible rear/three-quarter luxury car silhouette, skyline/palms, warm road glow, small premium text/status treatment.
+- Physical LEFT 68-72% = four compact system metrics.
+- The four metrics must remain easy to read.
+- Do not place the scene underneath all metric cards. Give it a dedicated visible region.
+- Keep existing actual health values and status state.
+- Stable status pill remains visible.
+
+4) SIDEBAR FULL HEIGHT + BOTTOM IDENTITY
+Current screenshot still shows the dark sidebar ending far above the bottom of the captured page, with white below it.
+Fix this visibly:
+- Sidebar must be fixed on desktop: position:fixed; top:0; bottom:0; inset-inline-end:0; height:100dvh; overflow-y:auto; z-index appropriate.
+- Main dashboard content must reserve the sidebar width via margin/padding so nothing goes under it.
+- Width target approx 260-280px.
+- Add premium inner border / subtle grid texture.
+- Keep active nav as gold outlined/tinted capsule.
+- If current logout handler and authenticated profile/admin data already exist, render a compact bottom identity block anchored at sidebar bottom: avatar/initial, Admin or Super Admin label, and existing logout action. REUSE EXISTING handler only. Do not invent auth behavior.
+
+5) COMPRESS VERTICAL HEIGHT TOWARD REFERENCE
+The current live dashboard is much taller than the approved reference. Reduce excessive height without making text tiny.
+Desktop targets (approximate, adjust safely):
+- Executive hero: 110-125px
+- KPI cards: 100-112px
+- Health band: 155-175px
+- Command center cards: 300-335px total outer height
+- Ledger visible section: ~190-230px before page continuation
+- Section gaps: generally 10-14px, not 20-30px
+Goal: on a normal desktop viewport, hero + KPIs + health + command row + substantial ledger should be visible with minimal scrolling, similar to reference.
+
+6) COMMAND CARDS MUST BE DENSE, NOT TALL EMPTY PANELS
+Current Live Operations and Current Operations cards have large unused vertical zones.
+- Equal outer height across all three command cards.
+- Revenue SVG chart: keep it visible, but fit within a compact card (roughly 180-205px plotting area).
+- Live Operations: convert existing items into tighter rows with icon + title + secondary text/time; no dead middle area.
+- Current Operations: compact 2-column summary tiles at top if data already exists, then concise status rows; no huge empty white area.
+- Footer/action area pinned naturally at bottom only when needed.
+- Use existing data only.
+
+7) KPI CARDS: MAKE THE REFERENCE DETAILS VISIBLE
+Current cards are still clean but plain.
+- Stronger ivory tone (#fbfaf6 / #f8f3e8), soft warm shadow, subtle champagne border.
+- Gold icon medallion slightly larger.
+- Primary numbers 26-32px desktop depending on fit.
+- Add VISIBLE green micro-bars or trend glyphs near trend text (CSS mini bars is fine).
+- Trend percentages/status should have stronger green hierarchy.
+- Keep equal heights and actual values unchanged.
+
+8) GLOBAL CANVAS / LUXURY DEPTH
+Current main canvas is almost flat white.
+Add only subtle, non-particle visual depth:
+- Ivory base instead of pure white.
+- Very faint champagne radial glow or geometric automotive line motifs near outer edges.
+- No floating dots/particles.
+- Cards should feel layered with soft shadows, not gray borders everywhere.
+
+9) LEDGER CLOSER TO REFERENCE
+- Compact toolbar and search in one line.
+- Slight ivory header row / stronger column hierarchy.
+- Tight row height while readable.
+- Status pills with icon + green/amber state.
+- Preserve ALL current rows, columns, search/filter/export behavior.
+
+10) KEEP THE WORKING REVENUE CHART
+Do NOT regress the V3.3 inline SVG chart. It is now visible.
+Polish only:
+- Keep gold line, gradient, points, axis labels, callout.
+- Reduce plot height only enough to match compact reference density.
+- Optional tiny segmented toggle visual only if corresponding existing state already exists; do not add fake functionality.
+
+DESIGN TOKENS
+Near black #080b10 / #0b1017
+Charcoal #151b24 / #1c2330
+Ivory #fbfaf6 / #f7f3ea
+Champagne #c89b3c / #d4ad5a
+Deep gold #b8862e
+Success green #18a76f / #1fb77c
+Warning amber #d79a2b
+Avoid neon yellow and avoid excessive pure white.
+
+DO NOT
+- No backend/API/auth/session changes.
+- No fake data.
+- No new dependencies.
+- No external image URLs.
+- No particles.
+- No clone/pull/reset.
+- No broad repo scan.
+- No git commit or push.
+- Do not use a long heredoc for CSS. Use file_editor + SCP/base64/atomic write for any large CSS update.
+
+VERIFY
+1. npm run build
+2. systemctl restart sixty-seven.service
+3. curl local /admin => HTTP 200
+4. Confirm built assets contain V3.4 markers.
+5. Code-level verification MUST confirm:
+   - desktop grid physical order is Revenue LEFT / Live MIDDLE / Current RIGHT
+   - sidebar fixed full viewport
+   - header scene visible-layer CSS has meaningful opacity and size
+   - health scene has dedicated desktop width, not hidden under metrics
+   - V3.3 inline SVG revenue chart remains present
+6. If authenticated browser visual verification is blocked by auth, report AUTH_BLOCKED and do not claim screenshot verification.
+
+RETURN EXACTLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+COMMAND_PHYSICAL_ORDER=REVENUE_LEFT_LIVE_MIDDLE_CURRENT_RIGHT
+SIDEBAR_FIXED_FULL_VIEWPORT=
+SIDEBAR_BOTTOM_IDENTITY=
+HEADER_SCENE_DEDICATED_LAYER=
+HEADER_CAR_VISIBILITY_RULES=
+HEADER_RIYADH_VISIBILITY_RULES=
+HEALTH_DEDICATED_SCENE_REGION=
+HEALTH_METRICS_REGION=
+KPI_MICROBARS_VISIBLE_IMPLEMENTATION=
+COMMAND_CARD_MAX_HEIGHT=
+REVENUE_INLINE_SVG_PRESERVED=
+LIVE_OPERATIONS_DENSIFIED=
+CURRENT_OPERATIONS_DENSIFIED=
+LEDGER_DENSIFIED=
+CANVAS_IVORY_DEPTH=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_VERIFICATION=
+ERROR=
