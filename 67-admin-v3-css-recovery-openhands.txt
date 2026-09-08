@@ -1,0 +1,95 @@
+67 ADMIN V3 CSS RECOVERY — EXACT FIX ONLY
+
+PROJECT: /67
+TARGET: /admin
+
+ROOT CAUSE ALREADY CONFIRMED:
+- /67/src/pages/AdminDashboard.jsx contains V3 structural classes (including admin-command-grid).
+- /67/src/App.jsx contains the admin particle suppression logic.
+- /67/src/pages/AdminDashboard.css is stale Phase 1 because the previous V3 CSS transfer was truncated/corrupted.
+- Build and live assets are therefore correctly serving stale CSS.
+
+DO NOT RE-ANALYZE THE PROJECT.
+DO NOT REWRITE JSX UNLESS A V3 CLASS USED BY JSX IS MISSING FROM CSS AND A TINY CLASS-name correction is absolutely required.
+DO NOT TOUCH BACKEND, ROUTES, AUTH, DATA, API, NGINX, OR OTHER SCREENS.
+
+ALLOWED FILES:
+1) /67/src/pages/AdminDashboard.css
+2) /67/src/pages/AdminDashboard.jsx ONLY if required for a tiny class-name alignment fix
+3) /67/src/App.jsx READ-ONLY verification unless !isAdmin particle suppression is unexpectedly missing
+
+MISSION:
+Restore the COMPLETE Reference Fidelity V3 stylesheet so the current V3 JSX renders correctly.
+
+VISUAL TARGET / REQUIRED STATE:
+- Right sidebar ACTUALLY dark charcoal/black (#090d12 family), with light text, muted section labels, champagne-gold active state and gold icons.
+- Executive header ACTUALLY dark automotive/Saudi themed, with deep black/charcoal surfaces, subtle gold lines, CarFront watermark/decorative automotive geometry, strong Arabic title/subtitle.
+- KPI row remains 4 compact ivory/white cards with premium gold icon tiles and strong metrics.
+- System-health band full width, dark signature section, 4 compact metrics, green only for healthy status, gold/charcoal accents elsewhere.
+- admin-command-grid must render as a TRUE 3-column desktop grid containing:
+  1. revenue/analytics card
+  2. live operations card
+  3. current operations/alerts card
+- No detached current-operations block below the financial ledger.
+- Revenue chart container must have explicit non-zero height (minimum 220px desktop) and overflow/parent sizing that allows Recharts ResponsiveContainer to render.
+- Financial ledger full width below command grid, compact premium banking style.
+- No huge blank white areas.
+- RTL preserved.
+- Desktop target 1920x1080 must look compact, premium, cinematic, Saudi automotive executive—not generic white SaaS.
+- Responsive behavior at <=1100px and <=640px must remain reasonable.
+
+CRITICAL WRITE METHOD:
+DO NOT use a long SSH heredoc to write AdminDashboard.css.
+The previous failure was caused by heredoc/SSH truncation.
+Use ONE of these robust methods only:
+A) generate the complete CSS locally, base64 encode it, transfer/decode atomically on the server; OR
+B) write to a temporary file and SCP it to /67/src/pages/AdminDashboard.css; OR
+C) use a local file editor/write API that writes the complete file atomically.
+After writing, verify file size and tail/head are intact before build.
+
+MANDATORY VERIFICATION BEFORE BUILD:
+Run checks proving the CSS on disk contains all of these selectors/markers (or equivalent V3 selectors actually used by JSX):
+- .admin-command-grid
+- dark sidebar rule for the sidebar root/container
+- dark executive header rule
+- command-grid child/card rules
+- chart container explicit height >=220px
+- responsive @media rule for command grid
+
+Also verify JSX contains:
+- className="admin-command-grid" (or the exact class used by CSS)
+- the three command-center cards are siblings inside that grid
+- there is NO duplicate/detached current-operations block after the ledger
+
+Verify App.jsx still prevents ParticlesBackground on /admin using !isAdmin logic.
+
+THEN:
+1. cd /67
+2. npm run build
+3. confirm build PASS
+4. systemctl restart sixty-seven.service
+5. curl local /admin and confirm HTTP 200
+6. extract current built CSS asset name from /67/dist/index.html
+7. grep/search the built CSS asset for V3 markers such as admin-command-grid and the dark sidebar/background values
+
+DO NOT commit.
+DO NOT push.
+
+RETURN ONLY:
+CSS_WRITE_METHOD=
+CSS_FILE_SIZE=
+V3_CSS_ON_DISK=
+ADMIN_COMMAND_GRID_CSS=YES/NO
+DARK_SIDEBAR_CSS=YES/NO
+DARK_HEADER_CSS=YES/NO
+CHART_HEIGHT_CSS=YES/NO
+THREE_CARDS_IN_GRID=YES/NO
+DETACHED_OPERATIONS_BLOCK=YES/NO
+APP_ADMIN_PARTICLES_SUPPRESSED=YES/NO
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+BUILT_CSS_ASSET=
+BUILT_V3_MARKERS_PRESENT=YES/NO
+FILES_CHANGED=
+ERROR=
