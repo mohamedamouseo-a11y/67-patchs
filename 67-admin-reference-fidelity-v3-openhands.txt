@@ -1,0 +1,207 @@
+67 ADMIN — REFERENCE FIDELITY V3
+TARGET: /admin → overview only
+WORK ON CURRENT SERVER CHECKOUT: /67
+
+WHY THIS PATCH EXISTS
+The current screen is still far from the approved Saudi Automotive Luxury reference. Previous phases reported success, but the real screenshot still showed: light sidebar, missing revenue chart, incorrect command-center layout, particles still visible, large white dead space, and weak automotive/Saudi presence.
+
+THIS IS A STRUCTURAL FIDELITY PASS, NOT A MICRO-POLISH PASS.
+
+STRICT SCOPE
+Read/edit ONLY:
+1) src/pages/AdminDashboard.jsx
+2) src/pages/AdminDashboard.css
+3) src/App.jsx   ← only to prevent ParticlesBackground from rendering on /admin
+Do not scan the whole repository. Do not touch backend/API/auth/data logic. Do not add dependencies. Do not clone/pull/commit/push.
+
+VISUAL TARGET
+Build a real premium Saudi automotive command center:
+- RIGHT sidebar: deep black/charcoal, gold accents, light text
+- Main canvas: warm ivory/off-white
+- Header: dark premium Saudi automotive executive hero
+- 4 ivory KPI cards
+- Full-width dark System Health signature band
+- ONE REAL 3-column command-center row directly under system health
+- Premium financial ledger below
+- No particles/dots anywhere on /admin
+- Tight information density, minimal dead space
+
+REFERENCE PROPORTIONS FOR 1920x1080
+- Sidebar on RIGHT: 250–280px fixed/sticky width
+- Main content uses remaining width with 22–28px outer padding
+- Header: 120–150px tall
+- KPI row: 4 equal cards, 130–145px tall
+- System Health: 190–220px tall
+- Command center row: 310–360px tall
+  • Revenue analytics: ~50%
+  • Live operations: ~25%
+  • Current alerts/status: ~25%
+- Financial ledger immediately below; no detached “operations” block under the table
+
+A) FIX SIDEBAR FOR REAL
+Current screenshot proves the sidebar is still light. Do not merely add a new CSS rule and assume it wins.
+- Inspect the actual sidebar JSX and existing inline styles/classes.
+- Remove or override conflicting inline light backgrounds/colors.
+- Sidebar root must render #090d12 / #0b1016 visually.
+- Navigation text: #e8e5de; muted group labels: #817b70.
+- Active item: dark tinted panel with thin champagne-gold edge + subtle gold glow; NOT yellow fill.
+- Logo/identity area at top must feel premium black/gold.
+- Admin/account/logout utility block at bottom should visually belong to sidebar.
+- Preserve all click handlers and tab switching.
+
+B) EXECUTIVE SAUDI AUTOMOTIVE HEADER
+Replace the weak white header feel with a dark premium hero block.
+Required content:
+- Main title: لوحة الأداء والاستقرار
+- Strong subtitle mentioning: سوق قطع السيارات في المملكة العربية السعودية
+- Existing period controls + refresh/export remain functional and visually integrated.
+- Automotive/Saudi motif must be clearly visible WITHOUT external image dependency:
+  • use CarFront icon as a large subtle watermark/silhouette
+  • add CSS skyline/road-line geometry inspired by Riyadh using pseudo-elements / gradients / simple divs
+  • subtle champagne-gold lines and warm light, no neon
+- Header should look like a command center, not a white SaaS heading.
+
+C) KPI ROW
+Keep existing live values/logic exactly.
+- 4 equal ivory cards
+- large value typography
+- gold icon tiles
+- green trend only for positive/healthy states
+- warm borders (#e9dfcf family)
+- stronger visual hierarchy and compact spacing
+
+D) SYSTEM HEALTH SIGNATURE BAND
+Keep live metrics and existing logic.
+- Full-width dark charcoal band directly below KPI row
+- Clearly separated title/status pill
+- 4 internal metric cards in one row
+- progress bars visible
+- use gold only for structure/icons and green only for healthy states
+- add subtle automotive gauge/road geometry in CSS background
+- NO giant unused blank area
+
+E) REAL 3-COLUMN COMMAND CENTER — NON-NEGOTIABLE
+The screenshot currently has only 2 cards and a detached block later. Fix DOM structure, not only CSS.
+Create ONE parent grid immediately below System Health, e.g. `.admin-command-grid` containing EXACTLY these three siblings:
+1. Revenue & Performance
+2. Live Operations
+3. Current Operations / Alerts
+
+Desktop grid must visibly render 3 columns in same row. Recommended:
+grid-template-columns: minmax(0, 2fr) minmax(260px, 0.95fr) minmax(260px, 0.95fr)
+All three cards must have the same visual height.
+At <= 1200px collapse gracefully to 2 columns/stack; mobile 1 column.
+
+IMPORTANT:
+- Move any current “العمليات الجارية” content that appears below the financial table INTO column 3.
+- After this change there must be NO separate operations/current-operations section below the ledger.
+
+F) REVENUE CHART MUST ACTUALLY RENDER
+Previous screenshots showed a blank chart area. Fix the runtime layout, not just chart props.
+- Reuse installed Recharts only.
+- Use an explicit fixed chart wrapper height on desktop: 210–240px.
+- Prefer `ResponsiveContainer width="100%" height={220}` OR a parent with explicit height + ResponsiveContainer height="100%".
+- Ensure no parent has zero height, overflow clipping, display:none, or invalid flex sizing.
+- Render visible X axis labels in Arabic: يوم 1، يوم 5، يوم 10... or equivalent meaningful dates.
+- Add CartesianGrid subtle, Area gradient, champagne-gold stroke #b8862e / #c69a3a, visible dots, dark tooltip.
+- Chart must occupy most of the Revenue card; no large white blank rectangle.
+- Use existing live-derived values; do not create backend calls.
+
+G) LIVE OPERATIONS CARD
+Use existing `liveNotifications` and existing review counts.
+- 4–5 compact timeline/activity rows when available
+- distinct icons for payment / registration / document/review
+- time displayed clearly
+- footer CTA: عرض جميع الأنشطة
+- fill the card height naturally; no empty bottom half
+
+H) CURRENT OPERATIONS / ALERTS CARD
+Move current detached operations summary here.
+Use existing data/state only:
+- stores pending review
+- documents pending review
+- open/critical alert count if available
+- platform status
+- compact recent alert list
+- green footer state only if healthy
+Do not invent backend features.
+
+I) FINANCIAL LEDGER
+Keep current table data and search/filter/export behavior.
+- full width below command center
+- compact premium banking style
+- stronger table header
+- amount hierarchy
+- refined success/pending badges
+- subtle warm hover
+- no excessive whitespace
+
+J) REMOVE ADMIN PARTICLES AT SOURCE
+Previous CSS attempts failed; screenshot still shows gold dots.
+In src/App.jsx:
+- ensure ParticlesBackground is NOT rendered when `location.pathname.startsWith('/admin')`
+- this must be logic-level conditional rendering, not a CSS selector workaround
+- do not affect any non-admin route
+Remove/neutralize obsolete admin particle CSS hacks if they are no longer needed.
+
+K) REMOVE CONFLICTING LEGACY STYLES
+Before declaring success:
+- search ONLY AdminDashboard.jsx/AdminDashboard.css for old sidebar/background/layout rules that override V3
+- remove or consolidate conflicting declarations
+- reduce important inline styles that block the new classes
+Do not leave duplicate `.admin-sidebar`, command-grid, or overview layout definitions fighting each other.
+
+DESIGN TOKENS
+- Carbon: #090d12 / #11161d / #1a2029
+- Ivory: #fbfaf7 / #f6f2ea
+- Champagne gold: #c69a3a / #b8862e
+- Warm border: #e8dece
+- Primary text: #15191f
+- Muted: #77746e
+- Healthy green: #16a36a
+- Warning amber: #d99028
+No neon yellow. No colorful gradients. No excessive glass effects.
+
+FUNCTIONALITY MUST REMAIN
+Preserve:
+- superadmin session/login/logout
+- profile load/save
+- all existing tabs
+- GitHubModule
+- users/documents/transactions/community/notifications/settings
+- live values and existing timers/data updates
+- search/filter/export handlers already present
+- routes/backend contracts
+
+DO NOT
+- add packages
+- touch server/backend files
+- rename routes
+- rewrite unrelated tabs
+- add fake API data
+- create a second dashboard implementation beside the existing one
+- report success merely because class names exist
+
+VALIDATION
+1. npm run build
+2. confirm only the 3 allowed files changed
+3. grep/check that App.jsx does not render ParticlesBackground on /admin
+4. verify DOM structure has one 3-child command grid before financial ledger
+5. verify chart wrapper has explicit non-zero height
+6. if an existing browser/screenshot capability is already available, perform ONE visual check of /admin after build; do not install browser tooling.
+
+FINAL RESPONSE FORMAT ONLY
+CHANGED_FILES=
+BUILD=
+SIDEBAR_ACTUALLY_DARK=
+HEADER_DARK_AUTOMOTIVE=
+KPI_ROW=4
+SYSTEM_HEALTH_FULL_WIDTH=
+COMMAND_GRID_COLUMNS=3
+REVENUE_CHART_NONZERO_HEIGHT=
+LIVE_OPERATIONS_IN_GRID=
+CURRENT_OPERATIONS_IN_GRID=
+DETACHED_OPERATIONS_BELOW_LEDGER=NO
+ADMIN_PARTICLES_RENDERED=NO
+FUNCTIONALITY_REMOVED=NO
+ERROR=
