@@ -1,0 +1,1 @@
+V9 assets will be embedded directly as CSS data URIs to avoid base64/hex decode failures on the server. OpenHands must only download the final CSS and apply script.
