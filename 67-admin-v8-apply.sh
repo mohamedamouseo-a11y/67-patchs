@@ -28,7 +28,8 @@ if [ "$CSS_BYTES" -lt 12000 ] || [ "$CSS_LINES" -lt 250 ]; then
   echo "ERROR=V8 CSS payload incomplete (${CSS_BYTES} bytes / ${CSS_LINES} lines)"
   exit 20
 fi
-if [ "$HERO_B64_BYTES" -lt 30000 ]; then
+# Validate the actual asset, not an arbitrary compressed/base64 size. The hero is intentionally optimized.
+if [ "$HERO_B64_BYTES" -lt 10000 ]; then
   echo "ERROR=Hero payload incomplete (${HERO_B64_BYTES} bytes)"
   exit 21
 fi
@@ -40,8 +41,19 @@ fi
 base64 -d /tmp/67-v8-hero.b64 > "$HERO_DST.tmp"
 base64 -d /tmp/67-v8-health.b64 > "$HEALTH_DST.tmp"
 
+# Hard validation on decoded files.
 file "$HERO_DST.tmp" | grep -qi 'JPEG image data'
 file "$HEALTH_DST.tmp" | grep -qi 'JPEG image data'
+HERO_RAW_BYTES=$(wc -c < "$HERO_DST.tmp" | tr -d ' ')
+HEALTH_RAW_BYTES=$(wc -c < "$HEALTH_DST.tmp" | tr -d ' ')
+if [ "$HERO_RAW_BYTES" -lt 8000 ]; then
+  echo "ERROR=Decoded hero asset too small (${HERO_RAW_BYTES} bytes)"
+  exit 25
+fi
+if [ "$HEALTH_RAW_BYTES" -lt 4000 ]; then
+  echo "ERROR=Decoded health asset too small (${HEALTH_RAW_BYTES} bytes)"
+  exit 26
+fi
 
 mv "$HERO_DST.tmp" "$HERO_DST"
 mv "$HEALTH_DST.tmp" "$HEALTH_DST"
@@ -85,6 +97,7 @@ HEALTH_BYTES=$(wc -c < "$HEALTH_DST" | tr -d ' ')
 echo "PATCH_APPLIED=YES"
 echo "V8_CSS_BYTES=$CSS_BYTES"
 echo "V8_CSS_LINES=$CSS_LINES"
+echo "HERO_B64_BYTES=$HERO_B64_BYTES"
 echo "HERO_ASSET_BYTES=$HERO_BYTES"
 echo "HEALTH_ASSET_BYTES=$HEALTH_BYTES"
 echo "V8_IMPORT_PRESENT=YES"
