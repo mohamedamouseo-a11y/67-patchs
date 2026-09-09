@@ -1,0 +1,187 @@
+PROJECT=/67
+PHASE=Admin Overview Reference Fidelity V3.5
+GOAL=Polish the ACTUAL live V3.4 screenshot toward the approved Saudi automotive luxury reference. This pass is based on visible screenshot gaps, not code markers.
+
+SOURCE OF TRUTH
+- Work on the CURRENT /67 checkout only.
+- Build directly on the current V3.4 implementation.
+- Do NOT clone, pull, reset, checkout old code, or scan the entire repository.
+- Preserve all existing backend/API/auth/session behavior, tabs, routes, GitHub Module, data, search, filters, export, logout and live values.
+
+FILES ALLOWED
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+Do not touch backend/server files. Do not touch App.jsx. Do not install dependencies.
+
+ACTUAL LIVE V3.4 SCREENSHOT — WHAT IS NOW CORRECT
+- Revenue is physically LEFT, Live Operations MIDDLE, Current Operations RIGHT.
+- Revenue inline SVG is visible and must be preserved.
+- Sidebar is dark, fixed full viewport, and bottom identity/logout block is visible.
+- Dashboard density is much better and ledger is visible within the same desktop viewport.
+- KPI row, health band, and dark hero all exist.
+
+ACTUAL LIVE V3.4 SCREENSHOT — VISIBLE GAPS TO FIX
+
+1) HERO SCENE IS VISIBLE BUT LOOKS LIKE THIN LINE ART AND COLLIDES WITH TITLE
+Current live hero shows a gold wireframe/outline car and skyline overlapping the Arabic title/subtitle on the physical RIGHT. This does NOT match the premium reference.
+MANDATORY:
+- Create a safe text zone on the physical RIGHT ~34-38% where no decorative car path crosses title/subtitle.
+- Move the car/skyline scene toward the physical CENTER-LEFT while keeping the date/refresh/export controls readable on the far left.
+- Make the car read as a premium vehicle using FILLED layered SVG shapes, not only strokes: dark body fill, champagne highlights, subtle glass fill, wheel shapes, headlight/taillight accents, road glow.
+- Keep Kingdom Centre/palms in the background, not on top of text.
+- Add a soft dark-to-transparent overlay between the scene and text.
+- Reduce random thin technical lines that make it look like a wireframe illustration.
+- Hero must feel cinematic, elegant and automotive; not cartoonish and not engineering-diagram-like.
+- Keep no external image URLs.
+
+2) HERO TEXT HIERARCHY / ALIGNMENT
+- Title must be completely unobstructed and visually dominant.
+- Subtitle and Saudi automotive descriptor must sit on clean lines with improved spacing.
+- Gold descriptor should be a subtle premium accent, not visually touching the car artwork.
+- Keep toolbar/date chips integrated into hero, but use a consistent compact chip height and spacing.
+
+3) SYSTEM HEALTH HAS A LARGE DEAD DARK CENTER
+Current screenshot shows four metric cards packed on the LEFT, title on RIGHT, but a huge empty dark middle area. The dedicated scene region is not contributing enough visually.
+MANDATORY:
+- Convert health band into explicit 3-zone desktop composition:
+  PHYSICAL LEFT 48-52% = four compact metric cards in one row.
+  PHYSICAL CENTER 23-27% = clearly visible automotive visual scene.
+  PHYSICAL RIGHT 23-27% = health title/subtitle + stable status chip + concise status text.
+- The center visual scene must contain a recognizable premium rear/three-quarter car silhouette with a warm road glow and small Riyadh skyline cue.
+- Use filled SVG layers and meaningful opacity. Do not rely on faint 0.05 outlines.
+- Do not let the scene sit underneath metric cards.
+- Keep all actual health values unchanged.
+
+4) KPI CARDS ARE STILL TOO PLAIN AND BOTTOM DETAILS ARE CLIPPED/TIGHT
+In the live screenshot, KPI trend/microbar details sit too close to the bottom and some feel visually clipped.
+MANDATORY:
+- Give KPI cards enough inner height/padding for label, number, trend and microbars without clipping.
+- Desktop target height 104-112px.
+- Keep equal heights.
+- Stronger premium ivory background and warmer soft shadow.
+- Gold icon medallion with a subtle inner highlight.
+- Add consistent green microbar treatment to ALL four cards, not only one card.
+- Microbars must remain inside normal flow or a safe bottom region; no overflow outside card.
+- Keep actual values unchanged.
+
+5) CURRENT OPERATIONS CARD FOOTER/STATUS OVERLAPS LEDGER
+The live screenshot shows the green system status pill at the bottom of Current Operations pushing/overlapping near the ledger border.
+MANDATORY:
+- No element from any command card may visually overlap the ledger.
+- Current Operations card must have overflow:hidden or a safe internal layout.
+- Fit all current rows inside the fixed card height using tighter row gaps/padding, not absolute positioning that escapes the card.
+- Put the system status strip inside the card bottom with 8-10px internal margin.
+- Equal outer card height remains mandatory.
+
+6) LIVE OPERATIONS CARD STILL HAS A LARGE EMPTY MIDDLE REGION
+- Densify only with EXISTING items/data.
+- Use compact activity rows with icon, title, secondary line/time.
+- If there are only two live items, make each row slightly richer using existing secondary text rather than leaving a huge blank area.
+- Keep the footer action area visually compact.
+- No fake activity items.
+
+7) COMMAND GRID FINAL PROPORTION
+Keep physical order exactly:
+LEFT Revenue ~53-55%
+MIDDLE Live ~23-24%
+RIGHT Current ~22-23%
+- Equal outer height around 315-325px on desktop.
+- Preserve inline SVG revenue chart.
+- Reduce chart plotting height slightly only if necessary to fit 315-325px without clipping labels/callout.
+- Revenue card should not overpower the other two vertically.
+
+8) SIDEBAR FINAL PREMIUM POLISH
+Current sidebar is functionally correct and full-height. Do NOT restructure it.
+Polish only:
+- Slightly stronger gold inner edge/light at active item.
+- Better vertical rhythm between section labels and nav items.
+- Bottom Super Admin identity card should feel integrated into the panel, with tighter spacing and less empty separation above logout.
+- Keep logout action exactly wired to existing handler.
+- Preserve full viewport fixed behavior.
+
+9) LEDGER / FINANCIAL TABLE FINAL DEPTH
+Current ledger is clean but still flat compared with reference.
+- Add subtle ivory/champagne header background.
+- Slightly stronger divider under header row.
+- Compact but readable row height.
+- Status pills remain green/amber with icon.
+- Toolbar/search/filter/export stay in one aligned row.
+- Preserve every current column, row and action.
+
+10) CANVAS / CARD DEPTH
+- Keep ivory page base.
+- Add very subtle warm radial glow near top-left/outer canvas edge, not particles.
+- Remove unnecessary hard borders where a soft shadow can establish hierarchy.
+- Keep sections visually connected like a premium command center.
+- No floating dots, no particles, no decorative clutter.
+
+11) REVENUE CHART — PRESERVE, ONLY POLISH
+Do NOT remove or replace the current inline SVG chart.
+- Keep gold line, area fill, points, Arabic axis labels, and dark callout.
+- Improve callout placement if it collides with line/labels.
+- Keep axis labels within card bounds.
+- Ensure plot is vertically centered and not too close to bottom border.
+
+DESIGN TOKENS
+Near black: #080b10 / #0b1017
+Charcoal: #151b24 / #1c2330
+Ivory: #fbfaf6 / #f7f3ea
+Champagne: #c89b3c / #d4ad5a
+Deep gold: #b8862e
+Success green: #18a76f / #1fb77c
+Warning amber: #d79a2b
+Avoid neon yellow and excessive pure white.
+
+DO NOT
+- No backend/API/auth/session changes.
+- No fake data.
+- No new dependencies.
+- No external image URLs.
+- No particles.
+- No clone/pull/reset.
+- No broad repo scan.
+- No git commit or push.
+- Do not revert the working V3.4 physical grid order.
+- Do not revert the inline SVG revenue chart.
+- Any large CSS write must be atomic via file_editor + SCP/base64 or equivalent; do not use a long heredoc.
+
+VERIFY
+1. npm run build
+2. systemctl restart sixty-seven.service
+3. curl local /admin => HTTP 200
+4. Confirm built assets contain V3.5 markers.
+5. Code-level verification MUST confirm:
+   - hero text safe zone exists and decorative SVG does not cross title region
+   - hero car uses filled body layers, not strokes only
+   - health band uses explicit left metrics / center scene / right text zones
+   - KPI microbars are inside all four cards and not clipped
+   - Current Operations has no overflow into ledger
+   - physical command order remains Revenue LEFT / Live MIDDLE / Current RIGHT
+   - inline SVG revenue chart remains present
+   - sidebar remains fixed full-height with identity/logout block
+6. If auth blocks browser visual verification, report AUTH_BLOCKED and do not claim visual screenshot success.
+
+RETURN EXACTLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+HERO_TEXT_SAFE_ZONE=
+HERO_CAR_FILLED_LAYERS=
+HERO_SCENE_NO_TITLE_COLLISION=
+HEALTH_THREE_ZONE_LAYOUT=
+HEALTH_CENTER_SCENE_VISIBLE_IMPLEMENTATION=
+KPI_ALL_FOUR_MICROBARS=
+KPI_CONTENT_NOT_CLIPPED=
+COMMAND_PHYSICAL_ORDER=REVENUE_LEFT_LIVE_MIDDLE_CURRENT_RIGHT
+COMMAND_CARD_HEIGHT=
+CURRENT_OPERATIONS_OVERFLOW_FIXED=
+LIVE_OPERATIONS_DENSIFIED=
+REVENUE_INLINE_SVG_PRESERVED=
+SIDEBAR_FIXED_FULL_VIEWPORT=
+SIDEBAR_IDENTITY_POLISHED=
+LEDGER_FINAL_POLISH=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_VERIFICATION=
+ERROR=
