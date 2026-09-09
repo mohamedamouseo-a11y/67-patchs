@@ -1,0 +1,157 @@
+PROJECT=/67
+PHASE=Admin Dashboard Official Reference V5.2 — LIVE SCREENSHOT CORRECTION
+STATUS=VISUAL_FIX_AGAINST_OFFICIAL_V5
+
+GOAL
+Fix ONLY the visible mismatches confirmed by the latest authenticated live screenshot. Official Reference V5 remains the only visual target.
+
+SOURCE OF TRUTH
+- Work on CURRENT /67 checkout only.
+- Do NOT clone, pull, reset, checkout old code, or scan the whole repo.
+- Preserve all working functionality, data, APIs, auth/session, tabs, GitHub Module, search/filter/export, logout, routes, and Revenue inline SVG.
+
+FILES ALLOWED
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+- Reuse existing src/assets/sixty-seven-official-logo.png only if already present.
+Do NOT touch backend/server/API/auth/package.json/App.jsx/dependencies.
+
+LATEST LIVE SCREENSHOT — VERIFIED VISUAL FAILURES
+1) SIDEBAR BRAND HEADER IS COLLIDING.
+- Official logo is now present, but it is too large and overlaps the Arabic brand text/top controls.
+- The top sidebar area looks cramped/cropped.
+REQUIRED:
+- Create a dedicated brand-lockup block with clear vertical spacing.
+- Official logo centered, max-width about 110-130px, object-fit:contain.
+- Arabic label/subtitle must be in its own line/block and never overlap the logo.
+- Back/arrow button must sit in its own fixed cell, not on top of the logo.
+- Keep the logo fully visible including red sweep and SIX SEVEN wordmark.
+
+2) HERO TEXT HAS DISAPPEARED / IS NOT VISIBLE.
+- Latest live screenshot shows a large empty dark hero with only a small boxed car scene on the right.
+- The Arabic title/subtitle from Official V5 are not visually present.
+REQUIRED:
+- Restore a clearly visible hero text zone with Arabic title + subtitle + small gold brand line.
+- Hero title must be fully readable and not clipped by the fixed sidebar.
+- Text zone physical RIGHT of hero content area, width ~330-420px.
+- Toolbar/date/export controls physical LEFT.
+- Scene in a separate absolute background layer behind content.
+
+3) HERO CAR/SCENE IS STILL A BOX.
+- The car appears inside a visible rectangular mini-scene at the top-right.
+REQUIRED:
+- Remove any visible background/border/container rectangle around the hero scene.
+- Scene wrapper must be position:absolute; inset/size as background layer; pointer-events:none.
+- Car + Riyadh skyline should blend into the whole hero canvas using gradients/masks, no hard rectangle edges.
+- Scene should occupy ~55-65% of hero width and most hero height.
+- Keep subtle red automotive sweep integrated across scene.
+- Do not add external URLs.
+
+4) SYSTEM HEALTH CAR IS MASSIVELY OVERSIZED / CROPPED.
+- Latest screenshot shows a giant car silhouette spanning under/behind metrics, with huge red tail-light rectangles.
+- This is visually broken and unlike Official V5.
+REQUIRED:
+- Rebuild Health band composition so visual scene is a dedicated region, NOT under the metrics.
+- Physical RIGHT visual zone ~30-34%.
+- Physical LEFT metrics/status zone ~66-70%.
+- Car in visual zone only, fully contained, no clipping, no giant red rectangles.
+- Red taillights should be small accents only.
+- Four health metrics must remain clean, aligned, and unobstructed.
+- Keep current live values unchanged.
+
+5) CURRENT OPERATIONS STILL CLIPS ROWS.
+- Screenshot shows lower current-operation rows partially hidden/stacked.
+REQUIRED:
+- No clipped rows.
+- Use explicit inner list height with natural overflow only if necessary.
+- All visible rows must have consistent 44-52px row height.
+- Keep summary tiles at top.
+- Footer/status strip must not overlap list content.
+
+6) LIVE OPERATIONS STILL HAS EXCESS EMPTY SPACE.
+- Densify using existing items only.
+- Use compact timeline rows with icon, title, secondary text, time.
+- Add no fake data.
+- Keep existing action/footer behavior.
+
+7) KPI ROW POLISH
+- Current cards are functional and cleaner, but trend/microbars sit too close to the bottom edge.
+REQUIRED:
+- Increase safe bottom padding.
+- Keep all trend text + microbars fully inside the card.
+- Keep 4 equal cards and current real values.
+
+8) SIDEBAR WIDTH / MAIN OFFSET
+- Ensure fixed sidebar width and main content offset match exactly so hero/title never disappears underneath sidebar.
+- Desktop target sidebar ~260-270px.
+- Main dashboard must reserve that exact width.
+
+9) OFFICIAL V5 COMPOSITION MUST REMAIN
+- Revenue LEFT
+- Live MIDDLE
+- Current RIGHT next to sidebar
+- Revenue Inline SVG preserved
+- Fixed full-height sidebar preserved
+- Official real logo preserved
+- Black/gold primary + controlled red accent
+
+DO NOT
+- No backend/API/auth/session changes.
+- No fake data.
+- No new dependencies.
+- No external images.
+- No particles.
+- No clone/pull/reset.
+- No commit/push.
+- Do not restore Recharts.
+- Do not replace the official logo with Logo67.
+- Do not use long heredoc for CSS; use atomic file_editor + SCP/base64 if needed.
+
+IMPLEMENTATION PRIORITY
+A. Fix sidebar logo/header collision.
+B. Restore visible hero title/subtitle safe zone.
+C. Remove hero boxed-scene look.
+D. Contain health car scene to dedicated region.
+E. Fix Current Operations clipping.
+F. Densify Live Operations.
+G. KPI safe padding.
+
+VERIFY
+1. npm run build
+2. systemctl restart sixty-seven.service
+3. curl localhost /admin => HTTP 200
+4. Verify code-level:
+   - official logo image still imported/used in sidebar
+   - hero title/subtitle DOM still present and CSS visible
+   - hero scene wrapper has no visible rectangular background/border
+   - health scene region is separate from metrics
+   - current ops rows not clipped by fixed heights/overlapping footer
+   - Revenue inline SVG preserved
+   - command physical order preserved
+5. If browser auth blocks visual verification, report AUTH_BLOCKED and do not claim screenshot success.
+
+RETURN EXACTLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+OFFICIAL_REFERENCE_V5=LOCKED
+SIDEBAR_OFFICIAL_LOGO_VISIBLE=YES
+SIDEBAR_BRAND_COLLISION_FIXED=
+HERO_TITLE_VISIBLE_IMPLEMENTATION=
+HERO_SUBTITLE_VISIBLE_IMPLEMENTATION=
+HERO_TEXT_SAFE_ZONE=
+HERO_SCENE_BOX_REMOVED=
+HERO_SCENE_INTEGRATED_BACKGROUND=
+HEALTH_SCENE_DEDICATED_REGION=
+HEALTH_CAR_CONTAINED=
+HEALTH_RED_ACCENTS_CONTROLLED=
+KPI_BOTTOM_CLIPPING_FIXED=
+LIVE_OPERATIONS_DENSIFIED=
+CURRENT_OPERATIONS_CLIPPING_FIXED=
+REVENUE_INLINE_SVG_PRESERVED=YES
+COMMAND_PHYSICAL_ORDER=REVENUE_LEFT_LIVE_MIDDLE_CURRENT_RIGHT
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_VERIFICATION=
+ERROR=
