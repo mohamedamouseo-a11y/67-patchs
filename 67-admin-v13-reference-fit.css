@@ -1,0 +1,224 @@
+/* SIX SEVEN ADMIN V13 — OFFICIAL REFERENCE FIT
+   Fixes authenticated V12 screenshot mismatches without changing structure/data. */
+
+/* === HERO: physical sides, not logical RTL sides === */
+.ov-header__zone-right{
+  position:absolute!important;
+  top:0!important;
+  bottom:0!important;
+  right:0!important;
+  left:auto!important;
+  inset-inline-start:auto!important;
+  inset-inline-end:auto!important;
+  width:37%!important;
+  z-index:8!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  padding:20px 34px 18px 18px!important;
+  direction:rtl!important;
+  text-align:right!important;
+  background:linear-gradient(90deg,transparent 0%,rgba(2,5,9,.18) 20%,rgba(2,5,9,.76) 70%,rgba(2,5,9,.94) 100%)!important;
+}
+.ov-header__titles{
+  width:100%!important;
+  max-width:430px!important;
+  min-width:0!important;
+  margin:0!important;
+  margin-left:auto!important;
+  margin-right:0!important;
+  direction:rtl!important;
+  text-align:right!important;
+}
+.ov-header__titles h1,.ov-header__titles p,.ov-header__subtitle-saudi{
+  text-align:right!important;
+}
+.ov-header__zone-left{
+  position:absolute!important;
+  left:18px!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:14px!important;
+  inset-inline-start:auto!important;
+  inset-inline-end:auto!important;
+  width:auto!important;
+  height:auto!important;
+  z-index:9!important;
+  padding:0!important;
+  direction:ltr!important;
+}
+.ov-header__zone-left .ov-toolbar{direction:rtl!important}
+
+/* Slightly rebalance scene after title returns to the physical right. */
+.ov-header .v11-hero-scene{
+  transform:scale(1.035) translate(-2.2%,1.3%)!important;
+  transform-origin:center 62%!important;
+}
+
+/* === KPI: eliminate clipping / duplicated fake microbars === */
+.kpi-grid{
+  gap:9px!important;
+  margin-bottom:9px!important;
+  align-items:stretch!important;
+}
+.kpi-grid .kpi-card{
+  height:118px!important;
+  min-height:118px!important;
+  max-height:118px!important;
+  padding:11px 14px 10px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  overflow:hidden!important;
+}
+.kpi-grid .kpi-card::after{display:none!important}
+.kpi-grid .kpi-card__top{
+  min-height:43px!important;
+  margin:0 0 3px!important;
+  align-items:flex-start!important;
+}
+.kpi-grid .kpi-card .kpi-card__icon{
+  width:44px!important;
+  min-width:44px!important;
+  max-width:44px!important;
+  height:44px!important;
+  min-height:44px!important;
+  max-height:44px!important;
+}
+.kpi-grid .kpi-card__label{
+  font-size:10.5px!important;
+  line-height:1.25!important;
+}
+.kpi-grid .kpi-card__value{
+  font-size:29px!important;
+  line-height:1!important;
+  margin:2px 0 4px!important;
+  min-height:29px!important;
+  display:flex!important;
+  align-items:baseline!important;
+  gap:4px!important;
+  overflow:visible!important;
+}
+.kpi-grid .kpi-card__value small{font-size:10px!important}
+.kpi-grid .kpi-card__note{
+  margin-top:auto!important;
+  min-height:17px!important;
+  line-height:1.15!important;
+  font-size:9.5px!important;
+  display:flex!important;
+  align-items:center!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+}
+.kpi-grid .kpi-microbar{transform:scale(.88);transform-origin:right center;flex:0 0 auto}
+
+/* === CURRENT OPERATIONS: all rows visible, no collisions === */
+.admin-command-grid .ops-card{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+  padding:10px!important;
+  overflow:hidden!important;
+}
+.admin-command-grid .ops-card__head{
+  min-height:23px!important;
+  height:23px!important;
+  margin:0!important;
+  padding:0 1px 4px!important;
+  flex:0 0 auto!important;
+}
+.admin-command-grid .ops-card__head h3{font-size:12px!important;margin:0!important;line-height:1.2!important}
+.admin-command-grid .ops-summary-row{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;
+  margin:0!important;
+  flex:0 0 auto!important;
+}
+.admin-command-grid .ops-summary-tile{
+  min-height:50px!important;
+  height:50px!important;
+  padding:6px 7px!important;
+  border-radius:9px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+.admin-command-grid .ops-summary-tile strong{font-size:15px!important;line-height:1!important}
+.admin-command-grid .ops-summary-tile small{font-size:9px!important;margin-top:4px!important;line-height:1!important}
+.admin-command-grid .ops-tiles{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:4px!important;
+  margin:0!important;
+  min-height:0!important;
+  flex:0 0 auto!important;
+}
+.admin-command-grid .ops-tile{
+  min-height:35px!important;
+  height:35px!important;
+  max-height:35px!important;
+  padding:5px 7px!important;
+  margin:0!important;
+  border-radius:8px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  flex:0 0 auto!important;
+  overflow:hidden!important;
+}
+.admin-command-grid .ops-tile__ico{
+  width:25px!important;
+  height:25px!important;
+  min-width:25px!important;
+  flex:0 0 25px!important;
+}
+.admin-command-grid .ops-tile__info{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:1px!important;
+}
+.admin-command-grid .ops-tile__info strong{
+  font-size:10px!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.admin-command-grid .ops-tile__info small{
+  font-size:8.5px!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.admin-command-grid .ops-card>.ops-tile{
+  min-height:33px!important;
+  height:33px!important;
+  max-height:33px!important;
+}
+.admin-command-grid .ops-good-strip{
+  min-height:28px!important;
+  height:28px!important;
+  max-height:28px!important;
+  margin-top:auto!important;
+  padding:5px 7px!important;
+  border-radius:8px!important;
+  font-size:9px!important;
+  line-height:1!important;
+  flex:0 0 28px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+/* Keep the other two command cards untouched except for consistent internal clipping. */
+.admin-command-grid .live-card,.admin-command-grid .adm-chart-card{overflow:hidden!important}
+
+@media(max-width:1180px){
+  .ov-header__zone-right{right:0!important;left:auto!important;width:40%!important;padding-right:24px!important}
+  .ov-header__zone-left{left:14px!important;right:auto!important;bottom:12px!important}
+  .kpi-grid .kpi-card{height:116px!important;min-height:116px!important;max-height:116px!important}
+}
