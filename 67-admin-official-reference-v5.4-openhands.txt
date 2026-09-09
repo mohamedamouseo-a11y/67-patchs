@@ -1,0 +1,203 @@
+PROJECT=/67
+PHASE=Admin Dashboard Official Reference V5.4 — Screenshot Fidelity Convergence
+STATUS=VISUAL_CORRECTION_AGAINST_OFFICIAL_V5
+
+GOAL
+Use the NEW authenticated screenshot after V5.3 as the current baseline and converge it materially closer to the locked Official Reference V5 (the approved Six Seven dashboard design with the real logo, Riyadh night skyline, luxury black sedan, black/gold/red identity, dense one-viewport composition).
+
+CRITICAL SOURCE OF TRUTH
+- Official Reference V5 remains the ONLY visual reference.
+- The authenticated live screenshot is the truth for what is actually rendered.
+- Do NOT treat marker counts or code presence as visual success.
+- Build on CURRENT /67 only.
+
+FILES ALLOWED
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+- reuse existing src/assets/sixty-seven-official-logo.png only
+Do NOT touch backend/server/API/auth/session/routes/App.jsx/package.json/dependencies.
+
+CURRENT V5.3 SCREENSHOT — VERIFIED VISIBLE GAPS
+1. HERO STRUCTURE IS CORRECT NOW, BUT VISUAL SCENE IS STILL TOO FLAT/ILLUSTRATIVE.
+   - Title/subtitle are finally visible.
+   - Toolbar/title/scene zones now work.
+   - However the center car is still a very dark flat vector with weak reflections and the skyline is barely visible.
+   - There is still a visible center-zone tonal boundary, so the scene feels like a separate rectangular panel instead of one cinematic hero.
+   - Official V5 has a rich black sedan, visible gold Riyadh skyline, palms, road glow, reflections and a controlled red sweeping line.
+
+2. SYSTEM HEALTH HAS THE SAME PROBLEM.
+   - Three-zone structure works.
+   - Right-side car is still a flat silhouette, too dark and visually detached from the rich V5 reference.
+   - Official V5 right region feels like a night road/car scene with warm light, depth and controlled red tail-light accent.
+
+3. KPI CARDS ARE STILL TOO PLAIN.
+   - Current cards are clean but look like normal SaaS cards.
+   - Icon medallions are too small.
+   - Green trend microbars are too tiny and sit too close to the bottom.
+   - Official V5 has stronger icon medallions, stronger primary numbers, more visible green trend hierarchy and warm layered ivory depth.
+
+4. CURRENT OPERATIONS STILL SHOWS A PARTIAL/CROPPED ROW.
+   - The screenshot visibly proves one row is still cut/stacked in the list area despite V5.3 code-level YES.
+   - This is a visual acceptance failure.
+
+5. LIVE OPERATIONS STILL HAS TOO MUCH UNUSED SPACE.
+   - Only a small number of rows are visually composed at the top, leaving a large dead middle section.
+   - Use MORE existing real activity/live-notification rows if already available in component state; do not create fake entries.
+   - If only 2 actual rows exist, compact the card around them and use existing summary/status chips to fill structure without fake activity.
+
+6. VIEWPORT DENSITY STILL DOES NOT MATCH REFERENCE.
+   - In current screenshot only the ledger header appears near the bottom; reference shows multiple ledger rows within the same desktop viewport.
+   - Need another controlled vertical compression pass.
+
+7. SIDEBAR IS NOW ACCEPTABLE AND MUST NOT BE REDESIGNED.
+   - Official logo is visible.
+   - Brand lockup is stable.
+   - Keep current structure; only micro-polish spacing if needed.
+
+MANDATORY V5.4 CHANGES
+
+A) HERO — PHOTO-LIKE CINEMATIC SVG/CSS, NO PANEL EDGE
+Preserve the explicit 3-zone hero layout but upgrade ONLY the visual layer.
+- Remove any visible boundary/background difference between zone-center and the rest of the hero.
+- `.ov-header__zone-center` must be transparent; hero root owns the continuous dark background.
+- The decorative scene may extend beyond its grid cell via absolute positioning, but MUST stay behind text/toolbar and not affect layout.
+- Add left/right CSS masks/gradients so scene blends continuously into hero.
+
+Upgrade the existing v53Sky/car SVG instead of adding external images:
+- Sedan must use multiple filled layers: metallic body highlight, darker lower body, glass/cabin gradient, wheel rims, chrome edge/reflection strips, warm ground reflection, red rear light, white headlight.
+- Use 2-3 subtle reflection strokes on body to make it look dimensional.
+- Make wheels visible with rim rings, not plain black circles.
+- Riyadh skyline must be visibly readable behind vehicle: Kingdom Centre cue, 5-7 varied towers, small warm window dots, 2 palms.
+- Add warm horizon glow behind skyline and subtle road perspective/reflection beneath car.
+- Keep the red brand sweep thin and elegant, running through/behind the car scene similar to Official V5.
+- Do NOT make it cartoonish. Use low-saturation black/gold/red.
+
+Desktop hero visual balance:
+- Hero total height target: 125-135px.
+- Sedan visible width roughly 42-48% of hero content width.
+- Skyline should span most of center region and fade into both sides.
+- Text must remain fully legible.
+
+B) SYSTEM HEALTH — RICH RIGHT SCENE WITHOUT FLAT SILHOUETTE
+Keep 3-zone health structure.
+- Health total height target: 120-130px desktop.
+- Right car scene uses a richer rear/three-quarter car treatment with body highlights, road reflection and city-light dots.
+- No huge flat black shape.
+- Add a subtle golden road perspective and tiny red tail-light glow only.
+- Blend right scene into band with gradient masks; no visible box edge.
+- Metrics remain unchanged and readable.
+
+C) KPI CARDS — V5 VISUAL WEIGHT
+- Desktop height target: 88-96px.
+- Increase gold icon medallion to ~38-42px while keeping equal alignment.
+- Primary numbers strong but not clipped: ~26-30px.
+- Trend text stays inside card with 8-12px safe bottom area.
+- Make microbars actually visible: 4-5 small green bars about 4px wide with graduated heights, aligned beside trend text.
+- Warm ivory gradient/surface, subtle champagne inner border, soft warm shadow.
+- Do NOT invent trend percentages. Keep current real labels/values.
+
+D) CURRENT OPERATIONS — ZERO PARTIAL ROWS, VERIFIED BY LAYOUT LOGIC
+Do NOT rely on overflow-y:auto as the primary fix.
+Use deterministic fit:
+- Card structure: header/summary = auto, list = minmax(0,1fr), status footer = auto.
+- `.ops-current-list` must use CSS grid/flex with `align-content:start` and a controlled row gap.
+- Each visible row height target 34-38px desktop.
+- Fit all currently rendered rows completely inside available list area.
+- If the data array can exceed available space, render a deterministic limited slice that fits (e.g. first 3/4 existing items) and preserve existing “view all”/navigation behavior ONLY if already available. Do not invent a fake action.
+- No clipped half-row at the bottom under any circumstance.
+- Footer must never overlap list.
+
+E) LIVE OPERATIONS — USE EXISTING REAL DATA BETTER
+- Search only INSIDE AdminDashboard.jsx current state/arrays already loaded in this file; no repo scan.
+- If more existing live/activity items are available, render up to 4 compact rows.
+- If only 2 exist, keep 2 but reduce dead vertical gap: use compact existing summary/status chips directly below rows and pin existing footer/action naturally.
+- Do not fabricate events, names, times or values.
+- Row target 36-40px.
+
+F) COMMAND CENTER HEIGHT / VIEWPORT COMPRESSION
+Keep physical order exactly:
+LEFT Revenue / MIDDLE Live / RIGHT Current.
+- Command card outer height target: 245-260px desktop.
+- Revenue plotting area target: 135-150px while preserving inline SVG readability.
+- Keep axis labels, dots and callout visible.
+- Reduce summary tile height/padding slightly.
+- Section gaps target 8-10px.
+- Ledger should begin early enough that at least 2-3 transaction rows are visible in a typical ~900px browser viewport like the supplied screenshot.
+
+G) LEDGER — COMPACT FINAL FIT
+- Header/title + toolbar should share a compact first row where possible.
+- Table header target 28-30px.
+- Data rows target 32-34px.
+- Preserve all columns/data/search/filter/export behavior.
+- Do not make text unreadably small.
+
+H) SIDEBAR — FREEZE STRUCTURE
+- Keep current official logo-first stacked brand lockup.
+- Keep fixed full viewport sidebar and bottom identity/logout.
+- Do not redesign its navigation or widths in this phase.
+- Only fix tiny spacing if required by global density.
+
+DESIGN TOKENS — LOCKED V5
+Near-black #05080d / #080c12
+Charcoal #111821 / #18212d
+Ivory #fbfaf6 / #f8f3e8
+Champagne #d6ae59 / #c89b3c
+Deep gold #a9781d
+Success #12b978 / #18a76f
+Brand red #d71920 / #c9161d — sparing only
+
+DO NOT
+- No backend/API/auth/session changes.
+- No fake data.
+- No external image URLs.
+- No new dependencies.
+- No clone/pull/reset/broad scan.
+- No particles.
+- Do not replace official logo.
+- Do not regress Revenue inline SVG.
+- Do not change physical command order.
+- No git commit/push.
+- Any large CSS write must be atomic (file_editor + SCP/base64), no long heredoc.
+
+VERIFY
+1. npm run build
+2. systemctl restart sixty-seven.service
+3. curl localhost /admin => HTTP 200
+4. Verify built assets contain V5.4 classes/markers.
+5. Code-level checks:
+   - hero center has no independent rectangular background/panel edge
+   - richer multi-layer sedan implementation exists
+   - skyline has multiple towers/windows/palms
+   - health right scene contained and blended
+   - current operations deterministic full-row fit
+   - command max height <=260px desktop
+   - revenue inline SVG preserved
+   - sidebar official logo preserved
+6. If browser auth blocks visual verification, report AUTH_BLOCKED; do not claim visual match.
+
+RETURN EXACTLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+OFFICIAL_REFERENCE_V5=LOCKED
+HERO_CONTINUOUS_CANVAS=YES
+HERO_MULTILAYER_SEDAN=YES
+HERO_RIYADH_RICH_SCENE=YES
+HERO_RED_SWEEP_CONTROLLED=YES
+HERO_HEIGHT=
+HEALTH_RICH_SCENE=YES
+HEALTH_HEIGHT=
+KPI_HEIGHT=
+KPI_MICROBARS_VISUALLY_STRONG=YES
+CURRENT_OPERATIONS_FULL_ROWS_ONLY=YES
+LIVE_OPERATIONS_EXISTING_DATA_MAX_ROWS=
+COMMAND_PHYSICAL_ORDER=REVENUE_LEFT_LIVE_MIDDLE_CURRENT_RIGHT
+COMMAND_CARD_HEIGHT=
+REVENUE_INLINE_SVG_PRESERVED=YES
+LEDGER_COMPACT_ROWS=YES
+SIDEBAR_STRUCTURE_FROZEN=YES
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_VERIFICATION=
+ERROR=
