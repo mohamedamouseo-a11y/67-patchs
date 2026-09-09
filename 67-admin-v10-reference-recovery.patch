@@ -1,0 +1,135 @@
+diff --git a/src/pages/AdminDashboard.jsx b/src/pages/AdminDashboard.jsx
+--- a/src/pages/AdminDashboard.jsx
++++ b/src/pages/AdminDashboard.jsx
+@@ -503,11 +503,11 @@ const AdminDashboard = () => {
+       </aside>
+ 
+       {/* Main Content Area */}
+-      <div style={{ flex: 1, marginRight: '264px', padding: '30px', minHeight: '100vh', overflowY: 'auto' }}>
++      <div style={{ flex: 1, marginRight: '278px', padding: '20px 18px', minHeight: '100vh', overflowY: 'auto' }}>
+         
+         {/* Tab Content: OVERVIEW */}
+         {activeTab === 'overview' && (
+-          <div className="animate-fadeIn" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
++          <div className="animate-fadeIn" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+ 
+             {/* Overview header */}
+             <div className="ov-header">
+diff --git a/src/pages/AdminDashboard.v9.css b/src/pages/AdminDashboard.v9.css
+--- a/src/pages/AdminDashboard.v9.css
++++ b/src/pages/AdminDashboard.v9.css
+@@ -68,9 +68,14 @@
+   color:#fff!important;
+   border:1px solid rgba(215,173,81,.28)!important;
+   box-shadow:0 16px 38px rgba(0,0,0,.18)!important;
+   background-image:
+-    linear-gradient(90deg,rgba(4,7,11,.76) 0%,rgba(4,7,11,.18) 25%,rgba(4,7,11,.04) 52%,rgba(4,7,11,.55) 78%,rgba(4,7,11,.94) 100%),
+-    url('../assets/admin-v8-hero.jpg')!important;
++    radial-gradient(circle at 50% 54%,rgba(215,173,81,.10) 0%,rgba(215,173,81,.025) 28%,transparent 56%),
++    linear-gradient(90deg,rgba(4,7,11,.84) 0%,rgba(4,7,11,.20) 23%,rgba(4,7,11,.02) 51%,rgba(4,7,11,.42) 76%,rgba(4,7,11,.94) 100%),
++    linear-gradient(180deg,#04070b 0%,#0b121c 46%,#070b11 100%)!important;
+   background-size:cover!important;
+   background-position:center center!important;
+   background-repeat:no-repeat!important;
+ }
+@@ -88,10 +93,32 @@
+ }
+ .ov-header::after{display:none!important}
+-.ov-header__motif,.ov-header [class*="zone-center"] svg{
+-  opacity:0!important;
+-  visibility:hidden!important;
++.ov-header__motif{
++  opacity:1!important;
++  visibility:visible!important;
++  position:absolute!important;
++  inset:0!important;
++  overflow:hidden!important;
++  z-index:1!important;
++  pointer-events:none!important;
++}
++.ov-header__motif::after{
++  content:"";
++  position:absolute;
++  inset:0;
++  background:
++    linear-gradient(90deg,rgba(4,7,11,.72),transparent 23%,transparent 69%,rgba(4,7,11,.72)),
++    linear-gradient(180deg,rgba(255,255,255,.018),transparent 45%,rgba(0,0,0,.18));
++  pointer-events:none;
++}
++.ov-header [class*="zone-center"] svg{
++  opacity:1!important;
++  visibility:visible!important;
++  display:block!important;
++  transform:scale(1.12)!important;
++  transform-origin:center 58%!important;
++  filter:contrast(1.12) saturate(.88) brightness(1.08) drop-shadow(0 12px 18px rgba(0,0,0,.42))!important;
+ }
+ .ov-header__layout{
+   height:100%!important;
+@@ -112,7 +139,17 @@
+   justify-content:flex-start!important;
+   padding:0 0 16px 18px!important;
++  position:relative!important;
++  z-index:4!important;
+ }
+-.ov-header [class*="zone-center"]{background:transparent!important;border:0!important;box-shadow:none!important}
++.ov-header [class*="zone-center"]{
++  position:absolute!important;
++  inset:0!important;
++  z-index:1!important;
++  background:transparent!important;
++  border:0!important;
++  box-shadow:none!important;
++  pointer-events:none!important;
++}
+ .ov-header [class*="zone-right"]{
+   direction:rtl!important;
+   display:flex!important;
+@@ -123,6 +160,8 @@
+   padding:18px 24px 18px 12px!important;
+   background:linear-gradient(90deg,transparent,rgba(5,8,13,.46) 35%,rgba(5,8,13,.86) 100%)!important;
++  position:relative!important;
++  z-index:4!important;
+ }
+ .ov-header h1{
+   font-size:30px!important;
+@@ -211,7 +250,12 @@
+   padding:10px 12px!important;
+ }
+ .syshealth__layout > *{direction:rtl!important;min-width:0!important}
+ .syshealth [class*="zone-left"]{border-inline-end:1px solid rgba(215,173,81,.13)!important;padding-inline-end:10px!important}
+-.syshealth [class*="zone-center"]{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
++.syshealth [class*="zone-center"]{display:flex!important;align-items:stretch!important;min-width:0!important}
++.syshealth .syshealth__metrics{width:100%!important;min-width:0!important;display:flex!important}
++.syshealth .syshealth__grid{
++  width:100%!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
++  gap:7px!important;align-items:stretch!important;
++}
+ .syshealth [class*="metric"]{
+   min-height:90px!important;padding:10px!important;border-radius:11px!important;
+   background:linear-gradient(180deg,rgba(27,39,54,.95),rgba(18,28,40,.96))!important;
+@@ -223,11 +267,23 @@
+ .syshealth [class*="metric"] [class*="bar"]{height:3px!important;background:linear-gradient(90deg,var(--v8-green),var(--v8-gold))!important;border-radius:99px!important}
+ .syshealth [class*="zone-right"]{
+   height:100%!important;border-radius:10px!important;overflow:hidden!important;
+-  background-image:linear-gradient(90deg,rgba(12,19,29,.92) 0%,rgba(12,19,29,.16) 24%,transparent 50%),url('../assets/admin-v8-health.jpg')!important;
+-  background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;
++  position:relative!important;
++  background:
++    radial-gradient(circle at 56% 70%,rgba(215,173,81,.14),transparent 38%),
++    linear-gradient(120deg,#07101a 0%,#111b27 54%,#080d14 100%)!important;
++  border:1px solid rgba(215,173,81,.08)!important;
++}
++.syshealth [class*="zone-right"] svg{
++  display:block!important;
++  width:100%!important;
++  height:100%!important;
++  opacity:1!important;
++  transform:scale(1.12)!important;
++  transform-origin:center!important;
++  filter:contrast(1.16) brightness(1.12) drop-shadow(0 10px 14px rgba(0,0,0,.35))!important;
+ }
+-.syshealth [class*="zone-right"] svg{display:none!important}
++.syshealth .syshealth__center-scene{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
++
++/* V10: zero missing runtime image dependencies. The approved embedded SVG scenes are the visual source. */
