@@ -1,0 +1,194 @@
+PROJECT=/67
+PHASE=Admin Dashboard Official Reference V5.3 — LIVE VISUAL FIDELITY
+STATUS=FIX_AGAINST_AUTHENTICATED_SCREENSHOT
+
+GOAL
+Use the latest authenticated live screenshot as the current baseline and converge it materially toward OFFICIAL_ADMIN_REFERENCE_V5. Do not accept marker presence as visual success. The V5 reference remains the only visual target.
+
+SOURCE OF TRUTH
+- Work on CURRENT /67 checkout only.
+- Build on V5.2 currently deployed.
+- No clone, pull, reset, checkout, npm install, or broad repo scan.
+- Preserve all current real data, auth/session, APIs, routes, GitHub Module, filters, export, search, logout and working Revenue inline SVG.
+
+FILES ALLOWED
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+- Keep existing src/assets/sixty-seven-official-logo.png unchanged unless wiring/size needs adjustment.
+Do not touch backend/server/App.jsx/package.json.
+
+LATEST LIVE SCREENSHOT — VERIFIED VISUAL FAILURES
+1) HERO TITLE/SUBTITLE ARE STILL NOT VISIBLE.
+The live hero currently shows toolbar on the physical left and a small car scene on the physical right, but the main Arabic title block is absent from the visible hero. This is a hard visual failure.
+
+2) HERO CAR/RIYADH SCENE STILL LOOKS LIKE A SMALL INSERTED BOX.
+Even if CSS says no border/background, the rendered composition is still visually a rectangular scene around 25% of hero width with a large empty dark void across the rest. Official V5 is a continuous cinematic full-width hero with skyline across the canvas and a dominant sedan.
+
+3) SIDEBAR TOP BRAND LOCKUP STILL COLLIDES.
+The real official logo is visible, but the adjacent Arabic brand text is clipped/crowded on the left side of the sidebar header. Official V5 should read cleanly: large logo, tagline below, no text collision.
+
+4) SYSTEM HEALTH CAR IS STILL WRONG.
+The live health band shows one oversized dark vehicle silhouette spanning behind/under metric cards and two giant red rectangles. This is not the V5 reference. Official V5 has a dedicated photographic/cinematic right visual region and compact metric cards, with red used only as a fine accent.
+
+5) CURRENT OPERATIONS STILL SHOWS A PARTIALLY CLIPPED ROW.
+There is still a row cut in half in the current operations card. No partially visible rows are allowed.
+
+6) LIVE OPERATIONS REMAINS VISUALLY SPARSE.
+The live card has only current real items, so do not invent data. Use summary/status chips and existing footer/action to make the card feel intentionally composed instead of leaving dead middle whitespace.
+
+7) KPI / LEDGER ARE FUNCTIONALLY GOOD BUT STILL LESS VISUALLY BOLD THAN V5.
+Polish only; no data/function changes.
+
+MANDATORY V5.3 IMPLEMENTATION
+
+A) HERO — EXPLICIT 3-ZONE PHYSICAL LAYOUT
+Do not rely on RTL implicit positioning. On desktop, make hero a deliberate 3-zone composition using explicit physical placement:
+- PHYSICAL LEFT 24-28%: toolbar/date/export controls.
+- CENTER 44-48%: integrated cinematic car + Riyadh skyline scene.
+- PHYSICAL RIGHT 26-30%: title/subtitle/brand line.
+Use a parent with direction:ltr if needed, then direction:rtl inside Arabic text blocks.
+
+Hero requirements:
+- Height ~160-175px desktop.
+- Title block MUST be rendered and visually visible in screenshot.
+- Use existing Arabic title/subtitle text; do not remove it.
+- Title font size roughly 24-30px desktop, strong ivory/gold hierarchy.
+- Subtitle/brand line visible below, not transparent and not clipped.
+- Right text safe zone must be at least 300px and must end before the fixed sidebar boundary.
+- Toolbar stays inside hero left zone, vertically centered.
+
+B) HERO SCENE — NO SMALL RECTANGLE
+The car/skyline scene must visually blend across the hero:
+- Remove any child width/max-width around 300px that produces a small right-side box.
+- Scene layer should span the CENTER zone and bleed softly into neighboring hero space with gradient masks.
+- No visible solid rectangular background behind SVG scene.
+- Sedan width target ~420-520px visual footprint on 1440-1600px desktop.
+- Skyline/palms/Kingdom Centre should extend behind sedan and across at least 45% of hero.
+- Use filled silhouettes/gradients; avoid thin-only line art.
+- Thin brand-red sweep only, 2-4px visual stroke; never giant red blocks.
+- Keep scene pointer-events:none and aria-hidden.
+
+C) SIDEBAR TOP — LOGO FIRST, NO COLLISION
+Rework only the visual lockup, preserve navigation and back behavior.
+Desktop:
+- Official PNG logo centered or aligned cleanly at top; width ~145-165px, height auto, object-fit:contain.
+- Do NOT place a large Arabic title beside the logo.
+- Put small existing admin/brand text BELOW the logo in one or two centered/muted lines if it must remain.
+- Online status below as tiny line/chip.
+- Back button occupies its own small absolute/corner position and must not squeeze logo.
+- Brand header min-height ~115-130px.
+- No clipping at any width >=1280.
+
+D) SYSTEM HEALTH — EXPLICIT 3-ZONE PHYSICAL ORDER
+Use one clear desktop grid, not a full-bleed car under everything.
+Physical order exactly:
+- LEFT 18-20% = status/title text block.
+- CENTER 52-56% = four health metric cards in one row.
+- RIGHT 24-28% = dedicated automotive visual scene.
+Outer health grid may use direction:ltr; internal Arabic content direction:rtl.
+
+Health scene constraints:
+- MUST be contained entirely in the RIGHT scene region.
+- No car body behind metric cards.
+- No red rectangles larger than 24px x 8px. Use red only for subtle tail lights or sweep.
+- Scene should use black sedan + road/skyline glow, contained and visually premium.
+- Metric cards remain readable and same real values.
+- Status chip remains green/gold and compact.
+
+E) CURRENT OPERATIONS — ZERO PARTIAL ROWS
+- Current card total height remains aligned to Revenue/Live.
+- Summary tiles remain at top.
+- Inner list must use `min-height:0; overflow-y:auto;` if real rows exceed available space.
+- Each row fixed/controlled min-height around 48-54px.
+- Never allow half a row to be visible at card bottom.
+- Health/safe footer strip must remain fully inside the card.
+
+F) LIVE OPERATIONS — COMPOSE WITH REAL DATA ONLY
+Do not fake activity rows.
+- Keep existing real rows.
+- Use current summary/status chips already available to fill the lower composition intentionally.
+- Arrange the chips into a compact 2-column strip or footer region.
+- Put existing "عرض جميع الأنشطة" action immediately above footer/status strip.
+- Remove large blank spacer using flex layout rather than fake entries.
+
+G) KPI POLISH
+- Keep exact real values.
+- Ensure trend microbars/trend line are fully inside bottom 18-22px safe area.
+- Number hierarchy should be stronger; icon medallion 40-44px.
+- Ivory surface + champagne border/shadow.
+- No clipping.
+
+H) LEDGER POLISH
+- Keep current functionality and rows.
+- Toolbar/search/filter/export in one compact horizontal line.
+- Slightly stronger ivory header row and vertical density.
+- Do not increase overall dashboard height materially.
+
+I) VIEWPORT / COMPOSITION
+Official V5 reference is dense and campaign-like.
+- Hero ~160-175px.
+- KPI ~105-115px.
+- Health ~145-160px.
+- Command cards ~300-320px.
+- Gaps 10-12px.
+- Ledger should begin visibly within common 1080p desktop viewport.
+- Main canvas ivory, not pure white.
+
+DESIGN TOKENS
+Near-black #05080d / #080c12
+Charcoal #111821 / #18212d
+Ivory #fbfaf6 / #f8f3e8
+Champagne #d6ae59 / #c89b3c
+Deep gold #a9781d
+Success #12b978
+Brand red #d71920 / #c9161d — fine accents only
+
+DO NOT
+- Do not change backend/API/auth/session/routes/data.
+- Do not fake data.
+- Do not add external image URLs.
+- Do not install dependencies.
+- Do not reintroduce Recharts for Revenue.
+- Do not change Revenue LEFT / Live MIDDLE / Current RIGHT.
+- Do not remove official logo.
+- Do not commit or push.
+- Any large CSS write must be atomic via file_editor + SCP/base64/equivalent, not a long heredoc.
+
+VERIFY
+1. npm run build
+2. systemctl restart sixty-seven.service
+3. curl localhost /admin => HTTP 200
+4. Verify code-level selectors/DOM for the explicit hero 3-zone layout.
+5. Verify sidebar top has logo-first stacked lockup and no side-by-side brand text collision.
+6. Verify health has explicit LEFT status / CENTER metrics / RIGHT scene regions.
+7. Verify no red health shape exceeds the allowed accent size.
+8. Verify Current Operations list uses overflow-y:auto/min-height:0 or another solution guaranteeing no half rows.
+9. Preserve Revenue inline SVG.
+10. If authenticated visual verification remains blocked, report AUTH_BLOCKED; do not claim screenshot match.
+
+RETURN EXACTLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+OFFICIAL_REFERENCE_V5=LOCKED
+HERO_EXPLICIT_3_ZONE_LAYOUT=
+HERO_TITLE_RENDERED_VISIBLE_IMPLEMENTATION=
+HERO_SUBTITLE_RENDERED_VISIBLE_IMPLEMENTATION=
+HERO_SCENE_SMALL_BOX_REMOVED=
+HERO_SEDAN_VISUAL_WIDTH_TARGET=
+HERO_SKYLINE_SPAN_IMPLEMENTATION=
+SIDEBAR_LOGO_FIRST_STACKED_LOCKUP=
+SIDEBAR_BRAND_TEXT_COLLISION_FIXED=
+HEALTH_EXPLICIT_3_ZONE_LAYOUT=
+HEALTH_CAR_CONFINED_TO_RIGHT_REGION=
+HEALTH_RED_ACCENTS_FINE_ONLY=
+CURRENT_OPERATIONS_PARTIAL_ROW_FIXED=
+LIVE_OPERATIONS_REAL_DATA_COMPOSED=
+KPI_CLIPPING_FREE=
+REVENUE_INLINE_SVG_PRESERVED=
+COMMAND_PHYSICAL_ORDER=REVENUE_LEFT_LIVE_MIDDLE_CURRENT_RIGHT
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_VERIFICATION=
+ERROR=
