@@ -1,0 +1,568 @@
+diff --git a/src/pages/AdminDashboard.jsx b/src/pages/AdminDashboard.jsx
+--- a/src/pages/AdminDashboard.jsx
++++ b/src/pages/AdminDashboard.jsx
+@@
+ import './AdminDashboard.css';
+-import './AdminDashboard.v6.css';
++import './AdminDashboard.v7.css';
+
+diff --git a/src/pages/AdminDashboard.v7.css b/src/pages/AdminDashboard.v7.css
+new file mode 100644
+--- /dev/null
++++ b/src/pages/AdminDashboard.v7.css
+@@
++/* SIX SEVEN ADMIN — V7 ONE-SHOT REFERENCE REBUILD
++   Consolidated stylesheet authored against the locked Official Reference V5.
++   Purpose: one decisive visual convergence pass, not incremental micro-fixes. */
++
++:root {
++  --ss-black:#05070b;
++  --ss-black-2:#0a0f16;
++  --ss-panel:#121a24;
++  --ss-panel-2:#192330;
++  --ss-ivory:#fbfaf6;
++  --ss-ivory-2:#f5efe3;
++  --ss-gold:#d6ae59;
++  --ss-gold-2:#c6922d;
++  --ss-gold-deep:#986b14;
++  --ss-green:#13b978;
++  --ss-red:#d71920;
++  --ss-sidebar:258px;
++  --ss-gap:12px;
++  --ss-radius:18px;
++  --ss-border:rgba(198,146,45,.24);
++  --ss-shadow:0 12px 32px rgba(30,21,6,.08);
++}
++
++/* =========================================================
++   CANVAS + SIDEBAR
++   ========================================================= */
++.admin-main,.admin-content,.admin-dashboard__main{
++  background:linear-gradient(180deg,#fff 0%,#fcfaf5 55%,#f7f1e7 100%)!important;
++}
++
++.admin-sidebar{
++  position:fixed!important;
++  inset-block:0!important;
++  inset-inline-end:0!important;
++  width:var(--ss-sidebar)!important;
++  min-width:var(--ss-sidebar)!important;
++  height:100dvh!important;
++  z-index:90!important;
++  overflow-y:auto!important;
++  overflow-x:hidden!important;
++  color:#fff!important;
++  background:
++    radial-gradient(circle at 70% 4%,rgba(214,174,89,.12),transparent 20%),
++    linear-gradient(180deg,#05080d,#070b11 52%,#05070b)!important;
++  border-inline-start:1px solid rgba(214,174,89,.16)!important;
++  box-shadow:-18px 0 36px rgba(0,0,0,.14)!important;
++}
++
++.admin-sidebar::before{
++  content:"";
++  position:absolute;
++  inset:0;
++  pointer-events:none;
++  opacity:.10;
++  background-image:
++    linear-gradient(rgba(214,174,89,.08) 1px,transparent 1px),
++    linear-gradient(90deg,rgba(214,174,89,.05) 1px,transparent 1px);
++  background-size:30px 30px;
++  mask-image:linear-gradient(to bottom,#000,transparent 70%);
++}
++
++@media (min-width:1180px){
++  .admin-main,.admin-content,.admin-dashboard__main{
++    margin-inline-end:var(--ss-sidebar)!important;
++    width:calc(100% - var(--ss-sidebar))!important;
++  }
++}
++
++.admin-sidebar__brand-top,
++.admin-sidebar [class*="brand-top"]{
++  min-height:118px!important;
++  padding:14px 16px 8px!important;
++  display:flex!important;
++  align-items:center!important;
++  justify-content:center!important;
++  position:relative!important;
++  border-bottom:1px solid rgba(214,174,89,.12)!important;
++}
++
++.admin-sidebar__brand-top img,
++.admin-sidebar [class*="brand-top"] img{
++  width:150px!important;
++  max-width:74%!important;
++  height:78px!important;
++  object-fit:contain!important;
++  display:block!important;
++  filter:drop-shadow(0 8px 18px rgba(0,0,0,.34))!important;
++}
++
++.admin-sidebar__brand-text,
++.admin-sidebar [class*="brand-text"]{
++  padding:0 16px 12px!important;
++  margin:0!important;
++  text-align:center!important;
++  position:relative!important;
++  z-index:2!important;
++}
++
++.admin-sidebar .active,
++.admin-sidebar [aria-current="page"]{
++  color:#fff7df!important;
++  background:linear-gradient(90deg,rgba(214,174,89,.22),rgba(214,174,89,.08))!important;
++  border:1px solid rgba(214,174,89,.62)!important;
++  box-shadow:inset 3px 0 0 var(--ss-gold),0 8px 18px rgba(0,0,0,.16)!important;
++}
++
++/* =========================================================
++   HERO — REFERENCE PROPORTION + CINEMATIC DEPTH
++   ========================================================= */
++.ov-header{
++  position:relative!important;
++  height:178px!important;
++  min-height:178px!important;
++  margin:14px 16px 12px!important;
++  overflow:hidden!important;
++  border-radius:20px!important;
++  isolation:isolate!important;
++  color:#fff!important;
++  background:
++    radial-gradient(circle at 51% 44%,rgba(214,174,89,.22),transparent 22%),
++    radial-gradient(circle at 56% 115%,rgba(215,25,32,.13),transparent 24%),
++    linear-gradient(110deg,#05080d 0%,#0a1018 34%,#151d27 68%,#070b10 100%)!important;
++  border:1px solid rgba(214,174,89,.20)!important;
++  box-shadow:0 18px 42px rgba(0,0,0,.17),inset 0 1px 0 rgba(255,255,255,.035)!important;
++}
++
++.ov-header::before{
++  content:"";
++  position:absolute;
++  inset:0;
++  z-index:0;
++  pointer-events:none;
++  background:
++    linear-gradient(90deg,transparent 0 5%,rgba(214,174,89,.30) 5.1% 5.25%,transparent 5.35% 13%,rgba(214,174,89,.24) 13.1% 13.25%,transparent 13.4% 21%,rgba(214,174,89,.20) 21.1% 21.25%,transparent 21.4%),
++    radial-gradient(circle at 55% 82%,rgba(214,174,89,.13),transparent 28%),
++    linear-gradient(180deg,transparent 58%,rgba(0,0,0,.18) 100%);
++  opacity:.65;
++}
++
++.ov-header::after{
++  content:"";
++  position:absolute;
++  left:19%;
++  right:11%;
++  bottom:-38px;
++  height:70px;
++  border-top:3px solid rgba(215,25,32,.76);
++  border-radius:50%;
++  transform:rotate(-1.5deg);
++  z-index:1;
++  pointer-events:none;
++  filter:drop-shadow(0 0 8px rgba(215,25,32,.16));
++}
++
++.ov-header__layout{
++  height:100%!important;
++  display:grid!important;
++  grid-template-columns:24% 50% 26%!important;
++  direction:ltr!important;
++  align-items:stretch!important;
++  position:relative!important;
++  z-index:2!important;
++}
++
++.ov-header__layout>*{min-width:0!important;position:relative!important}
++
++.ov-header [class*="zone-left"]{
++  direction:rtl!important;
++  display:flex!important;
++  align-items:flex-end!important;
++  justify-content:flex-start!important;
++  padding:0 0 18px 18px!important;
++  z-index:6!important;
++}
++
++.ov-header [class*="zone-center"]{
++  direction:rtl!important;
++  overflow:visible!important;
++  background:transparent!important;
++  border:0!important;
++  box-shadow:none!important;
++  z-index:2!important;
++}
++
++.ov-header [class*="zone-right"]{
++  direction:rtl!important;
++  display:flex!important;
++  flex-direction:column!important;
++  justify-content:center!important;
++  align-items:flex-start!important;
++  padding:18px 24px 18px 10px!important;
++  z-index:8!important;
++  background:linear-gradient(90deg,transparent,rgba(5,8,13,.15) 30%,rgba(5,8,13,.68) 78%,rgba(5,8,13,.95))!important;
++}
++
++.ov-header__motif{
++  position:absolute!important;
++  inset:-18px -18% -20px -20%!important;
++  width:auto!important;
++  height:auto!important;
++  opacity:1!important;
++  border:0!important;
++  background:transparent!important;
++  box-shadow:none!important;
++  pointer-events:none!important;
++  overflow:visible!important;
++  mask-image:linear-gradient(90deg,transparent 0%,#000 11%,#000 91%,transparent 100%)!important;
++}
++
++.ov-header__motif svg{
++  width:100%!important;
++  height:100%!important;
++  display:block!important;
++  transform:scale(1.18) translateY(3px)!important;
++  transform-origin:center bottom!important;
++  filter:saturate(1.20) contrast(1.13) brightness(1.13) drop-shadow(0 20px 20px rgba(0,0,0,.30))!important;
++}
++
++.ov-header h1{
++  margin:0 0 7px!important;
++  color:#fff!important;
++  font-size:clamp(24px,1.8vw,34px)!important;
++  line-height:1.16!important;
++  font-weight:900!important;
++  letter-spacing:-.02em!important;
++  text-shadow:0 3px 15px rgba(0,0,0,.38)!important;
++}
++
++.ov-header h1+p,.ov-header__subtitle{
++  margin:0 0 5px!important;
++  max-width:400px!important;
++  color:rgba(255,255,255,.74)!important;
++  font-size:12px!important;
++  line-height:1.7!important;
++}
++
++.ov-header [class*="brand-line"]{
++  color:var(--ss-gold)!important;
++  font-size:11px!important;
++  font-weight:800!important;
++}
++
++/* =========================================================
++   KPI ROW — EXACT 4 SHELLS, NO NESTED SELECTOR BLEED
++   ========================================================= */
++.ov-kpis,.ov-kpi-grid,.admin-kpi-grid,[class*="kpi-grid"]{
++  gap:10px!important;
++  margin:0 16px 12px!important;
++}
++
++.ov-kpis>* ,
++.ov-kpi-grid>* ,
++.admin-kpi-grid>* ,
++[class*="kpi-grid"]>*{
++  position:relative!important;
++  height:118px!important;
++  min-height:118px!important;
++  padding:14px 16px!important;
++  overflow:hidden!important;
++  border-radius:16px!important;
++  border:1px solid var(--ss-border)!important;
++  background:
++    radial-gradient(circle at 13% 18%,rgba(214,174,89,.10),transparent 28%),
++    linear-gradient(180deg,#fffdf9,var(--ss-ivory))!important;
++  box-shadow:var(--ss-shadow)!important;
++}
++
++.ov-kpis>* [class*="icon"],
++.ov-kpi-grid>* [class*="icon"],
++.admin-kpi-grid>* [class*="icon"],
++[class*="kpi-grid"]>* [class*="icon"]{
++  width:42px!important;
++  height:42px!important;
++  min-width:42px!important;
++  min-height:42px!important;
++  max-width:42px!important;
++  max-height:42px!important;
++  padding:0!important;
++  display:flex!important;
++  align-items:center!important;
++  justify-content:center!important;
++  border-radius:50%!important;
++  background:linear-gradient(145deg,#fff8e8,#efd596)!important;
++  border:1px solid rgba(198,145,37,.28)!important;
++  color:var(--ss-gold-deep)!important;
++  box-shadow:inset 0 1px 0 #fff,0 8px 16px rgba(183,128,24,.10)!important;
++}
++
++.ov-kpis>* [class*="icon"] svg,
++.ov-kpi-grid>* [class*="icon"] svg,
++.admin-kpi-grid>* [class*="icon"] svg,
++[class*="kpi-grid"]>* [class*="icon"] svg{width:20px!important;height:20px!important}
++
++.ov-kpis>* [class*="value"],
++.ov-kpi-grid>* [class*="value"],
++.admin-kpi-grid>* [class*="value"],
++[class*="kpi-grid"]>* [class*="value"],
++.ov-kpis>* strong,.ov-kpi-grid>* strong,.admin-kpi-grid>* strong,[class*="kpi-grid"]>* strong{
++  min-height:0!important;
++  height:auto!important;
++  padding:0!important;
++  margin:0!important;
++  background:transparent!important;
++  border:0!important;
++  box-shadow:none!important;
++  color:#07111d!important;
++  font-size:clamp(25px,2vw,34px)!important;
++  line-height:1.02!important;
++  font-weight:900!important;
++  letter-spacing:-.035em!important;
++}
++
++.ov-kpis>* [class*="trend"],
++.ov-kpi-grid>* [class*="trend"],
++.admin-kpi-grid>* [class*="trend"],
++[class*="kpi-grid"]>* [class*="trend"]{
++  min-height:0!important;
++  height:auto!important;
++  padding:0!important;
++  margin-top:5px!important;
++  background:transparent!important;
++  border:0!important;
++  box-shadow:none!important;
++  color:var(--ss-green)!important;
++  font-weight:800!important;
++  overflow:visible!important;
++}
++
++[class*="microbar"],[class*="micro-bars"] span{
++  width:4px!important;
++  background:var(--ss-green)!important;
++  border-radius:999px!important;
++  opacity:.96!important;
++}
++
++/* =========================================================
++   SYSTEM HEALTH — REFERENCE 3-ZONE BAND
++   ========================================================= */
++.syshealth{
++  position:relative!important;
++  isolation:isolate!important;
++  height:166px!important;
++  min-height:166px!important;
++  margin:0 16px 12px!important;
++  overflow:hidden!important;
++  border-radius:18px!important;
++  color:#fff!important;
++  background:
++    radial-gradient(circle at 82% 38%,rgba(214,174,89,.14),transparent 25%),
++    linear-gradient(104deg,#05090e 0%,#0b121c 44%,#162130 100%)!important;
++  border:1px solid rgba(214,174,89,.16)!important;
++  box-shadow:0 14px 34px rgba(5,8,13,.15)!important;
++}
++
++.syshealth::after{
++  content:"";
++  position:absolute;
++  left:16%;
++  right:8%;
++  bottom:-50px;
++  height:82px;
++  border-top:2px solid rgba(215,25,32,.42);
++  border-radius:50%;
++  transform:rotate(-2deg);
++  pointer-events:none;
++  z-index:1;
++}
++
++.syshealth__layout{
++  height:100%!important;
++  padding:12px 14px!important;
++  display:grid!important;
++  grid-template-columns:19% 54% 27%!important;
++  direction:ltr!important;
++  align-items:center!important;
++  gap:10px!important;
++  position:relative!important;
++  z-index:2!important;
++}
++
++.syshealth__layout>*{min-width:0!important;direction:rtl!important}
++
++.syshealth [class*="zone-left"]{
++  padding-inline-end:10px!important;
++  border-inline-end:1px solid rgba(214,174,89,.16)!important;
++}
++
++.syshealth [class*="zone-center"]{
++  display:grid!important;
++  grid-template-columns:repeat(4,minmax(0,1fr))!important;
++  gap:8px!important;
++  align-items:stretch!important;
++}
++
++.syshealth [class*="metric"]{
++  min-height:104px!important;
++  padding:12px 12px 10px!important;
++  border-radius:12px!important;
++  background:linear-gradient(180deg,rgba(28,40,55,.94),rgba(18,28,40,.94))!important;
++  border:1px solid rgba(255,255,255,.065)!important;
++  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
++}
++
++.syshealth [class*="metric"] strong{color:#fff!important;font-size:20px!important;font-weight:900!important}
++.syshealth [class*="metric"] [class*="bar"]{height:3px!important;border-radius:999px!important;background:linear-gradient(90deg,var(--ss-gold),#e7c779)!important}
++
++.syshealth [class*="zone-right"]{
++  height:100%!important;
++  position:relative!important;
++  overflow:hidden!important;
++  border-radius:14px!important;
++  background:radial-gradient(circle at 55% 62%,rgba(214,174,89,.15),transparent 34%)!important;
++  mask-image:linear-gradient(90deg,transparent 0,#000 18%,#000 100%)!important;
++}
++
++.syshealth [class*="zone-right"] svg{
++  width:116%!important;
++  height:116%!important;
++  transform:translate(-5%,2%) scale(1.06)!important;
++  transform-origin:center bottom!important;
++  filter:saturate(1.18) contrast(1.14) brightness(1.12) drop-shadow(0 16px 18px rgba(0,0,0,.30))!important;
++}
++
++/* =========================================================
++   COMMAND CENTER — SAME COMPOSITION AS REFERENCE
++   LEFT revenue / MIDDLE live / RIGHT current
++   ========================================================= */
++.admin-command-grid{
++  direction:ltr!important;
++  display:grid!important;
++  grid-template-columns:minmax(0,2.12fr) minmax(230px,1fr) minmax(230px,1fr)!important;
++  gap:10px!important;
++  margin:0 16px 10px!important;
++  align-items:stretch!important;
++}
++
++.admin-command-grid>*{
++  direction:rtl!important;
++  min-width:0!important;
++  height:314px!important;
++  min-height:314px!important;
++  max-height:314px!important;
++  overflow:hidden!important;
++  border-radius:16px!important;
++  border:1px solid rgba(190,140,39,.22)!important;
++  background:linear-gradient(180deg,#fffdf9,var(--ss-ivory))!important;
++  box-shadow:0 9px 25px rgba(74,51,12,.055)!important;
++}
++
++.admin-command-grid>:first-child{grid-column:1!important}
++.admin-command-grid>:nth-child(2){grid-column:2!important}
++.admin-command-grid>:nth-child(3){grid-column:3!important}
++
++.admin-command-grid [class*="card-header"]{min-height:40px!important;padding:10px 12px 6px!important}
++.admin-command-grid [class*="summary"]{gap:6px!important}
++.admin-command-grid [class*="summary"]>*{
++  min-height:52px!important;
++  padding:8px 10px!important;
++  border-radius:10px!important;
++  background:linear-gradient(180deg,#fbf8ef,#f4eee1)!important;
++  border:1px solid rgba(190,140,39,.16)!important;
++}
++
++.admin-command-grid [class*="ops-list"],
++.admin-command-grid [class*="operations-list"],
++.admin-command-grid [class*="timeline"]{
++  display:flex!important;
++  flex-direction:column!important;
++  gap:5px!important;
++  max-height:178px!important;
++  padding:2px 10px 8px!important;
++  overflow-y:auto!important;
++  overflow-x:hidden!important;
++  align-content:start!important;
++  scrollbar-width:thin!important;
++  scrollbar-color:rgba(198,145,37,.30) transparent!important;
++}
++
++.admin-command-grid [class*="ops-list"]>*,
++.admin-command-grid [class*="operations-list"]>*,
++.admin-command-grid [class*="timeline"]>*{
++  min-height:40px!important;
++  height:auto!important;
++  max-height:none!important;
++  flex:0 0 auto!important;
++  padding:6px 8px!important;
++  margin:0!important;
++  overflow:hidden!important;
++  border-radius:9px!important;
++}
++
++.admin-command-grid [class*="revenue"] svg{max-height:190px!important}
++
++/* =========================================================
++   LEDGER
++   ========================================================= */
++.ledger-card,.financial-ledger{
++  clear:both!important;
++  margin:0 16px 18px!important;
++  overflow:hidden!important;
++  border-radius:16px!important;
++  border:1px solid rgba(190,140,39,.21)!important;
++  background:linear-gradient(180deg,#fffdf9,var(--ss-ivory))!important;
++  box-shadow:0 8px 24px rgba(74,51,12,.05)!important;
++}
++
++.ledger-card [class*="toolbar"],.financial-ledger [class*="toolbar"]{
++  min-height:42px!important;
++  padding:7px 10px!important;
++  display:flex!important;
++  align-items:center!important;
++  gap:7px!important;
++}
++
++.ledger-card table,.financial-ledger table{border-collapse:separate!important;border-spacing:0!important}
++.ledger-card thead th,.financial-ledger thead th{
++  height:34px!important;
++  padding:7px 10px!important;
++  background:#f3ecdf!important;
++  color:#59482c!important;
++  font-size:11px!important;
++  font-weight:800!important;
++  border-bottom:1px solid rgba(190,140,39,.19)!important;
++}
++
++.ledger-card tbody td,.financial-ledger tbody td{
++  height:36px!important;
++  padding:7px 10px!important;
++  border-bottom:1px solid rgba(120,94,50,.08)!important;
++}
++
++/* =========================================================
++   DESKTOP DENSITY
++   ========================================================= */
++@media (max-width:1450px){
++  :root{--ss-sidebar:244px}
++  .ov-header{height:166px!important;min-height:166px!important}
++  .ov-header__layout{grid-template-columns:23% 50% 27%!important}
++  .syshealth{height:154px!important;min-height:154px!important}
++  .admin-command-grid{grid-template-columns:minmax(0,2fr) minmax(215px,1fr) minmax(215px,1fr)!important}
++  .admin-command-grid>*{height:304px!important;min-height:304px!important;max-height:304px!important}
++}
++
++@media (max-width:1179px){
++  .admin-sidebar{position:relative!important;width:100%!important;min-width:0!important;height:auto!important;inset:auto!important}
++  .admin-main,.admin-content,.admin-dashboard__main{margin-inline-end:0!important;width:100%!important}
++  .ov-header{height:auto!important;min-height:220px!important}
++  .ov-header__layout{grid-template-columns:1fr!important;direction:rtl!important}
++  .ov-header [class*="zone-center"]{min-height:150px!important}
++  .syshealth{height:auto!important;min-height:0!important}
++  .syshealth__layout{grid-template-columns:1fr!important}
++  .syshealth [class*="zone-center"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
++  .admin-command-grid{grid-template-columns:1fr!important}
++  .admin-command-grid>*{grid-column:1!important;height:auto!important;max-height:none!important;min-height:260px!important}
++}
