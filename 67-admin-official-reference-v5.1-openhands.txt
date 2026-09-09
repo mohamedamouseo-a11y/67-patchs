@@ -1,0 +1,207 @@
+PROJECT=/67
+PHASE=Admin Dashboard Official Reference V5.1 — LIVE VISUAL CORRECTION
+STATUS=VISUAL_FIX_AGAINST_OFFICIAL_V5
+
+GOAL
+The authenticated live screenshot proves V5 markers exist in code, but the visual result is still materially behind the approved Official Reference V5. Fix ONLY the visible mismatches. The approved V5 design with the new Six Seven logo remains the ONLY visual reference.
+
+CRITICAL RULE
+Do NOT treat marker counts such as Logo67/v5Sky/v5HealthCar as visual success. The current live screenshot is the source of truth for what is actually rendered.
+
+CURRENT LIVE SCREENSHOT — VERIFIED VISIBLE GAPS
+1. SIDEBAR LOGO IS STILL WRONG.
+   - Live sidebar still shows a generic small 67 mark, not the supplied official Six Seven logo.
+   - Official logo = black/gold 67 + red automotive car sweep + SIX SEVEN wordmark.
+   - A real logo payload is now stored in the patch repo and MUST be decoded and used as an actual image asset.
+
+2. HERO IS STILL FAR FROM OFFICIAL V5.
+   - Current hero is mostly empty dark space.
+   - Car/scene appears as a small boxed rectangle instead of an integrated full cinematic background.
+   - Arabic title is squeezed/cropped on the physical right and visually collides with scene/sidebar edge.
+   - Official V5 has full-width Riyadh cinematic depth, dominant black sedan, strong gold skyline, palm silhouettes, red automotive sweep, and a safe text zone.
+
+3. KPI CARDS ARE TOO FLAT AND SOME LOWER CONTENT IS TOO CLOSE TO/BELOW THE CARD EDGE.
+   - Make all four cards visibly premium and keep trend/microbars safely inside card bounds.
+
+4. SYSTEM HEALTH STILL LOOKS LIKE SEPARATE BOXES + A SMALL CAR BOX.
+   - The car visual must blend into the band, not look like an inserted rectangular image.
+   - Current health composition is visually reversed/fragmented compared with V5.
+
+5. LIVE/CURRENT OPERATIONS STILL HAVE CLIPPING / SPARSE AREAS.
+   - Current Operations shows partially hidden/stacked rows near the lower area.
+   - Live Operations has too much blank middle area relative to official V5 dense timeline.
+
+6. LEDGER IS FUNCTIONAL BUT STILL LIGHTWEIGHT COMPARED WITH V5.
+   - Keep functionality; improve density, header hierarchy and toolbar finish only.
+
+FILES ALLOWED
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+- src/assets/sixty-seven-official-logo.png (NEW asset created by decoding payload)
+Do NOT touch backend, server, API, auth/session, routes, App.jsx, package.json, or dependencies.
+
+OFFICIAL LOGO — MANDATORY REAL ASSET
+Payload URL:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-official-logo-mini.b64
+
+Required procedure:
+1. Download ONLY this payload file.
+2. Decode base64 atomically to:
+   /67/src/assets/sixty-seven-official-logo.png
+3. Verify with `file` that it is a PNG and non-zero size.
+4. Import the PNG in AdminDashboard.jsx.
+5. Replace the generic visual Logo67 glyph/component in the SIDEBAR brand lockup with this actual PNG image.
+6. The sidebar logo image must visibly show the red automotive sweep and SIX SEVEN wordmark at desktop size.
+7. Do not stretch/distort it. Use object-fit:contain.
+8. On the dark sidebar, place it inside a subtle dark/glass brand panel if needed for contrast. Do not recolor/destructively filter the logo.
+9. If Logo67 component is used elsewhere as a tiny decorative mark, it may remain only where appropriate, but the main sidebar branding MUST be the real image asset.
+
+HERO — REMOVE THE BOXED-SCENE LOOK
+The current hero has a small dark rectangle containing the car. This is NOT acceptable.
+Required desktop composition:
+- Hero remains one continuous rounded dark cinematic canvas.
+- v5Sky / sedan graphics must be integrated into the hero background layer itself: absolute inset layer, no visible rectangular container/background/border around the car scene.
+- Scene should occupy roughly 60-68% of the hero width and nearly full hero height.
+- Black sedan visually dominant around center/physical right-middle, but NOT on top of Arabic title.
+- Riyadh skyline stretches through background with Kingdom Centre cue and palms.
+- Red automotive sweep crosses scene subtly and continuously, inspired by official logo.
+- Add dark left/right gradient masks so text remains readable.
+- Scene opacity/contrast must be strong enough to be obvious in screenshot, not barely visible.
+
+HERO TEXT SAFE ZONE — MANDATORY
+Current title is cramped/cropped at the physical right.
+- Reserve a dedicated text column inside the hero.
+- Text width at least 330px desktop.
+- Keep title/subtitle fully inside dashboard content area and away from fixed sidebar.
+- Hero content z-index above scene.
+- No clipping of title, subtitle, brand line, toolbar or controls.
+- Toolbar/date/export controls stay integrated in hero on physical left.
+
+HERO TARGET HEIGHT
+- Desktop approx 155-175px.
+- Do not increase page height unnecessarily.
+
+KPI ROW
+- Keep exactly four equal cards.
+- Actual values unchanged.
+- Ivory surface with stronger warm shadow and champagne border.
+- Icon medallions larger and more deliberate.
+- Number stronger (roughly 28-32px where fit).
+- Trend line and green microbars MUST sit entirely inside the bottom content area; no clipping below card.
+- Minimum safe bottom padding 14-16px.
+- Equal card height about 112-124px.
+
+SYSTEM HEALTH — INTEGRATED CINEMATIC BAND
+Current small car rectangle must disappear as a separate box.
+- One continuous dark health band.
+- Car/road/skyline scene should be an absolute/integrated visual zone with gradient mask, not a card inside a card.
+- Physical right region near sidebar: platform status/title + visual drive scene in a blended composition.
+- Physical left/center: four compact health metrics.
+- Keep all actual values unchanged: 14%, 124ms, 0.01%, 100%.
+- Stable green status chip visible.
+- Use controlled red taillight/road accent sparingly.
+- No boxed image background behind car.
+
+COMMAND CENTER — KEEP ORDER
+Desktop physical order MUST remain:
+LEFT = Revenue & Performance
+MIDDLE = Live Operations
+RIGHT = Current Operations (next to sidebar)
+Do not regress this.
+
+REVENUE
+- Preserve current inline SVG chart exactly as the rendering method.
+- Keep gold area/line, axis labels, dots, callout.
+- Compact card height around 300-320px.
+- Summary tiles remain visible.
+
+LIVE OPERATIONS — FILL THE CARD WITH REAL EXISTING CONTENT
+- Use only existing live operation data already present.
+- Dense vertical timeline rows with icon, title, secondary text and time/status where available.
+- Reduce dead empty vertical space.
+- Footer action remains existing behavior only.
+- If only two live items exist, use compact supporting status chips from EXISTING current state/data already shown elsewhere in this card; do not invent events.
+
+CURRENT OPERATIONS — FIX CLIPPING
+- No partially hidden row.
+- No overlapping green status banner over list items.
+- Summary tiles at top remain.
+- All visible existing rows should fit cleanly inside card or card should scroll internally only if truly necessary.
+- Prefer dense rows; avoid internal scrollbars at normal desktop if content can fit.
+- Status summary bar stays below rows with clear separation.
+
+LEDGER
+- Preserve all rows, columns, search/filter/export.
+- Compact toolbar on one line.
+- Stronger warm ivory header row.
+- Slightly tighter row height.
+- Polished green/amber status pills.
+- Keep readable; no redesign of functionality.
+
+SIDEBAR POLISH
+- Fixed 100dvh remains.
+- Official PNG logo at top in a branded lockup.
+- Group labels muted gold.
+- Active item gold outlined/tinted.
+- Super Admin block and existing logout handler remain at bottom.
+- Make sure logo does not push nav excessively down; brand lockup approx 120-145px max.
+
+CANVAS / VIEWPORT
+- Keep ivory canvas and compact spacing.
+- No particles/floating dots.
+- Aim for strong one-viewport executive density similar to Official V5.
+- Do not make text tiny.
+
+WRITE RELIABILITY
+- Any large CSS/JSX rewrite must use file_editor + SCP/base64/atomic write or equivalent reliable method.
+- Do NOT use long heredoc writes.
+
+DO NOT
+- No clone.
+- No pull/reset/checkout.
+- No broad scan.
+- No npm install.
+- No backend/API/auth/session changes.
+- No fake data.
+- No external image URLs except downloading the single approved base64 logo payload above.
+- No new dependencies.
+- No particles.
+- No git commit or push.
+
+VERIFY — MUST BE REAL
+1. Confirm decoded logo asset exists and is valid PNG.
+2. `npm run build`
+3. `systemctl restart sixty-seven.service`
+4. `curl` localhost /admin => 200
+5. Verify built JS references `sixty-seven-official-logo` asset or hashed equivalent.
+6. Verify CSS/DOM does NOT render hero car scene inside a visually boxed rectangular sub-card.
+7. Verify title safe-zone CSS prevents clipping.
+8. Verify KPI trend/microbars are inside card bounds.
+9. Verify Current Operations rows are not clipped by fixed/max height rules.
+10. Do not claim visual match if auth blocks browser access.
+
+RETURN EXACTLY
+CHANGED_FILES=
+LOGO_PAYLOAD_DOWNLOADED=
+LOGO_ASSET_PATH=
+LOGO_FILE_VALID=
+OFFICIAL_LOGO_REAL_IMAGE_USED_IN_SIDEBAR=
+GENERIC_SIDEBAR_67_REPLACED=
+HERO_SCENE_INTEGRATED_NO_BOX=
+HERO_TITLE_SAFE_ZONE=
+HERO_TITLE_CLIPPING_FIXED=
+HERO_RIYADH_VISUALLY_DOMINANT_IMPLEMENTATION=
+KPI_BOTTOM_CONTENT_CLIPPING_FIXED=
+HEALTH_SCENE_INTEGRATED_NO_BOX=
+COMMAND_PHYSICAL_ORDER=REVENUE_LEFT_LIVE_MIDDLE_CURRENT_RIGHT
+REVENUE_INLINE_SVG_PRESERVED=
+LIVE_OPERATIONS_DENSIFIED=
+CURRENT_OPERATIONS_CLIPPING_FIXED=
+LEDGER_POLISHED=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_VERIFICATION=
+ERROR=
