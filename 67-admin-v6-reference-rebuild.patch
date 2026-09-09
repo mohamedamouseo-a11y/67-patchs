@@ -1,0 +1,564 @@
+diff --git a/src/pages/AdminDashboard.jsx b/src/pages/AdminDashboard.jsx
+--- a/src/pages/AdminDashboard.jsx
++++ b/src/pages/AdminDashboard.jsx
+@@ -11,1 +11,2 @@
+ import './AdminDashboard.css';
++import './AdminDashboard.v6.css';
+diff --git a/src/pages/AdminDashboard.v6.css b/src/pages/AdminDashboard.v6.css
+new file mode 100644
+index 0000000..f45f428
+--- /dev/null
++++ b/src/pages/AdminDashboard.v6.css
+@@ -0,0 +1,552 @@
++/* SIX SEVEN — ADMIN OVERVIEW V6 REFERENCE REBUILD
++   Actual code override authored against the locked Official Reference V5.
++   OpenHands must only apply this patch; it must not redesign or reinterpret it. */
++
++:root{
++  --v6-black:#05080d;
++  --v6-black-2:#08101a;
++  --v6-charcoal:#101925;
++  --v6-charcoal-2:#172231;
++  --v6-ivory:#fbfaf6;
++  --v6-ivory-2:#f6f0e5;
++  --v6-gold:#d6ae59;
++  --v6-gold-2:#c58f25;
++  --v6-gold-deep:#94640f;
++  --v6-green:#14b978;
++  --v6-red:#d71920;
++  --v6-border:rgba(202,151,54,.27);
++  --v6-shadow:0 12px 32px rgba(31,22,6,.08);
++  --v6-sidebar:258px;
++}
++
++/* ---------- PAGE / SIDEBAR ---------- */
++.admin-sidebar{
++  width:var(--v6-sidebar)!important;
++  min-width:var(--v6-sidebar)!important;
++  height:100dvh!important;
++  position:fixed!important;
++  inset-block:0!important;
++  inset-inline-end:0!important;
++  z-index:80!important;
++  background:
++    radial-gradient(circle at 72% 6%,rgba(214,174,89,.10),transparent 19%),
++    linear-gradient(180deg,#06090e 0%,#070b11 52%,#05070b 100%)!important;
++  border-inline-start:1px solid rgba(214,174,89,.16)!important;
++  box-shadow:-16px 0 38px rgba(0,0,0,.14)!important;
++  overflow-y:auto!important;
++  overflow-x:hidden!important;
++}
++
++.admin-sidebar::before{
++  content:"";
++  position:absolute;
++  inset:0;
++  pointer-events:none;
++  opacity:.15;
++  background-image:
++    linear-gradient(rgba(214,174,89,.07) 1px,transparent 1px),
++    linear-gradient(90deg,rgba(214,174,89,.05) 1px,transparent 1px);
++  background-size:32px 32px;
++  mask-image:linear-gradient(to bottom,#000 0%,transparent 60%);
++}
++
++.admin-sidebar__brand-top,
++.admin-sidebar [class*="brand-top"]{
++  min-height:112px!important;
++  padding:14px 18px 10px!important;
++  display:flex!important;
++  align-items:center!important;
++  justify-content:center!important;
++  position:relative!important;
++  border-bottom:1px solid rgba(214,174,89,.13)!important;
++}
++
++.admin-sidebar__brand-top img,
++.admin-sidebar [class*="brand-top"] img{
++  display:block!important;
++  width:min(150px,72%)!important;
++  max-width:150px!important;
++  height:74px!important;
++  object-fit:contain!important;
++  filter:drop-shadow(0 8px 15px rgba(0,0,0,.30))!important;
++}
++
++.admin-sidebar__brand-text,
++.admin-sidebar [class*="brand-text"]{
++  text-align:center!important;
++  margin-top:0!important;
++  padding:0 16px 12px!important;
++  position:relative!important;
++  z-index:2!important;
++}
++
++.admin-sidebar .active,
++.admin-sidebar [aria-current="page"]{
++  background:linear-gradient(90deg,rgba(214,174,89,.20),rgba(214,174,89,.08))!important;
++  border:1px solid rgba(214,174,89,.62)!important;
++  box-shadow:inset 3px 0 0 var(--v6-gold),0 8px 20px rgba(0,0,0,.18)!important;
++}
++
++@media (min-width:1180px){
++  .admin-main,
++  .admin-content,
++  .admin-dashboard__main{
++    margin-inline-end:var(--v6-sidebar)!important;
++    width:calc(100% - var(--v6-sidebar))!important;
++  }
++}
++
++/* ---------- CINEMATIC HERO ---------- */
++.ov-header{
++  position:relative!important;
++  height:174px!important;
++  min-height:174px!important;
++  margin:14px 16px 12px!important;
++  border-radius:20px!important;
++  overflow:hidden!important;
++  isolation:isolate!important;
++  color:#fff!important;
++  background:
++    radial-gradient(circle at 53% 42%,rgba(214,174,89,.24),transparent 22%),
++    radial-gradient(circle at 39% 108%,rgba(215,25,32,.13),transparent 22%),
++    linear-gradient(108deg,#05080d 0%,#0b111a 35%,#111822 66%,#070b10 100%)!important;
++  border:1px solid rgba(214,174,89,.22)!important;
++  box-shadow:0 18px 42px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.04)!important;
++}
++
++.ov-header::before{
++  content:"";
++  position:absolute;
++  inset:auto -4% 0 -4%;
++  height:44%;
++  z-index:0;
++  pointer-events:none;
++  background:
++    linear-gradient(90deg,transparent 0 5%,rgba(214,174,89,.25) 5.1% 5.3%,transparent 5.4% 13%,rgba(214,174,89,.22) 13.1% 13.35%,transparent 13.45% 24%,rgba(214,174,89,.18) 24.1% 24.3%,transparent 24.4%),
++    linear-gradient(180deg,transparent 0 70%,rgba(214,174,89,.10) 100%);
++  opacity:.72;
++  transform:perspective(360px) rotateX(63deg);
++  transform-origin:bottom;
++}
++
++.ov-header::after{
++  content:"";
++  position:absolute;
++  z-index:1;
++  pointer-events:none;
++  width:66%;
++  height:90px;
++  left:17%;
++  bottom:-42px;
++  border-top:3px solid rgba(215,25,32,.72);
++  border-radius:50%;
++  transform:rotate(-2deg);
++  filter:drop-shadow(0 0 9px rgba(215,25,32,.18));
++}
++
++.ov-header__layout{
++  display:grid!important;
++  grid-template-columns:25% 49% 26%!important;
++  direction:ltr!important;
++  align-items:stretch!important;
++  height:100%!important;
++  position:relative!important;
++  z-index:2!important;
++}
++
++.ov-header__layout > *,
++.ov-header [class*="zone-"]{
++  min-width:0!important;
++  position:relative!important;
++}
++
++.ov-header [class*="zone-left"]{
++  direction:rtl!important;
++  display:flex!important;
++  align-items:flex-end!important;
++  justify-content:flex-start!important;
++  padding:0 0 18px 18px!important;
++  z-index:6!important;
++}
++
++.ov-header [class*="zone-center"]{
++  direction:rtl!important;
++  overflow:visible!important;
++  z-index:2!important;
++  background:transparent!important;
++  border:0!important;
++  box-shadow:none!important;
++}
++
++.ov-header [class*="zone-right"]{
++  direction:rtl!important;
++  display:flex!important;
++  flex-direction:column!important;
++  justify-content:center!important;
++  align-items:flex-start!important;
++  padding:18px 24px 18px 14px!important;
++  z-index:7!important;
++  background:linear-gradient(90deg,transparent,rgba(5,8,13,.18) 30%,rgba(5,8,13,.66) 78%,rgba(5,8,13,.92))!important;
++}
++
++.ov-header__motif{
++  position:absolute!important;
++  inset:-16px -15% -20px -18%!important;
++  width:auto!important;
++  height:auto!important;
++  opacity:1!important;
++  background:transparent!important;
++  border:0!important;
++  box-shadow:none!important;
++  overflow:visible!important;
++  pointer-events:none!important;
++  mask-image:linear-gradient(90deg,transparent 0%,#000 12%,#000 88%,transparent 100%)!important;
++}
++
++.ov-header__motif svg{
++  width:100%!important;
++  height:100%!important;
++  display:block!important;
++  transform:scale(1.12) translateY(2px)!important;
++  transform-origin:center bottom!important;
++  filter:saturate(1.18) contrast(1.10) brightness(1.12) drop-shadow(0 18px 18px rgba(0,0,0,.28))!important;
++}
++
++.ov-header h1{
++  color:#fff!important;
++  font-size:clamp(22px,1.75vw,32px)!important;
++  line-height:1.2!important;
++  margin:0 0 7px!important;
++  font-weight:800!important;
++  letter-spacing:-.02em!important;
++  text-shadow:0 3px 14px rgba(0,0,0,.35)!important;
++}
++
++.ov-header h1 + p,
++.ov-header__subtitle{
++  color:rgba(255,255,255,.72)!important;
++  font-size:12px!important;
++  line-height:1.7!important;
++  max-width:390px!important;
++  margin:0 0 5px!important;
++}
++
++.ov-header [class*="brand-line"]{
++  color:var(--v6-gold)!important;
++  font-size:11px!important;
++  font-weight:700!important;
++}
++
++/* ---------- KPI ROW ---------- */
++.ov-kpis,
++.ov-kpi-grid,
++.admin-kpi-grid,
++[class*="kpi-grid"]{
++  gap:10px!important;
++  margin:0 16px 12px!important;
++}
++
++.ov-kpis > *,
++.ov-kpi-grid > *,
++.admin-kpi-grid > *,
++[class*="kpi-card"]{
++  min-height:116px!important;
++  height:116px!important;
++  overflow:hidden!important;
++  border-radius:16px!important;
++  border:1px solid var(--v6-border)!important;
++  background:
++    radial-gradient(circle at 14% 16%,rgba(214,174,89,.10),transparent 26%),
++    linear-gradient(180deg,#fffdf8 0%,var(--v6-ivory) 100%)!important;
++  box-shadow:var(--v6-shadow)!important;
++  padding:14px 16px 15px!important;
++}
++
++[class*="kpi-card"] [class*="icon"]{
++  width:42px!important;
++  height:42px!important;
++  border-radius:50%!important;
++  background:linear-gradient(145deg,#fff8e6,#f1d99f)!important;
++  border:1px solid rgba(198,145,37,.28)!important;
++  color:var(--v6-gold-deep)!important;
++  box-shadow:inset 0 1px 0 #fff,0 7px 18px rgba(183,128,24,.10)!important;
++}
++
++[class*="kpi-card"] [class*="value"],
++[class*="kpi-card"] strong{
++  color:#08111d!important;
++  font-size:clamp(25px,2vw,34px)!important;
++  line-height:1!important;
++  font-weight:900!important;
++  letter-spacing:-.035em!important;
++}
++
++[class*="kpi-card"] [class*="trend"]{
++  color:var(--v6-green)!important;
++  font-weight:800!important;
++}
++
++[class*="microbar"],
++[class*="micro-bars"] span{
++  background:var(--v6-green)!important;
++  width:4px!important;
++  border-radius:999px!important;
++  opacity:.95!important;
++}
++
++/* ---------- SYSTEM HEALTH ---------- */
++.syshealth{
++  min-height:164px!important;
++  height:164px!important;
++  margin:0 16px 12px!important;
++  border-radius:18px!important;
++  overflow:hidden!important;
++  position:relative!important;
++  isolation:isolate!important;
++  background:
++    radial-gradient(circle at 82% 30%,rgba(214,174,89,.12),transparent 25%),
++    linear-gradient(104deg,#05090e 0%,#0b121c 44%,#162130 100%)!important;
++  border:1px solid rgba(214,174,89,.16)!important;
++  box-shadow:0 14px 34px rgba(5,8,13,.15)!important;
++}
++
++.syshealth::after{
++  content:"";
++  position:absolute;
++  inset:auto 8% -55px 18%;
++  height:88px;
++  border-top:2px solid rgba(215,25,32,.42);
++  border-radius:50%;
++  transform:rotate(-2deg);
++  pointer-events:none;
++  z-index:1;
++}
++
++.syshealth__layout{
++  height:100%!important;
++  display:grid!important;
++  grid-template-columns:19% 53% 28%!important;
++  direction:ltr!important;
++  align-items:center!important;
++  gap:10px!important;
++  padding:12px 14px!important;
++  position:relative!important;
++  z-index:2!important;
++}
++
++.syshealth__layout > *{
++  min-width:0!important;
++  direction:rtl!important;
++}
++
++.syshealth [class*="zone-left"]{
++  padding-inline-end:10px!important;
++  border-inline-end:1px solid rgba(214,174,89,.16)!important;
++}
++
++.syshealth [class*="zone-center"]{
++  display:grid!important;
++  grid-template-columns:repeat(4,minmax(0,1fr))!important;
++  gap:8px!important;
++  align-items:stretch!important;
++}
++
++.syshealth [class*="metric"]{
++  min-height:100px!important;
++  border-radius:12px!important;
++  padding:12px 12px 10px!important;
++  background:linear-gradient(180deg,rgba(28,40,55,.92),rgba(19,28,40,.92))!important;
++  border:1px solid rgba(255,255,255,.065)!important;
++  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
++}
++
++.syshealth [class*="metric"] strong{
++  color:#fff!important;
++  font-size:20px!important;
++  font-weight:900!important;
++}
++
++.syshealth [class*="metric"] [class*="bar"]{
++  height:3px!important;
++  background:linear-gradient(90deg,var(--v6-gold),#e6c578)!important;
++  border-radius:999px!important;
++}
++
++.syshealth [class*="zone-right"]{
++  height:100%!important;
++  position:relative!important;
++  overflow:hidden!important;
++  border-radius:14px!important;
++  background:
++    radial-gradient(circle at 55% 62%,rgba(214,174,89,.15),transparent 32%),
++    linear-gradient(90deg,transparent,rgba(255,255,255,.015))!important;
++  mask-image:linear-gradient(90deg,transparent 0,#000 18%,#000 100%)!important;
++}
++
++.syshealth [class*="zone-right"] svg{
++  width:112%!important;
++  height:112%!important;
++  transform:translate(-4%,2%) scale(1.04)!important;
++  transform-origin:center bottom!important;
++  filter:saturate(1.14) contrast(1.12) brightness(1.10) drop-shadow(0 15px 18px rgba(0,0,0,.30))!important;
++}
++
++/* ---------- COMMAND CENTER ---------- */
++.admin-command-grid{
++  direction:ltr!important;
++  display:grid!important;
++  grid-template-columns:minmax(0,2.15fr) minmax(235px,1fr) minmax(235px,1fr)!important;
++  gap:10px!important;
++  margin:0 16px 10px!important;
++  align-items:stretch!important;
++}
++
++.admin-command-grid > *{
++  direction:rtl!important;
++  min-width:0!important;
++  height:306px!important;
++  min-height:306px!important;
++  max-height:306px!important;
++  border-radius:16px!important;
++  border:1px solid rgba(190,140,39,.22)!important;
++  background:linear-gradient(180deg,#fffdf9,var(--v6-ivory))!important;
++  box-shadow:0 9px 25px rgba(74,51,12,.055)!important;
++  overflow:hidden!important;
++}
++
++.admin-command-grid > :first-child{grid-column:1!important}
++.admin-command-grid > :nth-child(2){grid-column:2!important}
++.admin-command-grid > :nth-child(3){grid-column:3!important}
++
++.admin-command-grid [class*="card-header"]{
++  min-height:40px!important;
++  padding:10px 12px 6px!important;
++}
++
++.admin-command-grid [class*="summary"]{gap:6px!important}
++.admin-command-grid [class*="summary"] > *{
++  min-height:52px!important;
++  padding:8px 10px!important;
++  border-radius:10px!important;
++  background:linear-gradient(180deg,#fbf8ef,#f4eee1)!important;
++  border:1px solid rgba(190,140,39,.16)!important;
++}
++
++.admin-command-grid [class*="ops-list"],
++.admin-command-grid [class*="operations-list"],
++.admin-command-grid [class*="timeline"]{
++  display:flex!important;
++  flex-direction:column!important;
++  gap:5px!important;
++  padding:2px 10px 8px!important;
++  overflow:hidden!important;
++}
++
++.admin-command-grid [class*="ops-list"] > *,
++.admin-command-grid [class*="operations-list"] > *,
++.admin-command-grid [class*="timeline"] > *{
++  min-height:40px!important;
++  height:auto!important;
++  flex:0 0 auto!important;
++  border-radius:9px!important;
++  padding:6px 8px!important;
++  margin:0!important;
++}
++
++.admin-command-grid svg[id*="revenue"],
++.admin-command-grid [class*="revenue"] svg{max-height:188px!important}
++
++/* ---------- FINANCIAL LEDGER ---------- */
++.ledger-card,
++.financial-ledger,
++[class*="ledger"]{
++  position:relative!important;
++  clear:both!important;
++}
++
++.ledger-card,
++.financial-ledger{
++  margin:0 16px 18px!important;
++  border-radius:16px!important;
++  border:1px solid rgba(190,140,39,.21)!important;
++  background:linear-gradient(180deg,#fffdf9,var(--v6-ivory))!important;
++  box-shadow:0 8px 24px rgba(74,51,12,.05)!important;
++  overflow:hidden!important;
++}
++
++.ledger-card [class*="toolbar"],
++.financial-ledger [class*="toolbar"]{
++  min-height:42px!important;
++  padding:7px 10px!important;
++  display:flex!important;
++  align-items:center!important;
++  gap:7px!important;
++}
++
++.ledger-card table,
++.financial-ledger table{
++  border-collapse:separate!important;
++  border-spacing:0!important;
++}
++
++.ledger-card thead th,
++.financial-ledger thead th{
++  height:34px!important;
++  padding:7px 10px!important;
++  background:#f3ecdf!important;
++  color:#59482c!important;
++  font-size:11px!important;
++  font-weight:800!important;
++  border-bottom:1px solid rgba(190,140,39,.19)!important;
++}
++
++.ledger-card tbody td,
++.financial-ledger tbody td{
++  height:36px!important;
++  padding:7px 10px!important;
++  border-bottom:1px solid rgba(120,94,50,.08)!important;
++}
++
++/* ---------- CANVAS / RESPONSIVE ---------- */
++.admin-main,
++.admin-content,
++.admin-dashboard__main{
++  background:
++    radial-gradient(circle at 12% 5%,rgba(214,174,89,.07),transparent 18%),
++    linear-gradient(180deg,#fff 0%,#fbfaf6 58%,#f8f4eb 100%)!important;
++}
++
++@media (max-width:1450px){
++  :root{--v6-sidebar:244px}
++  .ov-header{height:160px!important;min-height:160px!important}
++  .ov-header__layout{grid-template-columns:24% 49% 27%!important}
++  .syshealth{height:154px!important;min-height:154px!important}
++  .admin-command-grid{grid-template-columns:minmax(0,2fr) minmax(215px,1fr) minmax(215px,1fr)!important}
++}
++
++@media (max-width:1179px){
++  .admin-sidebar{
++    position:relative!important;
++    width:100%!important;
++    min-width:0!important;
++    height:auto!important;
++    inset:auto!important;
++  }
++  .admin-main,.admin-content,.admin-dashboard__main{
++    margin-inline-end:0!important;
++    width:100%!important;
++  }
++  .ov-header{height:auto!important;min-height:210px!important}
++  .ov-header__layout{grid-template-columns:1fr!important;direction:rtl!important}
++  .ov-header [class*="zone-center"]{min-height:150px!important}
++  .syshealth{height:auto!important;min-height:0!important}
++  .syshealth__layout{grid-template-columns:1fr!important}
++  .syshealth [class*="zone-center"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
++  .admin-command-grid{grid-template-columns:1fr!important}
++  .admin-command-grid > *{
++    grid-column:1!important;
++    height:auto!important;
++    max-height:none!important;
++    min-height:260px!important;
++  }
++}
