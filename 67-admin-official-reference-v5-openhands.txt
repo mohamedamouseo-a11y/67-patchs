@@ -1,0 +1,176 @@
+PROJECT=/67
+PHASE=Admin Dashboard Official Reference V5
+STATUS=LOCKED_REFERENCE
+
+GOAL
+Treat the newly approved Six Seven automotive dashboard design as the ONLY visual reference going forward and converge the live authenticated /admin screen toward it. Do not use any V1/V2/V3/V4 visual as a target anymore.
+
+REFERENCE_ID=OFFICIAL_ADMIN_REFERENCE_V5
+REFERENCE_CHARACTER=Premium Saudi automotive executive command center, Riyadh skyline at night, luxury black sedan, warm gold/champagne lighting, official Six Seven logo with black/gold/red identity, dense one-viewport dashboard.
+
+SOURCE OF TRUTH
+- Work on CURRENT /67 checkout only.
+- Build on the latest working V4 implementation.
+- No clone, pull, reset, checkout, or broad repo scan.
+- Preserve all working functionality, APIs, auth/session, tabs, GitHub Module, search, filters, export, live data, logout, and routes.
+
+FILES_ALLOWED
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+- Only if a local official logo asset already exists in the project and needs wiring, reuse it. Do not fetch external images.
+
+OFFICIAL V5 VISUAL COMPOSITION
+1) SIDEBAR — PHYSICAL RIGHT
+- Fixed full-height near-black sidebar, premium automotive finish.
+- Official Six Seven logo at the top, not a generic 67 mark.
+- Use the official brand identity: black + gold + controlled red accent from the car stroke.
+- Active item is a warm gold framed capsule.
+- Distinct group labels in muted gold: overview/operations/reports/system style hierarchy.
+- Bottom Super Admin identity block and existing logout handler remain.
+- Sidebar should look finished and branded, not generic SaaS.
+
+2) CINEMATIC HERO
+- Full-width hero occupying the dashboard area left of the sidebar.
+- Strong Riyadh night/golden-hour skyline with recognizable Kingdom Centre cue and palms.
+- Large premium black sedan is visually dominant, positioned around center/right of hero while preserving title safe zone.
+- Use a thin sweeping red automotive curve inspired by the official logo as a brand accent across the hero; it must be elegant and subtle, never neon or cartoonish.
+- Dark cinematic black/charcoal background with champagne highlights.
+- Title and subtitle remain readable in Arabic RTL.
+- Toolbar/date/export controls integrated into hero, not floating on plain white.
+- Target feel: luxury automotive brand campaign + executive command center.
+
+3) KPI ROW
+- Exactly 4 equal ivory cards under hero.
+- Current real values unchanged.
+- Large gold icon medallions.
+- Strong numbers, smaller labels, visible green trend percentage and micro-bars.
+- Warm ivory surfaces, champagne borders, layered soft shadows.
+- Cards should look premium and bold like the V5 reference, not flat white SaaS.
+
+4) SYSTEM HEALTH BAND
+- Full-width dark cinematic band below KPIs.
+- Left/center region: compact status chip and four dark metrics with green/gold progress hierarchy.
+- Right visual region: black sedan / road / Riyadh night motif matching hero language.
+- Use official red accent sparingly where it reinforces automotive identity.
+- Keep all real health values and statuses unchanged.
+- The band should look like a premium automotive control strip, not four boxes on a dark rectangle.
+
+5) COMMAND CENTER — DESKTOP PHYSICAL ORDER
+LEFT = Revenue & Performance, largest card (~50-52%)
+MIDDLE = Live Operations (~24-25%)
+RIGHT = Current Operations (~23-25%), directly next to sidebar
+- Keep direction:ltr on outer grid and direction:rtl inside cards if needed for physical placement.
+- Keep current working Revenue INLINE SVG. Do not restore Recharts.
+
+6) REVENUE CARD
+- Preserve the current real data and inline SVG chart.
+- V5 look: ivory card, gold area fill/line, visible axis labels, dots, dark floating callout.
+- KPI summary tiles at top.
+- Compact height, dense executive layout.
+- Avoid empty vertical space.
+
+7) LIVE OPERATIONS
+- Dense vertical timeline/list with existing data only.
+- Each item: icon/status, title, short secondary text, time.
+- Colored status cues limited to green/gold/blue where semantically appropriate.
+- Bottom action uses existing behavior only.
+- No empty middle panel.
+
+8) CURRENT OPERATIONS
+- Summary tiles at top using existing data.
+- Dense list of current/latest operations with status hierarchy.
+- Use existing data only; no fake API values.
+- No clipping, hidden row, or oversized empty gaps.
+
+9) FINANCIAL LEDGER
+- Full-width ivory table below command row.
+- Compact toolbar/search/filter/export in one line.
+- Warm ivory header row, clear column hierarchy, polished status pills.
+- Preserve all current columns, data, search/filter/export behavior.
+- Keep the table dense enough that much of the dashboard fits in one desktop viewport.
+
+10) OFFICIAL LOGO / BRAND LANGUAGE
+- The official logo is the Six Seven logo supplied by the owner: black/gold 67, red automotive silhouette stroke, SIX SEVEN wordmark.
+- Do not replace it with a generic 67 glyph when a local official logo asset is available.
+- Use the logo's red only as a controlled accent: hero car sweep, tiny active/brand details, or automotive line motif.
+- Primary UI accent remains champagne gold; red is secondary and sparing.
+- Do not recolor the official logo destructively.
+
+11) VIEWPORT DENSITY
+- Target reference is deliberately compact.
+- Hero ~150-175px desktop.
+- KPI row ~110-125px.
+- Health band ~150-175px.
+- Command center ~300-330px.
+- Ledger begins within the first desktop viewport on common 1440p/1080p screens where practical.
+- Tight gaps ~10-14px.
+- No giant white voids.
+
+DESIGN TOKENS
+Near black: #05080d / #080c12
+Charcoal: #111821 / #18212d
+Ivory: #fbfaf6 / #f8f3e8
+Champagne: #d6ae59 / #c89b3c
+Deep gold: #a9781d
+Success green: #12b978 / #18a76f
+Controlled brand red: #d71920 / #c9161d (use sparingly)
+Avoid neon yellow and excessive pure white.
+
+DO NOT
+- No backend/API/auth/session modifications.
+- No fake data.
+- No external image URLs.
+- No new dependencies.
+- No particles.
+- No clone/pull/reset.
+- No broad repo scan.
+- No commit or push.
+- Do not regress Revenue inline SVG.
+- Do not change command physical order.
+- Do not use a huge heredoc for CSS; use atomic file_editor + SCP/base64 style write if large.
+
+IMPLEMENTATION PRIORITY
+A. Lock official Six Seven branding into sidebar/hero.
+B. Make hero visibly cinematic and close to V5 reference.
+C. Improve health band visual richness.
+D. Match KPI visual weight and micro-bars.
+E. Densify command cards and ledger without breaking functionality.
+F. Keep the entire page compact and premium.
+
+VERIFY
+1. npm run build
+2. systemctl restart sixty-seven.service
+3. curl localhost /admin => HTTP 200
+4. Confirm built assets contain V5 markers/classes.
+5. Verify code-level:
+   - official logo wiring if asset exists
+   - red brand accent present but controlled
+   - Revenue LEFT / Live MIDDLE / Current RIGHT
+   - Revenue inline SVG preserved
+   - fixed full-height sidebar preserved
+   - no backend/auth changes
+6. If browser verification is blocked by auth, report AUTH_BLOCKED and do not claim visual match.
+
+RETURN EXACTLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+OFFICIAL_REFERENCE_V5=LOCKED
+OFFICIAL_LOGO_WIRED=
+SIDEBAR_BRAND_IDENTITY=YES
+HERO_RIYADH_CINEMATIC=YES
+HERO_LUXURY_SEDAN_DOMINANT=YES
+BRAND_RED_ACCENT_CONTROLLED=YES
+KPI_REFERENCE_V5=YES
+HEALTH_REFERENCE_V5=YES
+COMMAND_PHYSICAL_ORDER=REVENUE_LEFT_LIVE_MIDDLE_CURRENT_RIGHT
+REVENUE_INLINE_SVG_PRESERVED=YES
+LIVE_OPERATIONS_DENSE=YES
+CURRENT_OPERATIONS_DENSE=YES
+LEDGER_REFERENCE_V5=YES
+VIEWPORT_DENSITY_V5=YES
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_VERIFICATION=
+ERROR=
