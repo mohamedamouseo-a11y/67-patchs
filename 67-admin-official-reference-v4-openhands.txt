@@ -1,0 +1,186 @@
+PROJECT=/67
+PHASE=Admin Overview OFFICIAL REFERENCE V4
+GOAL=Use the NEW approved Saudi automotive dashboard design as the sole visual source of truth and converge the authenticated /admin overview toward it. Stop treating older V1/V2/V3 visuals as targets.
+
+OFFICIAL REFERENCE — LOCKED
+From this phase onward, the approved target is the latest generated design selected by the owner: a premium Saudi automotive executive dashboard with a cinematic Riyadh/car hero, black/gold right sidebar, ivory KPI cards, a richly illustrated dark system-health band, dense 3-column operations zone, and premium financial ledger.
+
+IMPORTANT
+- Build on the CURRENT /67 checkout only.
+- Do NOT clone, pull, reset, or scan the whole repo.
+- Do NOT revert working V3.5/V3.6 functionality.
+- Preserve all APIs, auth/session, data, routes, tabs, GitHub Module, search/filter/export/logout handlers.
+- This is VISUAL CONVERGENCE, not backend work.
+
+FILES ALLOWED
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.css
+Do not touch backend/server/API/auth files.
+
+CURRENT LIVE BASELINE
+The current screen already has:
+- fixed dark sidebar with identity/logout
+- dark hero
+- 4 KPI cards
+- dark system-health band
+- physical command order Revenue LEFT / Live MIDDLE / Current RIGHT
+- working inline SVG revenue chart
+- ledger table
+
+The problem now is that the current screen is still visually flatter, simpler and less cinematic than the NEW official reference.
+
+OFFICIAL REFERENCE COMPOSITION — MATCH THIS
+1. RIGHT SIDEBAR
+- Width around 250-270px on desktop.
+- Near-black #070a0f with subtle warm inner glow and separators.
+- Large gold 67 mark at top, small SIXTY SEVEN caption if existing brand treatment allows.
+- Active item is a premium gold-outline / gold-glow capsule.
+- Section labels in muted champagne gold.
+- Bottom Super Admin identity card and existing logout action anchored low.
+- Sidebar must remain fixed full-height.
+
+2. HERO — THIS IS THE BIGGEST VISUAL DIFFERENCE
+Target hero is not a plain dark bar. It is a cinematic Saudi automotive banner.
+- Desktop height approx 125-145px.
+- Full-width visual field behind content.
+- Physical center-left: large recognizable premium black sedan, not tiny line-art.
+- Background: Riyadh skyline with Kingdom Centre silhouette, palms, warm sunset/golden city lighting and road reflections.
+- Right side: title and subtitle remain crisp and dominant.
+- Left side: toolbar/date/filter controls integrated inside dark translucent controls.
+- Use LOCAL inline SVG/CSS only unless a suitable LOCAL project asset already exists. No external image URL.
+- If using SVG, create FILLED shapes, glow layers, skyline silhouettes, car body surfaces and gradients. Avoid thin outline-only illustration.
+- Scene opacity must be strong enough to read instantly (~0.6-0.9 per visual layer) with text-safe gradient overlay.
+- Hero should visually feel like the official reference: automotive luxury, Saudi city at night/golden hour, glossy road, premium black/gold mood.
+
+3. KPI ROW
+Four equal ivory cards directly below hero.
+- Height approx 105-115px.
+- Warm ivory #fbfaf6, subtle champagne border, stronger warm shadow.
+- Large gold circular medallion icon on outer side.
+- Primary number visually larger and bolder than current.
+- Strong green percentage/trend.
+- 4-5 visible ascending microbars near the trend like the reference.
+- Secondary comparison text clearly visible.
+- Keep real current values unchanged.
+
+4. SYSTEM HEALTH BAND
+Official reference uses a RICH automotive visual band, not mainly empty charcoal.
+- Height approx 155-170px.
+- Full-width dark panel with subtle background car/road/city texture.
+- Physical RIGHT 28-32%: title/subtitle + a visible premium vehicle/road/skyline visual and green CTA/status chip.
+- Physical LEFT 68-72%: four compact dark metric cards in one row.
+- Each metric card has icon medallion, label, value, small description and colored progress line.
+- Stable green status pill clearly visible.
+- Avoid a dead empty middle zone.
+
+5. COMMAND CENTER — EXACT PHYSICAL ORDER
+LEFT = Revenue & Performance (~50-52%)
+MIDDLE = Live Operations (~24-25%)
+RIGHT = Current Operations (~23-24%, directly beside sidebar)
+Because RTL can invert implicit placement, force physical layout explicitly and keep each card RTL internally.
+
+5A. Revenue card
+- Ivory premium card.
+- Compact header with title/subtitle and gold chart icon.
+- Three small KPI boxes on top row.
+- Keep current inline SVG chart.
+- Chart must fill the body and resemble reference: gold line, area gradient, grid, points, Arabic dates, dark callout.
+- Card total height ~300-315px.
+
+5B. Live Operations card
+- No large empty center area.
+- Header with status/filter chip if existing state supports it; do not invent fake controls.
+- 4-5 dense activity rows using EXISTING activity data only.
+- Each row should visually have icon circle, bold title, secondary line, and time on opposite edge.
+- Different icon accent states allowed based on existing activity type.
+- Bottom action area can reuse existing “عرض جميع الأنشطة” behavior only if already functional.
+
+5C. Current Operations card
+- Two compact summary tiles at top using existing counts/data only.
+- Then 3-4 concise status rows from existing current operations data.
+- Use blue/orange/green state indicators only when consistent with actual states.
+- Eliminate blank spacer rows and clipping.
+
+6. LEDGER / FINANCIAL TABLE
+- One premium ivory container spanning width below command row.
+- Header title aligned right.
+- Search + filter + export compact toolbar aligned opposite, all existing functionality preserved.
+- Warm ivory table header strip.
+- Dense readable rows with clear column hierarchy.
+- Status chips with icon + green/amber state.
+- Keep every existing row/column and behavior.
+
+7. GLOBAL CANVAS
+- Main background: ivory/off-white, not pure white.
+- Very subtle warm radial/glow near edges is allowed.
+- No floating particles/dots.
+- Cards should be layered by shadow and warm borders, not cold gray outlines.
+- Overall dashboard should feel like one cohesive black/ivory/champagne automotive command center.
+
+8. VIEWPORT DENSITY
+Reference shows hero, KPIs, health, full command row and most/all ledger in one desktop viewport.
+Target approximate vertical rhythm:
+- page top/bottom outer gap: 12-16px
+- hero: 125-145px
+- KPI: 105-115px
+- health: 155-170px
+- command: 300-315px
+- ledger: 180-220px
+- section gaps: 8-12px
+Avoid unnecessary vertical whitespace.
+
+9. TYPOGRAPHY / COLOR
+- Near black #070a0f / #0a0f16
+- Charcoal #141b24 / #1b2430
+- Ivory #fbfaf6 / #f7f2e7
+- Champagne gold #c89b3c / #d6ae59
+- Deep gold #a9781d / #b8862e
+- Success green #12b978 / #1fb77c
+- Warning amber #d79622
+- Red only for true destructive/critical actions like logout
+- Avoid neon yellow.
+
+10. DO NOT REGRESS WORKING FUNCTIONALITY
+- Preserve inline SVG revenue chart.
+- Preserve Revenue LEFT / Live MIDDLE / Current RIGHT.
+- Preserve fixed full-height sidebar.
+- Preserve authenticated identity and logout.
+- Preserve all tabs and handlers.
+- Preserve current values/data sources.
+
+IMPLEMENTATION STRATEGY
+- Prefer editing existing JSX structure only where needed for fidelity.
+- Use CSS/inline SVG to create the rich automotive/Saudi visual treatment.
+- Do not add external image URLs or dependencies.
+- Any large CSS write must be atomic via file_editor + SCP/base64/equivalent. No long heredoc.
+
+VERIFY
+1. npm run build
+2. systemctl restart sixty-seven.service
+3. curl local /admin => HTTP 200
+4. Verify built JS/CSS contain V4 markers.
+5. Code-level verify no auth/API/backend changes.
+6. If browser auth blocks visual verification, report AUTH_BLOCKED and do not claim screenshot success.
+
+RETURN EXACTLY
+CHANGED_FILES=
+BUILD=
+SERVICE_STATUS=
+LOCAL_ADMIN_HTTP=
+OFFICIAL_REFERENCE_V4=LOCKED
+HERO_CINEMATIC_FILLED_SCENE=
+HERO_SEDAN_VISUALLY_DOMINANT=
+HERO_RIYADH_SKYLINE_VISIBLE=
+KPI_REFERENCE_MATCH=
+HEALTH_REFERENCE_MATCH=
+COMMAND_PHYSICAL_ORDER=REVENUE_LEFT_LIVE_MIDDLE_CURRENT_RIGHT
+LIVE_OPERATIONS_DENSE_ROWS=
+CURRENT_OPERATIONS_DENSE_ROWS=
+REVENUE_INLINE_SVG_PRESERVED=
+LEDGER_REFERENCE_POLISH=
+SIDEBAR_REFERENCE_POLISH=
+VIEWPORT_DENSITY_IMPROVED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_VERIFICATION=
+ERROR=
