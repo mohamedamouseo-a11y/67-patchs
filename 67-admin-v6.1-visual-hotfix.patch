@@ -1,0 +1,156 @@
+diff --git a/src/pages/AdminDashboard.v6.css b/src/pages/AdminDashboard.v6.css
+--- a/src/pages/AdminDashboard.v6.css
++++ b/src/pages/AdminDashboard.v6.css
+@@ -552,0 +553,138 @@
++
++/* ========================================================================
++   V6.1 VISUAL HOTFIX — authored from the authenticated live screenshot.
++   Fixes the over-broad V6 KPI selectors and remaining command-card clipping.
++   ======================================================================== */
++
++/* KPI: the V6 selector [class*="kpi-card"] was too broad and also styled
++   internal KPI elements as if they were full cards. Reset nested KPI pieces
++   and keep the actual grid child as the only card shell. */
++.ov-kpis > * [class*="kpi-card"],
++.ov-kpi-grid > * [class*="kpi-card"],
++.admin-kpi-grid > * [class*="kpi-card"],
++[class*="kpi-grid"] > * [class*="kpi-card"]{
++  min-height:0!important;
++  height:auto!important;
++  padding:0!important;
++  margin:0!important;
++  background:transparent!important;
++  border:0!important;
++  border-radius:0!important;
++  box-shadow:none!important;
++  overflow:visible!important;
++}
++
++.ov-kpis > *,
++.ov-kpi-grid > *,
++.admin-kpi-grid > *,
++[class*="kpi-grid"] > *{
++  position:relative!important;
++  min-height:112px!important;
++  height:112px!important;
++  padding:14px 16px 14px!important;
++  overflow:hidden!important;
++  display:block!important;
++}
++
++.ov-kpis > * [class*="icon"],
++.ov-kpi-grid > * [class*="icon"],
++.admin-kpi-grid > * [class*="icon"],
++[class*="kpi-grid"] > * [class*="icon"]{
++  width:42px!important;
++  min-width:42px!important;
++  max-width:42px!important;
++  height:42px!important;
++  min-height:42px!important;
++  max-height:42px!important;
++  padding:0!important;
++  border-radius:50%!important;
++  display:flex!important;
++  align-items:center!important;
++  justify-content:center!important;
++  overflow:hidden!important;
++}
++
++.ov-kpis > * [class*="icon"] svg,
++.ov-kpi-grid > * [class*="icon"] svg,
++.admin-kpi-grid > * [class*="icon"] svg,
++[class*="kpi-grid"] > * [class*="icon"] svg{
++  width:20px!important;
++  height:20px!important;
++  flex:0 0 20px!important;
++}
++
++.ov-kpis > * [class*="value"],
++.ov-kpi-grid > * [class*="value"],
++.admin-kpi-grid > * [class*="value"],
++[class*="kpi-grid"] > * [class*="value"],
++.ov-kpis > * strong,
++.ov-kpi-grid > * strong,
++.admin-kpi-grid > * strong,
++[class*="kpi-grid"] > * strong{
++  min-height:0!important;
++  height:auto!important;
++  padding:0!important;
++  margin:0!important;
++  background:transparent!important;
++  border:0!important;
++  box-shadow:none!important;
++  color:#08111d!important;
++  font-size:clamp(24px,1.9vw,32px)!important;
++  line-height:1.05!important;
++  font-weight:900!important;
++}
++
++.ov-kpis > * [class*="trend"],
++.ov-kpi-grid > * [class*="trend"],
++.admin-kpi-grid > * [class*="trend"],
++[class*="kpi-grid"] > * [class*="trend"]{
++  min-height:0!important;
++  height:auto!important;
++  padding:0!important;
++  margin-top:5px!important;
++  background:transparent!important;
++  border:0!important;
++  box-shadow:none!important;
++  overflow:visible!important;
++}
++
++/* Command center: give the real content a little more room and move overflow
++   handling to the inner lists so no row is visually sliced by the card edge. */
++.admin-command-grid > *{
++  height:318px!important;
++  min-height:318px!important;
++  max-height:318px!important;
++}
++
++.admin-command-grid [class*="ops-list"],
++.admin-command-grid [class*="operations-list"],
++.admin-command-grid [class*="timeline"]{
++  max-height:174px!important;
++  overflow-y:auto!important;
++  overflow-x:hidden!important;
++  scrollbar-width:thin!important;
++  scrollbar-color:rgba(198,145,37,.32) transparent!important;
++  align-content:start!important;
++}
++
++.admin-command-grid [class*="ops-list"] > *,
++.admin-command-grid [class*="operations-list"] > *,
++.admin-command-grid [class*="timeline"] > *{
++  min-height:38px!important;
++  max-height:none!important;
++  flex:0 0 auto!important;
++  overflow:hidden!important;
++}
++
++.admin-command-grid [class*="ops-list"]::-webkit-scrollbar,
++.admin-command-grid [class*="operations-list"]::-webkit-scrollbar,
++.admin-command-grid [class*="timeline"]::-webkit-scrollbar{
++  width:4px!important;
++}
++
++.admin-command-grid [class*="ops-list"]::-webkit-scrollbar-thumb,
++.admin-command-grid [class*="operations-list"]::-webkit-scrollbar-thumb,
++.admin-command-grid [class*="timeline"]::-webkit-scrollbar-thumb{
++  background:rgba(198,145,37,.32)!important;
++  border-radius:99px!important;
++}
++
++/* Keep ledger visually separated from the chart/operations row. */
++.ledger-card,
++.financial-ledger{
++  margin-top:2px!important;
++}
++
++@media (max-width:1450px){
++  .admin-command-grid > *{
++    height:308px!important;
++    min-height:308px!important;
++    max-height:308px!important;
++  }
++}
