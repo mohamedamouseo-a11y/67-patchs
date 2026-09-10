@@ -1,0 +1,4 @@
+WRITE_TEST=OK
+SOURCE=OpenHands
+PURPOSE=Verify write access for QA screenshots
+SAFE_TO_DELETE=YES
