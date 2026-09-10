@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 ROOT=/67
 BASE_COMMIT=18e98d63a2b1776b9ff1e311227f3a74a826dabe
-ASSET_COMMIT=66a7fa2913cb722a1a85604aa024251c0b0f13d5
+ASSET_COMMIT=ce6e7cee75f63f8c87a7d01546bee07520e34a47
 TARGET_JSX=src/pages/AdminDashboard.jsx
 TARGET_CSS=src/pages/AdminDashboard.v14.css
 OLD_HERO=src/assets/admin-v15-hero.jpg
