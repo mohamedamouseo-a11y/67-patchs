@@ -1,0 +1,204 @@
+==================================================
+VERSION: V22.3
+MODULE: ADMIN DASHBOARD / SUPERADMIN SECURITY
+ELEMENT: SESSION PERSISTENCE + QA HANDOFF
+BASE: V22.2
+TARGET: V22.3
+==================================================
+
+Work on the live project only:
+
+/67
+
+PURPOSE
+Fix the recurring logout problem that happens after QA / Agent login.
+
+ROOT CAUSE ALREADY IDENTIFIED
+The current backend stores only one activeSessionHash.
+Every successful Superadmin login overwrites that hash.
+When the QA agent logs in, the owner's existing browser session becomes invalid.
+On refresh, the owner is therefore sent back to the login screen.
+
+V22.3 changes this to a bounded multi-session registry so the owner's browser and QA agent can stay authenticated at the same time.
+
+SECURITY REQUIREMENTS
+- Keep signed HttpOnly cookie authentication.
+- Keep Secure cookie in production.
+- Keep SameSite=Strict.
+- Keep CSRF protection.
+- Keep existing session TTL; DO NOT extend it in this phase.
+- Never store passwords or auth tokens in browser localStorage/sessionStorage.
+- Never expose the session token to frontend JavaScript.
+- Maximum active Superadmin sessions: 12.
+- Logging out must revoke ONLY the current session.
+- Preserve backward compatibility with the legacy activeSessionHash so the owner's currently open session survives migration/restart when possible.
+
+DO NOT CHANGE
+- Hero
+- Date Filter
+- KPI V22.2 visuals
+- System Health
+- Command Center
+- Transactions
+- Sidebar
+- GitHub Module behavior
+- profile/encryption behavior
+- any business data
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v22.3-superadmin-session-persistence-apply.sh
+
+EXECUTE
+cd /67
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v22.3-superadmin-session-persistence-apply.sh \
+-o /tmp/67-admin-v22.3-superadmin-session-persistence-apply.sh
+chmod +x /tmp/67-admin-v22.3-superadmin-session-persistence-apply.sh
+bash /tmp/67-admin-v22.3-superadmin-session-persistence-apply.sh
+
+The patch must return TESTS=PASS and BUILD=PASS before continuing.
+
+==================================================
+PRODUCTION SERVICE RESTART — DISCOVER, DO NOT GUESS
+==================================================
+
+This is a backend change, so the live Node service must be restarted.
+
+Do NOT guess a systemd or PM2 service name.
+Discover the running production process non-destructively:
+
+1. Inspect:
+   ps -eo pid,ppid,cmd | grep -E '[n]ode .*server/index\.js'
+2. Inspect the process cgroup for the live PID:
+   cat /proc/<PID>/cgroup
+3. Inspect systemd running services only if the cgroup indicates systemd ownership.
+4. If an exact owning systemd unit is positively identified, restart ONLY that unit.
+5. If the process is managed by another supervisor, identify it from the process tree/config before using that supervisor.
+6. Do NOT kill the production process manually if ownership is unresolved.
+7. After restart verify:
+   - GET /api/health returns 200
+   - /admin loads
+   - production backend is running from /67
+
+Return the exact restart method and service/process identity used.
+
+==================================================
+SESSION PERSISTENCE QA — REQUIRED
+==================================================
+
+Run the automated regression test created by the patch and also verify the live behavior.
+
+Required live scenario where browser tooling permits:
+A. Browser Context A = existing/owner-style Superadmin session.
+B. Confirm /admin dashboard is authenticated.
+C. Open an independent Browser Context B and authenticate as Superadmin using the QA environment's existing authorized credentials/session mechanism.
+D. Confirm Context B is authenticated.
+E. Return to Context A.
+F. HARD REFRESH Context A.
+G. Context A MUST still show the dashboard and MUST NOT show the login form.
+H. Refresh Context A once more.
+I. It MUST remain authenticated.
+
+Do not log out Context A during this validation.
+Do not mutate dashboard/business data.
+
+If a second live browser context cannot be authenticated without asking the user for credentials, do NOT request or expose credentials. Rely on the automated two-session integration test and perform same-session refresh QA in the available authenticated browser context.
+
+==================================================
+SCREENSHOTS — DISTINCTIVE FILENAMES
+==================================================
+
+Capture 1920x1080 screenshots.
+Use one RUNSTAMP in YYYYMMDD-HHMMSS format.
+
+Required filenames:
+1. 67__ADMIN__V22-3__SESSION-PERSISTENCE__01__OWNER-BEFORE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V22-3__SESSION-PERSISTENCE__02__SECOND-SESSION-ACTIVE__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V22-3__SESSION-PERSISTENCE__03__OWNER-AFTER-REFRESH__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V22-3__SESSION-PERSISTENCE__04__FINAL-DASHBOARD__1920x1080__<RUNSTAMP>.png
+
+If live second-context login cannot be performed, screenshot #2 may instead show the automated multi-session test PASS evidence in the OpenHands QA environment, but screenshots #1/#3/#4 must still prove the available browser session survives refresh after deployment.
+
+==================================================
+GOOGLE DRIVE UPLOAD — ROOT ONLY, NO FOLDERS
+==================================================
+
+IMPORTANT: DO NOT CREATE A GOOGLE DRIVE FOLDER.
+The configured gdrive MCP supports upload but folder creation is not part of this workflow.
+
+Use the existing OpenHands Google Drive MCP upload capability.
+Known MCP installation/configuration:
+- server entry: node /home/openhands/.openhands/mcp/gdrive-mcp-server/dist/index.js
+- OAuth path: /home/openhands/.openhands/gdrive/gcp-oauth.keys.json
+- credentials path: /home/openhands/.openhands/gdrive/.gdrive-server-credentials.json
+- upload is enabled
+
+Rules:
+- Use the MCP upload action, NOT a shell gdrive CLI.
+- Upload all four screenshots DIRECTLY TO GOOGLE DRIVE ROOT / My Drive root.
+- Preserve the exact distinctive filenames above.
+- Never call create_folder.
+- After upload, verify every file exists by exact filename using Drive search/list.
+- Return each Google Drive file ID and view/share link if provided by the MCP.
+- Do not expose OAuth tokens/credential contents.
+
+Also push the same QA screenshots to the public QA repo as an automated fallback:
+repo: mohamedamouseo-a11y/67-patchs
+path: qa/v22.3-session-persistence/
+Do NOT push source project code.
+
+==================================================
+SOURCE PUSH
+==================================================
+
+DO NOT commit or push developer-hub-67.
+The user will push the source manually from the 67 GitHub Module after approval.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+TESTS=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=V22.2
+TARGET_VERSION=V22.3
+ELEMENT=SUPERADMIN_SESSION_PERSISTENCE
+ROOT_CAUSE=SINGLE_ACTIVE_SESSION_INVALIDATED_BY_AGENT_LOGIN
+MULTI_SESSION_ENABLED=
+MAX_ACTIVE_SESSIONS=12
+LEGACY_SESSION_MIGRATION=
+LOGOUT_REVOKES_CURRENT_SESSION_ONLY=
+COOKIE_SECURITY_CHANGED=NO
+SESSION_TTL_CHANGED=NO
+UI_CHANGED=NO
+BACKEND_CHANGED=YES
+AUTH_CHANGED=YES
+SERVICE_RESTART=
+SERVICE_IDENTITY=
+HEALTH_CHECK=
+OWNER_SESSION_SURVIVED_RESTART=
+SECOND_SESSION_TEST=
+OWNER_SESSION_SURVIVED_SECOND_LOGIN=
+OWNER_SESSION_SURVIVED_REFRESH=
+VISUAL_QA=
+VIEWPORT=1920x1080
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_REPO_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
