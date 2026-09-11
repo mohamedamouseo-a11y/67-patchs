@@ -1,0 +1,25 @@
+name: QA V19.4 Artifact
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package V19.4 QA screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: v19.4-date-control-screenshots
+          path: |
+            qa/v19.4-date-control/01-v19.4-closed.png
+            qa/v19.4-date-control/02-v19.4-open.png
+            qa/v19.4-date-control/03-v19.4-open-closeup.png
+            qa/v19.4-date-control/04-v19.4-hero-composition.png
+          if-no-files-found: error
+          retention-days: 1
