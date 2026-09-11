@@ -1,0 +1,144 @@
+==================================================
+VERSION: V22.1
+MODULE: ADMIN DASHBOARD
+ELEMENT: KPI CARDS CLIPPING FIX
+BASE: V22
+TARGET: V22.1
+==================================================
+
+Work only on:
+
+/67
+
+This is a corrective patch on top of V22.
+
+SCOPE LOCK:
+KPI CARDS ONLY.
+
+The previous V22 visual QA is NOT approved because the bottom content of the KPI cards is visibly clipped at 1920x1080.
+
+Visible defect to fix:
+- bottom note row is cut off
+- micro-trend bars sit too low / are partially clipped
+- card internal vertical composition does not fit inside the V22 fixed height
+
+Do not redesign the KPI concept from scratch.
+Preserve the V22 visual language, hierarchy, colors, icons and values.
+Fix the internal vertical geometry so every KPI card is fully visible.
+
+DO NOT CHANGE:
+- Hero
+- Date Filter
+- System Health
+- Command Center
+- Transactions
+- Sidebar
+- KPI values
+- KPI calculations
+- backend
+- auth
+- APIs
+- data
+
+PATCH URL:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v22.1-kpi-clipping-fix-apply.sh
+
+EXECUTE:
+
+cd /67
+curl -L https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v22.1-kpi-clipping-fix-apply.sh -o /tmp/67-admin-v22.1-kpi-clipping-fix-apply.sh
+chmod +x /tmp/67-admin-v22.1-kpi-clipping-fix-apply.sh
+bash /tmp/67-admin-v22.1-kpi-clipping-fix-apply.sh
+
+If UNSUPPORTED_RUNTIME_STATE:
+STOP and report current AdminDashboard CSS imports.
+Do not rerun old patches.
+
+==================================================
+MANDATORY VISUAL QA — DO NOT TRUST STATUS ALONE
+==================================================
+
+Viewport: 1920x1080
+Route: /admin
+
+Capture:
+1. full dashboard closed state
+2. KPI row close-up with all four cards fully visible
+3. KPI row + System Health boundary close-up
+4. full composition Hero -> KPI -> System Health
+
+VISUALLY VERIFY EACH KPI CARD:
+- full rounded bottom edge is visible
+- note text is fully visible
+- micro-trend bars are fully visible
+- icons are not clipped
+- values are not clipped
+- no content crosses the card boundary
+- no overlap with System Health
+- equal card heights
+- equal vertical rhythm
+
+If ANY KPI card is clipped, do NOT report VISUAL_QA=PASS.
+Return VISUAL_QA=FAIL and explain which card/edge is clipped.
+
+==================================================
+GOOGLE DRIVE QA DELIVERY
+==================================================
+
+After screenshots are created, upload copies to Google Drive if this OpenHands environment already has an authenticated Google Drive/rclone/gdrive integration.
+
+Preferred folder:
+67-QA/V22.1-KPI-Cards/
+
+Return public/shareable or account-accessible Google Drive links for the four PNG files.
+
+IMPORTANT:
+- Do not invent Google Drive URLs.
+- Do not ask for or expose credentials.
+- If Google Drive is not already configured in the environment, return:
+  DRIVE_UPLOAD=UNAVAILABLE
+  DRIVE_UPLOAD_REASON=<short reason>
+- GitHub QA upload may still be kept as a secondary copy.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=
+TARGET_VERSION=
+RUNTIME_CSS=
+ELEMENT=KPI_CARDS_ONLY
+KPI_CLIPPING_FIXED_BY_LAYOUT=
+KPI_BOTTOM_EDGES_VISIBLE=
+KPI_NOTES_FULLY_VISIBLE=
+KPI_MICROTRENDS_FULLY_VISIBLE=
+KPI_OVERLAP_WITH_SYSTEM_HEALTH=
+KPI_VALUES_CHANGED=NO
+KPI_LOGIC_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+COMMAND_CENTER_CHANGED=NO
+TRANSACTIONS_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=
+VIEWPORT=1920x1080
+SCREENSHOT_01_URL=
+SCREENSHOT_02_URL=
+SCREENSHOT_03_URL=
+SCREENSHOT_04_URL=
+DRIVE_UPLOAD=
+DRIVE_SCREENSHOT_01_URL=
+DRIVE_SCREENSHOT_02_URL=
+DRIVE_SCREENSHOT_03_URL=
+DRIVE_SCREENSHOT_04_URL=
+DRIVE_UPLOAD_REASON=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
