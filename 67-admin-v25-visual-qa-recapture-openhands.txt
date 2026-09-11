@@ -1,0 +1,109 @@
+==================================================
+VERSION: V25-QA1
+MODULE: ADMIN DASHBOARD
+ELEMENT: LIVE OPERATIONS — VISUAL QA RECAPTURE ONLY
+BASE: V25
+TARGET: V25 (NO CODE CHANGE)
+==================================================
+
+Work on the deployed project only:
+/67
+
+PURPOSE
+The previous V25 screenshots did NOT show the Live Operations card content fully. The card was only partially visible at the bottom edge of the viewport, so visual approval is impossible.
+
+THIS STEP IS QA ONLY.
+DO NOT EDIT SOURCE FILES.
+DO NOT CHANGE CSS/JSX.
+DO NOT BUILD UNLESS THE PAGE cannot be loaded otherwise.
+DO NOT COMMIT OR PUSH developer-hub-67.
+
+REQUIRED QA
+1. Open /admin authenticated.
+2. Use viewport exactly 1920x1080.
+3. Scroll vertically until the entire second command row is fully visible.
+4. The FULL Live Operations card must be visible from its top border through its bottom border.
+5. Make sure these are visibly reviewable:
+   - header + count badge
+   - all visible event rows
+   - payment and registration icon treatments
+   - timestamps
+   - compact status chips / summary if rendered
+   - CTA “عرض جميع الأنشطة”
+   - bottom edge of the card
+6. Also capture both Live Operations and Current Operations side-by-side so their height/alignment/boundary can be reviewed.
+7. Do not click any CTA and do not mutate dashboard data.
+
+SCREENSHOTS
+Use one RUNSTAMP in YYYYMMDD-HHMMSS format.
+Capture exactly:
+
+1. 67__ADMIN__V25-QA1__LIVE-OPERATIONS__01__LIVE-CARD-FULL__1920x1080__<RUNSTAMP>.png
+   - Frame the Live Operations card as large as possible while keeping the FULL card visible.
+
+2. 67__ADMIN__V25-QA1__LIVE-OPERATIONS__02__ROW2-FULL__1920x1080__<RUNSTAMP>.png
+   - Full second row with Live Operations + Current Operations visible top-to-bottom.
+
+3. 67__ADMIN__V25-QA1__LIVE-OPERATIONS__03__LIVE-DETAILS__1920x1080__<RUNSTAMP>.png
+   - Closer view of the Live Operations event list + CTA + lower status chips, with no cropping.
+
+4. 67__ADMIN__V25-QA1__LIVE-OPERATIONS__04__REVENUE-ROW2-BOUNDARY__1920x1080__<RUNSTAMP>.png
+   - Revenue bottom edge + complete second row, proving spacing and alignment.
+
+INVALID QA CONDITIONS
+VISUAL_QA must be FAIL if ANY of these are true:
+- Live Operations bottom border is outside viewport.
+- CTA is not visible.
+- Event rows are cropped.
+- Only the card header is visible.
+- Current Operations boundary cannot be compared.
+- Screenshot is taken from the same top-of-page framing as previous failed QA.
+
+GOOGLE DRIVE
+Use the installed helper:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Upload all 4 screenshots directly to My Drive root.
+DO NOT create folders.
+Preserve exact filenames.
+Return Drive file IDs and links/names.
+
+Also push the same QA screenshots to:
+repo: mohamedamouseo-a11y/67-patchs
+path: qa/v25-live-operations-qa1/
+
+SOURCE PROJECT
+SOURCE_PROJECT_PUSHED=NO
+No source changes are allowed in this QA-only step.
+
+RETURN EXACT STATUS
+PHASE=V25-QA1
+ELEMENT=LIVE_OPERATIONS_VISUAL_RECAPTURE
+SOURCE_CHANGED=NO
+VIEWPORT=1920x1080
+LIVE_CARD_FULLY_VISIBLE=
+LIVE_BOTTOM_EDGE_VISIBLE=
+LIVE_CTA_VISIBLE=
+LIVE_EVENT_ROWS_UNCROPPED=
+ROW2_BOTH_CARDS_FULLY_VISIBLE=
+VISUAL_QA=
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_REPO_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
