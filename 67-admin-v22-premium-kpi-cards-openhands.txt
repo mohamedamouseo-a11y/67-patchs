@@ -1,0 +1,197 @@
+==================================================
+VERSION: V22
+MODULE: ADMIN DASHBOARD
+ELEMENT: KPI CARDS
+BASE: V21.1
+TARGET: V22
+SOURCE_MAIN: 28639f50525359eacd4bd1ed772c30b88de552d1
+==================================================
+
+Work only on the live project:
+
+/67
+
+This is an incremental V22 patch on top of the approved V21.1 state.
+
+SCOPE LOCK:
+KPI CARDS ONLY.
+
+Do not redesign any other element in this phase.
+
+CURRENT APPROVED BASE:
+- AdminDashboard.jsx imports ./AdminDashboard.v21.1.css
+- V21.1 favicon correction is approved
+- Hero is approved for this phase
+- V20.2 Date Filter behavior is approved and locked
+- Source main baseline: 28639f50525359eacd4bd1ed772c30b88de552d1
+
+PATCH URL:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v22-premium-kpi-cards-apply.sh
+
+EXECUTION:
+
+cd /67
+
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v22-premium-kpi-cards-apply.sh \
+-o /tmp/67-admin-v22-premium-kpi-cards-apply.sh
+
+chmod +x /tmp/67-admin-v22-premium-kpi-cards-apply.sh
+
+bash /tmp/67-admin-v22-premium-kpi-cards-apply.sh
+
+If the patch reports UNSUPPORTED_RUNTIME_STATE:
+STOP.
+Do not guess.
+Do not rerun old patches.
+Return current AdminDashboard CSS imports.
+
+==================================================
+DESIGN TARGET — KPI CARDS ONLY
+==================================================
+
+The four overview KPI cards are:
+1. إجمالي المبيعات
+2. عمليات دفع ناجحة
+3. التجار النشطون
+4. العملاء المسجلون
+
+Upgrade ONLY these four cards into a premium executive KPI strip.
+
+Target visual language:
+- premium Saudi executive dashboard
+- refined ivory / warm neutral material
+- subtle gold / semantic accenting
+- stronger information hierarchy
+- more breathing room
+- more confident numeric scale
+- premium icon containers
+- clean micro-trend visualization
+- restrained depth and shadows
+- elegant border treatment
+- no cheap gradients
+- no oversized effects
+- no colorful SaaS-card look
+
+The cards should visually feel like part of the same premium system as the approved Hero, but they must remain light and highly readable.
+
+USE EXISTING MARKUP.
+The existing five-span .kpi-microbar must become visible as a restrained micro-trend visualization.
+
+DO NOT change:
+- KPI values
+- calculations
+- analytics date range logic
+- JSX data bindings
+- labels/text
+- Hero
+- favicon
+- page title
+- Date Filter
+- System Health
+- Revenue chart
+- Live Operations
+- Operations card
+- Transactions
+- Sidebar
+- GitHub Module
+- backend
+- APIs
+- authentication
+- routing
+- data
+
+Do not add fake KPI data.
+Do not hardcode new KPI values.
+
+==================================================
+VISUAL QA
+==================================================
+
+Viewport:
+1920x1080
+
+Open:
+/admin
+
+Do not modify any live data.
+
+Capture and push QA screenshots to:
+qa/v22-kpi-cards/
+
+Required screenshots:
+1. 01-v22-overview.png — full visible overview composition
+2. 02-v22-kpi-closeup.png — close-up of all four KPI cards
+3. 03-v22-kpi-hero-context.png — Hero + KPI strip together
+4. 04-v22-kpi-system-context.png — KPI strip + System Health together
+
+Verify visually:
+- all 4 cards have equal height and alignment
+- numbers are the dominant hierarchy
+- labels are readable
+- icons are premium and consistent
+- micro-trends are visible but restrained
+- no clipped text
+- no overlap
+- no overflow
+- no broken RTL alignment
+- Hero is unchanged
+- System Health is unchanged
+- Date Filter is unchanged
+- KPI values are unchanged
+
+If authentication blocks QA:
+VISUAL_QA=AUTH_BLOCKED
+Do not bypass authentication.
+
+==================================================
+BUILD + VERIFY
+==================================================
+
+Run:
+npm run build
+
+Build must PASS.
+
+Verify:
+- AdminDashboard.jsx imports AdminDashboard.v22.css
+- AdminDashboard.v22.css exists
+- marker exists: SIX SEVEN ADMIN V22 — PREMIUM KPI CARDS
+- no source project push
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=
+TARGET_VERSION=
+RUNTIME_CSS=
+ELEMENT=
+KPI_LAYOUT_PREMIUM=
+KPI_HIERARCHY_UPGRADED=
+KPI_MICROTREND_VISIBLE=
+KPI_VALUES_CHANGED=
+KPI_LOGIC_CHANGED=
+HERO_CHANGED=
+DATE_CONTROL_CHANGED=
+SYSTEM_HEALTH_CHANGED=
+COMMAND_CENTER_CHANGED=
+TRANSACTIONS_CHANGED=
+SIDEBAR_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_QA=
+VIEWPORT=
+SCREENSHOT_01_URL=
+SCREENSHOT_02_URL=
+SCREENSHOT_03_URL=
+SCREENSHOT_04_URL=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
