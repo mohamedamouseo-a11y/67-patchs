@@ -1,0 +1,171 @@
+==================================================
+VERSION: V25
+MODULE: ADMIN DASHBOARD
+ELEMENT: LIVE OPERATIONS
+BASE: V24.1
+TARGET: V25
+==================================================
+
+Work only on:
+/67
+
+PURPOSE
+Translate the already-approved V25 visual preview into the live Admin Dashboard.
+
+SCOPE LOCK
+ONLY redesign the `العمليات المباشرة` / Live Operations card.
+Do NOT redesign or reposition any other module.
+
+APPROVED VISUAL DIRECTION
+The card must read as a Premium Live Activity Console consistent with the approved ivory/gold dashboard language:
+- compact executive header with Bell icon + title + clear notification count badge,
+- activity rows styled like a premium timeline/feed,
+- payment events use subtle green emphasis,
+- registration/user events use warm gold emphasis,
+- text hierarchy: event text primary, relative time secondary,
+- event icons in distinct compact premium containers,
+- no clipping with up to 5 visible event rows,
+- pending/review and quick-health indicators remain present but become compact secondary status chips,
+- full-width premium CTA at the bottom remains clickable and must preserve its existing action,
+- card stays aligned 50/50 beside Current Operations in row 2 created by V24.1.
+
+FUNCTIONAL LOCKS
+- Do NOT change `liveNotifications` data.
+- Do NOT change event ordering or slicing.
+- Do NOT change localStorage behavior.
+- Do NOT change payment/registration classification.
+- Do NOT change `setActiveTab('notifications')` CTA behavior.
+- Do NOT change pending document/store counts.
+- Do NOT invent new data.
+
+LOCKED MODULES — ZERO VISUAL OR FUNCTIONAL CHANGES
+- Revenue & Performance V24.1
+- Current Operations
+- Hero
+- Date Filter
+- KPI V22.2
+- System Health V23
+- Session/Auth V22.3
+- Transactions
+- Sidebar
+- backend/auth APIs
+- business data
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v25-premium-live-operations-apply.sh
+
+EXECUTE
+cd /67
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v25-premium-live-operations-apply.sh \
+-o /tmp/67-admin-v25-premium-live-operations-apply.sh
+chmod +x /tmp/67-admin-v25-premium-live-operations-apply.sh
+bash /tmp/67-admin-v25-premium-live-operations-apply.sh
+
+Patch must return BUILD=PASS before QA.
+
+==================================================
+VISUAL QA — REQUIRED
+==================================================
+
+Use the existing authenticated browser session.
+Do not edit business data.
+Viewport: 1920x1080.
+
+Review visually, not only by DOM/CSS checks.
+
+PASS CONDITIONS
+- Live Operations card visually matches the approved premium activity-console direction.
+- Header, badge, rows, status chips and CTA are fully visible.
+- No clipped event text caused by container geometry; long event text may ellipsize deliberately on one line.
+- No vertical overflow outside the card.
+- Current Operations card beside it remains unchanged.
+- Revenue V24.1 above remains unchanged.
+- Row-2 composition is balanced 50/50.
+- No Hero/KPI/System Health/Transactions/Sidebar regression.
+
+If these conditions are not met, return VISUAL_QA=FAIL and do NOT recommend source push.
+
+Use one RUNSTAMP in YYYYMMDD-HHMMSS format.
+Required screenshots:
+1. 67__ADMIN__V25__LIVE-OPERATIONS__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V25__LIVE-OPERATIONS__02__LIVE-CLOSEUP__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V25__LIVE-OPERATIONS__03__ROW2-BOUNDARY__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V25__LIVE-OPERATIONS__04__FULL-COMPOSITION__1920x1080__<RUNSTAMP>.png
+
+==================================================
+GOOGLE DRIVE QA HANDOFF
+==================================================
+
+Use the installed helper:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Upload all four PNG screenshots directly to My Drive root.
+Do NOT create folders.
+Preserve exact filenames.
+Return file IDs and links.
+Do not expose OAuth credentials/tokens.
+
+Also push the same four QA screenshots to:
+repo: mohamedamouseo-a11y/67-patchs
+path: qa/v25-live-operations/
+
+Do NOT push developer-hub-67 source code.
+The user will source-push manually after visual approval.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=V24.1
+TARGET_VERSION=V25
+RUNTIME_CSS=AdminDashboard.v25.css
+ELEMENT=LIVE_OPERATIONS_ONLY
+APPROVED_CONCEPT_TRANSLATED=
+LIVE_OPERATIONS_PREMIUM=
+LIVE_EVENT_ROWS_RESTYLED=
+LIVE_NOTIFICATION_DATA_CHANGED=NO
+LIVE_NOTIFICATION_LOGIC_CHANGED=NO
+LIVE_CTA_BEHAVIOR_CHANGED=NO
+REVENUE_V24_1_PRESERVED=
+CURRENT_OPERATIONS_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+TRANSACTIONS_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
