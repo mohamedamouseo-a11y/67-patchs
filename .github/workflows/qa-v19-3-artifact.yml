@@ -1,0 +1,29 @@
+name: QA V19.3 Artifact
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package fresh QA screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: v19.3-fresh-screenshots
+          path: |
+            qa/v19.3-fresh/01-overview-current.png
+            qa/v19.3-fresh/02-date-control-closed.png
+            qa/v19.3-fresh/03-date-control-open.png
+            qa/v19.3-fresh/04-date-control-open-closeup.png
+            qa/v19.3-fresh/05-from-field-focused.png
+            qa/v19.3-fresh/06-to-field-focused.png
+            qa/v19.3-fresh/07-hero-date-composition.png
+            qa/v19.3-fresh/08-final-overview.png
+          if-no-files-found: error
+          retention-days: 1
