@@ -1,0 +1,101 @@
+==================================================
+VERSION: V21
+MODULE: ADMIN DASHBOARD
+ELEMENT: FAVICON + HERO
+BASE: V20.2
+TARGET: V21
+SOURCE_MAIN: e13beeb2464627c210845aaa337baf35a2a4a913
+==================================================
+
+Work on the live project at:
+/67
+
+This is an incremental V21 patch on top of the already-approved V20.2 state.
+DO NOT re-run V5/V6/V17/V18/V19/V20/V20.1/V20.2 patches.
+DO NOT redesign the page from scratch.
+DO NOT change backend, auth, APIs, routes, data, KPI logic, date-range behavior, GitHub Module behavior, or any non-visual business logic.
+DO NOT commit or push the source project. The user will push manually from the GitHub Module after review.
+
+Current expected runtime state before applying:
+- src/pages/AdminDashboard.jsx imports ./AdminDashboard.v20.2.css
+- src/pages/AdminDashboard.v20.2.css exists and contains:
+  SIX SEVEN ADMIN V20.2 — DATE FILTER FINAL COMPOSITION
+- index.html still uses the Vite favicon or has not yet been wired to /67-favicon.svg
+
+Patch/apply script:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v21-favicon-hero-upgrade-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download the V21 apply script to /tmp/67-admin-v21-favicon-hero-upgrade-apply.sh
+3. chmod +x it
+4. Run it exactly once.
+5. Do not manually reproduce CSS unless the script itself reports an error.
+6. If it reports UNSUPPORTED_RUNTIME_STATE, STOP and return the detected CSS imports/favicon lines. Do not guess and do not apply old patches.
+7. If build passes, verify the generated dist contains /67-favicon.svg and the Admin Dashboard title string.
+
+V21 VISUAL INTENT
+- Browser tab must use a real branded 67 favicon instead of /vite.svg.
+- Admin route title must be: 67 | لوحة الإدارة
+- Closed hero must be materially taller and more premium than V20.2 (desktop target: 310px).
+- Preserve the approved cinematic Saudi automotive hero image.
+- Strengthen hierarchy: larger main headline, more breathing room, richer dark/gold composition.
+- Add a restrained official SIX SEVEN logo plate inside the hero using the existing official logo asset.
+- Preserve the V20.2 date command lane and all date interactions exactly.
+- Open custom-date state must remain functional and must not overlap the KPI row.
+- No neon redesign, no unrelated cards, no backend work.
+
+VISUAL QA (only if browser/session access is available)
+Viewport: 1920x1080
+- Open /admin and the Overview tab.
+- Do not edit any data.
+- Do not click Save/Update/Delete/Assign or any business action.
+- Capture/check:
+  1) full Overview with date control closed,
+  2) hero close-up,
+  3) custom date control open to confirm V20.2 behavior is preserved,
+  4) full composition showing clear Hero → KPI spacing.
+- If authentication blocks visual QA, report VISUAL_QA=AUTH_BLOCKED. Do not bypass auth.
+
+SUCCESS OUTPUT — return exactly these status keys with real values:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=
+TARGET_VERSION=
+RUNTIME_CSS=
+FAVICON_WIRED=
+ADMIN_PAGE_TITLE=
+CLOSED_HERO_HEIGHT=
+OFFICIAL_LOGO_HERO_PLATE=
+HERO_COMPOSITION_UPGRADED=
+DATE_CONTROL_V20_2_PRESERVED=
+DATE_FUNCTIONALITY_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+SERVICE_RESTART=
+VISUAL_QA=
+VIEWPORT=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+Expected successful core values:
+PATCH_APPLIED=YES
+BUILD=PASS
+BASE_VERSION=V20.2
+TARGET_VERSION=V21
+RUNTIME_CSS=AdminDashboard.v21.css
+FAVICON_WIRED=YES
+ADMIN_PAGE_TITLE=67 | لوحة الإدارة
+OFFICIAL_LOGO_HERO_PLATE=YES
+HERO_COMPOSITION_UPGRADED=YES
+DATE_CONTROL_V20_2_PRESERVED=YES
+DATE_FUNCTIONALITY_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=NONE
+ERROR=NONE
