@@ -1,0 +1,124 @@
+==================================================
+VERSION: V22.2
+MODULE: ADMIN DASHBOARD
+ELEMENT: KPI CARDS — PREMIUM PROPORTION POLISH
+BASE: V22.1
+TARGET: V22.2
+==================================================
+
+Work only on:
+
+/67
+
+This is a visual refinement patch on top of V22.1.
+
+SCOPE LOCK:
+KPI CARDS ONLY.
+
+DO NOT TOUCH:
+- Hero
+- favicon
+- page title
+- Date Filter
+- System Health
+- revenue/chart area
+- live activity
+- operations cards
+- transactions table
+- sidebar
+- backend
+- auth
+- API
+- KPI values or KPI calculations
+
+VISUAL ISSUE CONFIRMED FROM REAL 1920x1080 SCREENSHOT:
+V22.1 fixed the clipping, but the KPI cards are still too vertically stretched and contain too much dead space. They need a tighter premium executive proportion without reintroducing clipping.
+
+PATCH URL:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v22.2-kpi-premium-proportion-polish-apply.sh
+
+EXECUTE:
+
+cd /67
+curl -L https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v22.2-kpi-premium-proportion-polish-apply.sh -o /tmp/67-admin-v22.2-kpi-premium-proportion-polish-apply.sh
+chmod +x /tmp/67-admin-v22.2-kpi-premium-proportion-polish-apply.sh
+bash /tmp/67-admin-v22.2-kpi-premium-proportion-polish-apply.sh
+
+If UNSUPPORTED_RUNTIME_STATE:
+STOP and report current AdminDashboard CSS imports.
+Do not rerun older patches.
+
+==================================================
+VISUAL QA — MANDATORY
+==================================================
+
+Viewport: 1920x1080
+Route: /admin
+
+Take screenshots:
+1. qa/v22.2-kpi-proportion/01-v22.2-full.png
+2. qa/v22.2-kpi-proportion/02-v22.2-kpi-closeup.png
+3. qa/v22.2-kpi-proportion/03-v22.2-kpi-health-boundary.png
+4. qa/v22.2-kpi-proportion/04-v22.2-composition.png
+
+QA REQUIREMENTS — CHECK THE IMAGE, NOT ONLY DOM/CSS:
+- all four cards fully visible
+- no clipping at bottom
+- note line fully visible
+- all five micro-trend bars fully visible
+- no text touches card borders
+- cards feel tighter than V22.1, not stretched
+- value remains dominant
+- label, value and note have clear visual hierarchy
+- consistent vertical rhythm across all four cards
+- visible clean gap between KPI strip and System Health
+- no overlaps
+- Hero unchanged
+- Date Filter unchanged
+- System Health unchanged
+
+If ANY KPI bottom content is cut, hidden, touching the border, or visually cramped:
+VISUAL_QA=FAIL
+Do not report DONE.
+
+Push ONLY the QA screenshots to 67-patchs main.
+Do NOT push the source project.
+
+Google Drive upload is not required in this run because the prior environment explicitly reported no Drive CLI/API credentials. Do not invent Drive links.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=
+TARGET_VERSION=
+RUNTIME_CSS=
+ELEMENT=KPI_CARDS_ONLY
+KPI_CLIPPING_PRESENT=
+KPI_DESKTOP_HEIGHT=
+KPI_PROPORTION_POLISHED=
+KPI_VALUES_CHANGED=
+KPI_LOGIC_CHANGED=
+HERO_CHANGED=
+DATE_CONTROL_CHANGED=
+SYSTEM_HEALTH_CHANGED=
+COMMAND_CENTER_CHANGED=
+TRANSACTIONS_CHANGED=
+SIDEBAR_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_QA=
+VIEWPORT=
+SCREENSHOT_01_URL=
+SCREENSHOT_02_URL=
+SCREENSHOT_03_URL=
+SCREENSHOT_04_URL=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
