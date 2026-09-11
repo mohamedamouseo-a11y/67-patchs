@@ -1,0 +1,178 @@
+==================================================
+VERSION: V24
+MODULE: ADMIN DASHBOARD
+ELEMENT: REVENUE & PERFORMANCE
+BASE: V23
+TARGET: V24
+==================================================
+
+Work on the live project only:
+
+/67
+
+IMPORTANT
+This phase is based on the USER-APPROVED revenue/performance concept prepared from the latest V23 screenshots.
+Implement that concept ONLY inside the Revenue & Performance card.
+Do not redesign any other dashboard element.
+
+APPROVED VISUAL DIRECTION
+Translate the approved concept into the existing SIX SEVEN live dashboard identity:
+- premium ivory / warm gold analytics card,
+- stronger executive title/header,
+- four compact summary tiles,
+- existing SVG trend chart retained and visually upgraded,
+- right-side circular summary visual inside the same Revenue card,
+- stronger hierarchy and cleaner analytics spacing,
+- polished border / depth / subtle luxury materiality,
+- no fake business values.
+
+DATA / LOGIC LOCK
+The V24 summary must use ONLY existing calculated values already present in AdminDashboard.jsx:
+- analyticsSales
+- periodPlatformRevenue
+- analyticsPaymentCount
+- trendDelta
+- trendSeries
+- rangeSummaryLabel
+
+DO NOT invent new revenue categories, percentages, transactions, payment methods, or business metrics.
+The circular visual is a premium summary treatment, NOT a new data source.
+Do not change trendSeries generation, date calculations, KPI calculations, or transaction logic.
+
+SCOPE LOCK — DO NOT TOUCH
+- Hero
+- V20.2 Date Filter
+- V22.2 KPI cards
+- V23 System Health
+- Live Operations card
+- Current Operations card
+- Transactions table
+- Sidebar
+- Login/session/auth V22.3
+- GitHub Module
+- Backend/API
+- Business data
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v24-premium-revenue-performance-apply.sh
+
+EXECUTE
+cd /67
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v24-premium-revenue-performance-apply.sh \
+-o /tmp/67-admin-v24-premium-revenue-performance-apply.sh
+chmod +x /tmp/67-admin-v24-premium-revenue-performance-apply.sh
+bash /tmp/67-admin-v24-premium-revenue-performance-apply.sh
+
+The patch must return BUILD=PASS before QA.
+
+==================================================
+VISUAL QA — REQUIRED
+==================================================
+
+Use 1920x1080.
+Do not mutate business data manually.
+Do not click destructive or edit actions.
+Use one RUNSTAMP in YYYYMMDD-HHMMSS format.
+
+Capture exactly these screenshots:
+
+1. 67__ADMIN__V24__REVENUE-PERFORMANCE__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+   - full dashboard composition.
+
+2. 67__ADMIN__V24__REVENUE-PERFORMANCE__02__REVENUE-CLOSEUP__1920x1080__<RUNSTAMP>.png
+   - tightly frame the Revenue & Performance card so header, four summary tiles, chart, callout, circular summary, and card edges are clearly reviewable.
+
+3. 67__ADMIN__V24__REVENUE-PERFORMANCE__03__HEALTH-REVENUE-BOUNDARY__1920x1080__<RUNSTAMP>.png
+   - show V23 System Health directly above V24 Revenue card; confirm spacing and alignment are clean and neither element changed unexpectedly.
+
+4. 67__ADMIN__V24__REVENUE-PERFORMANCE__04__COMMAND-COMPOSITION__1920x1080__<RUNSTAMP>.png
+   - show Revenue together with Live Operations and Current Operations siblings; confirm only Revenue was redesigned and the grid remains aligned.
+
+VISUAL FAIL CONDITIONS
+Set VISUAL_QA=FAIL if ANY of the following occurs:
+- any text/value clipped,
+- chart labels/callout clipped,
+- circular summary touches/collides with chart,
+- card exceeds its intended grid area,
+- Revenue card height breaks sibling alignment,
+- KPI or System Health changed visually,
+- Live Operations or Current Operations changed visually,
+- any invented business value appears,
+- responsive overflow is visible at 1920x1080.
+
+==================================================
+GOOGLE DRIVE — REQUIRED
+==================================================
+
+Use the installed helper:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Upload all four PNG screenshots directly to My Drive root.
+Do NOT create a folder.
+Preserve the exact filenames.
+After upload, return every Drive file ID and link.
+
+Also push the same screenshots to:
+mohamedamouseo-a11y/67-patchs
+qa/v24-revenue-performance/
+
+Do NOT push developer-hub-67 source code.
+The user will push source manually after visual approval.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=V23
+TARGET_VERSION=V24
+RUNTIME_CSS=AdminDashboard.v24.css
+ELEMENT=REVENUE_PERFORMANCE_ONLY
+APPROVED_CONCEPT_TRANSLATED=
+REVENUE_HEADER_PREMIUM=
+REVENUE_SUMMARY_TILES=
+REVENUE_CHART_LOGIC_CHANGED=NO
+REVENUE_VALUES_CHANGED=NO
+REVENUE_RING=SUMMARY_VISUAL
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+TRANSACTIONS_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
