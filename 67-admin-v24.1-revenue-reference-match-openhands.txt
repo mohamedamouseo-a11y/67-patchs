@@ -1,0 +1,163 @@
+==================================================
+VERSION: V24.1
+MODULE: ADMIN DASHBOARD
+ELEMENT: REVENUE & PERFORMANCE — REFERENCE MATCH CORRECTION
+BASE: V24
+TARGET: V24.1
+==================================================
+
+Work only on:
+/67
+
+PURPOSE
+Correct V24 to match the already-approved Revenue & Performance design shown before implementation.
+
+V24 visual QA failed because the Revenue card remained compressed into the left third of the command row while Live Operations and Current Operations still occupied the same row.
+
+V24.1 MUST make Revenue & Performance the dominant full-width first row.
+
+APPROVED COMPOSITION REQUIREMENTS
+- Revenue & Performance spans the FULL FIRST ROW of .admin-command-grid.
+- The chart is the dominant visual: approximately 75% of the revenue visual row.
+- The donut/summary sidecar is approximately 25% and must look deliberate, not cramped.
+- The four revenue summary tiles must be materially larger and easy to read.
+- Header hierarchy must be stronger and match the approved premium analytics concept.
+- Live Operations and Current Operations must keep their exact content and functionality, but move to a second row below Revenue, 50/50.
+- Do NOT restyle or alter the logic/content of Live Operations or Current Operations in this phase.
+- No clipping anywhere in Revenue card.
+- Do not hide/remove Live Operations or Current Operations.
+
+LOCKED ELEMENTS — DO NOT CHANGE
+- Hero
+- Date Filter
+- KPI V22.2
+- System Health V23
+- Session/Auth V22.3
+- Transactions
+- Sidebar
+- backend/auth APIs
+- business data
+- revenue values/calculations
+- trend-series/chart data logic
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v24.1-revenue-reference-match-apply.sh
+
+EXECUTE
+cd /67
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v24.1-revenue-reference-match-apply.sh \
+-o /tmp/67-admin-v24.1-revenue-reference-match-apply.sh
+chmod +x /tmp/67-admin-v24.1-revenue-reference-match-apply.sh
+bash /tmp/67-admin-v24.1-revenue-reference-match-apply.sh
+
+Required patch result:
+PATCH_APPLIED=YES
+BUILD=PASS
+RUNTIME_CSS=AdminDashboard.v24.1.css
+
+==================================================
+VISUAL QA — REQUIRED, 1920x1080
+==================================================
+
+Open the live /admin page in the authenticated QA browser.
+Hard refresh after build.
+
+Visually verify ALL of the following before declaring PASS:
+1. Revenue & Performance occupies the full first row below System Health.
+2. Revenue is clearly the visual focal point of the command area.
+3. Four summary tiles are fully visible, readable, and not compressed.
+4. Chart receives approximately 75% of the visual-row width.
+5. Donut/summary sidecar receives approximately 25%, is large enough to read, and is not clipped.
+6. Revenue header is visually stronger than V24 and aligned cleanly.
+7. No clipping in header, summary tiles, chart, labels, donut, callout, or sidecar copy.
+8. Live Operations and Current Operations appear below Revenue in row 2, 50/50.
+9. Their content/functionality is unchanged.
+10. KPI/System Health/Transactions remain visually unchanged from their locked versions.
+
+If ANY criterion fails:
+VISUAL_QA=FAIL
+Do not claim approval.
+
+Capture exactly these screenshots using ONE RUNSTAMP in YYYYMMDD-HHMMSS:
+1. 67__ADMIN__V24-1__REVENUE-REFERENCE__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V24-1__REVENUE-REFERENCE__02__REVENUE-CLOSEUP__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V24-1__REVENUE-REFERENCE__03__REVENUE-ROW2-BOUNDARY__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V24-1__REVENUE-REFERENCE__04__FULL-COMPOSITION__1920x1080__<RUNSTAMP>.png
+
+==================================================
+GOOGLE DRIVE QA UPLOAD — REQUIRED
+==================================================
+
+Use the installed helper:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Upload the four screenshots directly to MY DRIVE ROOT.
+DO NOT create folders.
+Preserve the exact filenames.
+Return Drive file names, IDs, and links.
+
+Also push the same four screenshots to:
+repo: mohamedamouseo-a11y/67-patchs
+path: qa/v24.1-revenue-reference/
+
+Do NOT push developer-hub-67 source code.
+The user will push source manually only after visual approval.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=V24
+TARGET_VERSION=V24.1
+RUNTIME_CSS=AdminDashboard.v24.1.css
+ELEMENT=REVENUE_PERFORMANCE_REFERENCE_MATCH
+REVENUE_FULL_WIDTH_ROW=
+REVENUE_CHART_SHARE=75_PERCENT_APPROX
+REVENUE_RING_SHARE=25_PERCENT_APPROX
+REVENUE_SUMMARY_TILES=4
+LIVE_OPERATIONS_CONTENT_CHANGED=NO
+CURRENT_OPERATIONS_CONTENT_CHANGED=NO
+LIVE_AND_CURRENT_OPERATIONS_MOVED_TO_ROW_2=
+REVENUE_CHART_LOGIC_CHANGED=NO
+REVENUE_VALUES_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+TRANSACTIONS_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
