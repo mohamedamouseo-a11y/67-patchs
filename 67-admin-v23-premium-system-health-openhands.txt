@@ -1,0 +1,198 @@
+==================================================
+VERSION: V23
+MODULE: ADMIN DASHBOARD
+ELEMENT: SYSTEM HEALTH
+BASE: V22.3
+TARGET: V23
+==================================================
+
+Work on the live project only:
+
+/67
+
+PURPOSE
+Upgrade ONLY the System Health strip into a premium executive infrastructure command panel.
+This is a visual-only micro-step.
+
+LOCKED BASELINE — MUST PRESERVE
+- V22.2 KPI Cards exactly as approved.
+- V22.3 Superadmin multi-session persistence exactly as approved.
+- Hero and Date Filter unchanged.
+- Revenue/Command Center unchanged.
+- Live Operations unchanged.
+- Transactions unchanged.
+- Sidebar unchanged.
+- No business data changes.
+- No backend/auth/API changes in V23.
+
+CURRENT SYSTEM HEALTH CONTENT TO PRESERVE
+- Title: صحة النظام واستقرار المنصة
+- Subtitle: مراقبة حية للبنية التحتية
+- Stable status / live indicator
+- حمولة الخادم
+- زمن الاستجابة
+- الأخطاء وفاقد الإيراد
+- استقرار المنصة
+- Existing values and logic must remain exactly the same.
+- Existing automotive image asset must remain the source visual.
+
+DESIGN TARGET
+Turn the current thin dark strip into a premium Infrastructure Command Panel:
+- stronger executive hierarchy,
+- premium dark graphite/navy materiality,
+- subtle gold + green operational accents,
+- four metric cells with stronger values and progress bars,
+- refined live-status block,
+- automotive scene balanced on the physical right,
+- no excessive height,
+- no clipping,
+- no overlap,
+- no fake/new data.
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v23-premium-system-health-apply.sh
+
+EXECUTE
+cd /67
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v23-premium-system-health-apply.sh \
+-o /tmp/67-admin-v23-premium-system-health-apply.sh
+chmod +x /tmp/67-admin-v23-premium-system-health-apply.sh
+bash /tmp/67-admin-v23-premium-system-health-apply.sh
+
+Required before QA:
+PATCH_APPLIED=YES
+BUILD=PASS
+RUNTIME_CSS=AdminDashboard.v23.css
+ELEMENT=SYSTEM_HEALTH_ONLY
+
+This is frontend-only. Do NOT restart the Node service unless the live deployment architecture explicitly requires it for static frontend delivery; if not required, keep SERVICE_RESTART=SKIPPED_FRONTEND_ONLY.
+
+==================================================
+VISUAL QA — REQUIRED, DO NOT SELF-APPROVE FROM STATUS
+==================================================
+
+Viewport: 1920x1080.
+Open the live /admin dashboard in an authenticated session.
+Do not mutate any business data.
+
+Visually inspect ALL of the following before reporting PASS:
+1. The whole System Health panel is fully visible.
+2. No text, badge, number, progress bar or image is clipped.
+3. The left status/title block is clearly readable and not cramped.
+4. All four metric cells are equal-height and aligned.
+5. Metric values are visually dominant over labels/support text.
+6. The progress bars are visible and stay inside their cells.
+7. The automotive visual does not crush the metric area.
+8. The premium panel does not collide with the KPI Cards above.
+9. The premium panel does not collide with the Command Center cards below.
+10. V22.2 KPI visual proportions remain unchanged.
+11. Hero / Date Filter remain unchanged.
+12. No login screen appears during refresh; V22.3 session persistence must remain intact.
+
+If ANY clipping/overlap/layout defect is visible, return VISUAL_QA=FAIL and do not describe V23 as approved.
+
+==================================================
+SCREENSHOTS — DISTINCTIVE NAMES
+==================================================
+
+Use one RUNSTAMP in YYYYMMDD-HHMMSS format.
+Capture these PNG files:
+
+1. 67__ADMIN__V23__SYSTEM-HEALTH__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V23__SYSTEM-HEALTH__02__HEALTH-CLOSEUP__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V23__SYSTEM-HEALTH__03__KPI-HEALTH-BOUNDARY__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V23__SYSTEM-HEALTH__04__HEALTH-COMPOSITION__1920x1080__<RUNSTAMP>.png
+
+The close-up MUST be large enough to judge typography, status badge, all four metric cells, progress bars, and automotive scene.
+
+==================================================
+GOOGLE DRIVE — REQUIRED USING INSTALLED V22.4 HELPER
+==================================================
+
+Do NOT create a folder.
+Upload the four PNGs directly to My Drive root using the already installed helper:
+
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Example invocation:
+node /home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs \
+  <screenshot1.png> \
+  <screenshot2.png> \
+  <screenshot3.png> \
+  <screenshot4.png>
+
+Requirements:
+- DRIVE_UPLOAD=OK
+- DRIVE_UPLOAD_COUNT=4
+- DRIVE_DESTINATION=MY_DRIVE_ROOT
+- Return exact DRIVE_FILE_01..04_NAME / ID / LINK output.
+- Do not expose OAuth credentials or token contents.
+- Do not create Drive folders.
+
+Also push the same four screenshots as fallback QA evidence to:
+repo: mohamedamouseo-a11y/67-patchs
+path: qa/v23-system-health/
+
+Do NOT push developer-hub-67 source code.
+
+==================================================
+SOURCE PUSH
+==================================================
+
+SOURCE_PROJECT_PUSHED=NO
+The user will manually push the source from the 67 GitHub Module after visual approval.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=V22.3
+TARGET_VERSION=V23
+RUNTIME_CSS=AdminDashboard.v23.css
+ELEMENT=SYSTEM_HEALTH_ONLY
+SYSTEM_HEALTH_PREMIUM=
+SYSTEM_HEALTH_DESKTOP_HEIGHT=148PX
+SYSTEM_HEALTH_VALUES_CHANGED=NO
+SYSTEM_HEALTH_LOGIC_CHANGED=NO
+KPI_V22_2_PRESERVED=
+SESSION_V22_3_PRESERVED=
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+COMMAND_CENTER_CHANGED=NO
+TRANSACTIONS_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
