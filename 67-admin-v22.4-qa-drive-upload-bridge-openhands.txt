@@ -1,0 +1,164 @@
+==================================================
+VERSION: V22.4
+MODULE: QA AUTOMATION
+ELEMENT: GOOGLE DRIVE ROOT UPLOAD BRIDGE
+BASE: V22.3
+TARGET: V22.4
+==================================================
+
+This phase does NOT modify the /67 application source.
+This phase only repairs the QA screenshot handoff so future micro-steps can be reviewed from Google Drive without asking the user to manually upload screenshots.
+
+DO NOT MODIFY:
+- /67 source code
+- UI
+- auth/session implementation
+- backend
+- data
+- systemd service
+- GitHub Module
+
+PURPOSE
+The previous V22.3 QA successfully produced four screenshots but Drive upload was skipped because the gdrive MCP tool was not exposed in the current OpenHands client tool catalog.
+
+V22.4 must bypass that client catalog limitation by using the already-authorized Google OAuth credentials directly through a small Drive API bridge.
+
+BRIDGE URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-v22.4-gdrive-root-upload-bridge.mjs
+
+KNOWN AUTH PATHS
+OAuth keys:
+/home/openhands/.openhands/gdrive/gcp-oauth.keys.json
+
+Authorized token/credentials:
+/home/openhands/.openhands/gdrive/.gdrive-server-credentials.json
+
+IMPORTANT SECURITY RULES
+- Do NOT print either credential file.
+- Do NOT cat/token-dump OAuth secrets.
+- Do NOT commit credentials anywhere.
+- Do NOT create any Drive folder.
+- Destination must be My Drive root only.
+- Keep the exact screenshot filenames.
+
+==================================================
+STEP 1 — PREPARE V22.3 QA SCREENSHOTS
+==================================================
+
+Create a temporary workspace only:
+/tmp/67-v22.4-drive-bridge
+
+Download these exact public QA screenshots from GitHub RAW into that temp directory:
+
+1.
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/qa/v22.3-session-persistence/67__ADMIN__V22-3__SESSION-PERSISTENCE__01__OWNER-BEFORE__1920x1080__20260911-125254.png
+
+2.
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/qa/v22.3-session-persistence/67__ADMIN__V22-3__SESSION-PERSISTENCE__02__SECOND-SESSION-ACTIVE__1920x1080__20260911-125254.png
+
+3.
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/qa/v22.3-session-persistence/67__ADMIN__V22-3__SESSION-PERSISTENCE__03__OWNER-AFTER-REFRESH__1920x1080__20260911-125254.png
+
+4.
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/qa/v22.3-session-persistence/67__ADMIN__V22-3__SESSION-PERSISTENCE__04__FINAL-DASHBOARD__1920x1080__20260911-125254.png
+
+Verify all four files exist and are non-zero PNG files before uploading.
+
+==================================================
+STEP 2 — DOWNLOAD AND RUN THE DRIVE BRIDGE
+==================================================
+
+Download:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-v22.4-gdrive-root-upload-bridge.mjs
+
+to:
+/tmp/67-v22.4-drive-bridge/67-v22.4-gdrive-root-upload-bridge.mjs
+
+Run with Node 20+ and pass all four screenshot paths in order.
+
+The bridge:
+- reads OAuth credentials without printing them,
+- refreshes the access token when possible,
+- uploads PNGs directly to My Drive root,
+- does NOT create folders,
+- searches by exact filename after upload,
+- returns Drive IDs and view links,
+- reuses an existing exact-name root file if the same run is repeated.
+
+Expected final bridge status:
+DRIVE_UPLOAD=OK
+DRIVE_UPLOAD_COUNT=4
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+
+==================================================
+STEP 3 — INSTALL REUSABLE LOCAL QA HELPER
+==================================================
+
+ONLY after Step 2 succeeds:
+
+mkdir -p /home/openhands/.openhands/qa-tools
+cp /tmp/67-v22.4-drive-bridge/67-v22.4-gdrive-root-upload-bridge.mjs \
+   /home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+chmod 700 /home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+This local helper is for future QA screenshot uploads.
+It is NOT part of /67 and must NOT be pushed to developer-hub-67.
+
+Future phases should call:
+node /home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs <png1> <png2> ...
+
+==================================================
+STEP 4 — VERIFY BY EXACT DRIVE FILENAMES
+==================================================
+
+The bridge already performs exact-name post-upload verification.
+Return all four file IDs and links.
+
+Do NOT claim success if any one file cannot be verified after upload.
+Do NOT fall back to "MCP tool unavailable"; this phase intentionally bypasses the MCP client catalog.
+
+If Google rejects upload because the current OAuth scope is read-only, return the exact sanitized Google error reason such as insufficientPermissions / insufficient authentication scopes. Do not expose tokens.
+
+==================================================
+NO SOURCE PUSH
+==================================================
+
+Do not push developer-hub-67.
+Do not modify developer-hub-67.
+Do not create a new source commit.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PHASE=V22.4
+MODULE=QA_AUTOMATION
+ELEMENT=GOOGLE_DRIVE_ROOT_UPLOAD_BRIDGE
+APP_SOURCE_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+UI_CHANGED=NO
+SCREENSHOTS_SOURCE=V22.3_QA_REPO
+SCREENSHOTS_FOUND=
+SCREENSHOTS_VALID_PNG=
+DRIVE_BRIDGE_EXECUTED=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+REUSABLE_HELPER_INSTALLED=
+REUSABLE_HELPER_PATH=/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
