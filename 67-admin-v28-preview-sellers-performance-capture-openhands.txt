@@ -1,0 +1,110 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V28-PREVIEW
+MODULE=USERS & SELLERS LOGS
+ELEMENT=SELLERS PERFORMANCE / DETAILS
+CURRENT_APPROVED_VERSION=V27.1
+BASE_VERSION=V27.1
+TARGET_VERSION=V28
+STATUS=VISUAL DISCOVERY ONLY — NO SOURCE CHANGES
+==================================================
+
+You are working on the live 67 project at:
+/67
+
+This run is VISUAL DISCOVERY ONLY.
+
+STRICTLY FORBIDDEN:
+- Do not edit source code.
+- Do not create/modify CSS/JS/JSX.
+- Do not change backend/auth/data.
+- Do not save/update/delete/archive/approve/reject anything.
+- Do not push the source project.
+- Do not alter any seller/customer record.
+
+CURRENT LOCKED BASE:
+- V27.1 is the current approved/pushed source version.
+- Runtime must remain AdminDashboard.v27.1.css.
+- Overview elements V20.2 through V27.1 are locked and must not be touched.
+
+OBJECTIVE:
+Capture the CURRENT live visual state of the next element in sequence so ChatGPT can design V28 from the real UI before any patch is written.
+
+TARGET UI:
+Sidebar tab: "سجل العملاء والتجار"
+Primary element: "تفاصيل التجار وأداء المتاجر"
+
+PROCEDURE:
+1. Open the live admin dashboard in the existing QA browser session.
+2. Confirm viewport = 1920x1080.
+3. Navigate to sidebar tab "سجل العملاء والتجار".
+4. Do not interact with row actions or change any data.
+5. Scroll only as needed to frame the target section.
+6. Capture the target section at readable scale. Do not crop important card edges.
+7. Ensure text, badges, columns, row heights, filters/actions, and lower card boundary are visible across the screenshot set.
+
+REQUIRED SCREENSHOTS:
+1. 67__ADMIN__V28-PREVIEW__SELLERS__01__TAB-CONTEXT__1920x1080__<RUNSTAMP>.png
+   - Tab/page context with target card visible.
+
+2. 67__ADMIN__V28-PREVIEW__SELLERS__02__SELLERS-CARD-FULL__1920x1080__<RUNSTAMP>.png
+   - Entire "تفاصيل التجار وأداء المتاجر" card, top-to-bottom if possible.
+
+3. 67__ADMIN__V28-PREVIEW__SELLERS__03__HEADER-STATS-ACTIONS__1920x1080__<RUNSTAMP>.png
+   - Header/title, verified/review counts, visible controls/actions.
+
+4. 67__ADMIN__V28-PREVIEW__SELLERS__04__TABLE-ROWS-DETAIL__1920x1080__<RUNSTAMP>.png
+   - Table headers plus representative seller rows and action/status columns at readable scale.
+
+QA DESTINATIONS:
+- Upload all screenshots directly to My Drive root using:
+  /home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+- Also push the same screenshots to the QA fallback repo path:
+  qa/v28-preview-sellers/
+- Do NOT create a Drive folder.
+
+RETURN REPORT EXACTLY IN THIS TRACKABLE FORMAT:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V28-PREVIEW
+MODULE=USERS & SELLERS LOGS
+ELEMENT=SELLERS PERFORMANCE / DETAILS
+CURRENT_APPROVED_VERSION=V27.1
+BASE_VERSION=V27.1
+TARGET_VERSION=V28
+STATUS=AWAITING_CHATGPT_DESIGN_PREVIEW
+==================================================
+
+SOURCE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+RUNTIME_CSS=AdminDashboard.v27.1.css
+VIEWPORT=1920x1080
+VISUAL_DISCOVERY=DONE
+RUNSTAMP=<value>
+SCREENSHOT_01_FILENAME=<value>
+SCREENSHOT_02_FILENAME=<value>
+SCREENSHOT_03_FILENAME=<value>
+SCREENSHOT_04_FILENAME=<value>
+DRIVE_UPLOAD=<OK/FAIL>
+DRIVE_UPLOAD_COUNT=<number>
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=<value>
+DRIVE_FILE_01_ID=<value>
+DRIVE_FILE_01_LINK=<value>
+DRIVE_FILE_02_NAME=<value>
+DRIVE_FILE_02_ID=<value>
+DRIVE_FILE_02_LINK=<value>
+DRIVE_FILE_03_NAME=<value>
+DRIVE_FILE_03_ID=<value>
+DRIVE_FILE_03_LINK=<value>
+DRIVE_FILE_04_NAME=<value>
+DRIVE_FILE_04_ID=<value>
+DRIVE_FILE_04_LINK=<value>
+QA_PUSH=<OK/FAIL>
+QA_COMMIT_SHA=<value>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or value>
+ERROR=<NONE or value>
