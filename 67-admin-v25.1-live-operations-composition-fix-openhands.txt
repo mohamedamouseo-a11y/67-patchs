@@ -1,0 +1,183 @@
+==================================================
+VERSION: V25.1
+MODULE: ADMIN DASHBOARD
+ELEMENT: LIVE OPERATIONS — COMPOSITION FIX
+BASE: V25
+TARGET: V25.1
+==================================================
+
+Work only on:
+/67
+
+PURPOSE
+Correct the real V25 visual-QA problem in `العمليات المباشرة`.
+
+REAL QA FINDING
+V25 is functionally correct, but when only 2 live events exist the card contains a large dead white area and reads as visually fragmented.
+The approved V25.1 preview requires the card to remain premium and compositionally complete whether there are 2 events or up to 5 events.
+
+SCOPE LOCK
+ONLY modify Live Operations card markup/CSS.
+Do NOT redesign or reposition any neighboring module.
+
+APPROVED V25.1 DIRECTION
+- Stronger Live Operations header and count badge.
+- Sparse state (<4 events): event rows become larger and easier to scan.
+- Sparse state gets a real activity summary using EXISTING metrics only; do not invent events or values.
+- Summary may show current session event count, payment-event count, registration-event count, and existing `paymentCount`.
+- Dense state (4–5 events): rows compact automatically so all visible events remain inside the card.
+- Pending/review + health indicators are composed into one compact footer system rather than detached rows.
+- Existing CTA stays visible and clickable.
+- No dead whitespace that makes the card look unfinished.
+- No clipping at bottom edge.
+- Card remains aligned beside Current Operations in V24.1 row 2.
+
+FUNCTIONAL LOCKS
+- Do NOT modify `liveNotifications` values or source.
+- Do NOT fabricate additional notifications to fill space.
+- Do NOT change notification ordering.
+- Do NOT change `.slice(0, 5)` behavior.
+- Do NOT change localStorage notification behavior.
+- Do NOT change payment/registration classification.
+- Do NOT change CTA action `setActiveTab('notifications')`.
+- Do NOT change pending document/store values.
+- Do NOT change `paymentCount` logic.
+
+LOCKED MODULES — ZERO CHANGES
+- Revenue & Performance V24.1
+- Current Operations
+- Hero
+- Date Filter
+- KPI V22.2
+- System Health V23
+- Session/Auth V22.3
+- Transactions
+- Sidebar
+- backend/auth APIs
+- business data
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v25.1-live-operations-composition-fix-apply.sh
+
+EXECUTE
+cd /67
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v25.1-live-operations-composition-fix-apply.sh \
+-o /tmp/67-admin-v25.1-live-operations-composition-fix-apply.sh
+chmod +x /tmp/67-admin-v25.1-live-operations-composition-fix-apply.sh
+bash /tmp/67-admin-v25.1-live-operations-composition-fix-apply.sh
+
+Patch must return BUILD=PASS before QA.
+
+==================================================
+VISUAL QA — REQUIRED, SCROLL TO ROW 2
+==================================================
+
+Use the existing authenticated browser session.
+Do not edit business data.
+Viewport: 1920x1080.
+
+IMPORTANT
+Do NOT capture screenshots with the Live Operations card cut off at the bottom of the viewport.
+Scroll so row 2 is fully visible before capturing closeups.
+
+PASS CONDITIONS
+- Live Operations card is fully visible top-to-bottom.
+- Bottom edge of card is visible.
+- Existing event rows are fully visible and readable.
+- With sparse event count, there is NO large dead white zone.
+- Sparse activity summary is visible and uses only existing values.
+- Footer/status chips and CTA read as one deliberate composition.
+- CTA is visible and not clipped.
+- Current Operations beside it is unchanged.
+- Revenue V24.1 above is unchanged.
+- Row 2 remains balanced 50/50.
+- No regressions in Hero/KPI/System Health/Transactions/Sidebar.
+
+If any pass condition fails, return VISUAL_QA=FAIL and do not recommend source push.
+
+Use one RUNSTAMP in YYYYMMDD-HHMMSS format.
+Required screenshots:
+1. 67__ADMIN__V25-1__LIVE-COMPOSITION__01__LIVE-CARD-FULL__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V25-1__LIVE-COMPOSITION__02__LIVE-DETAILS__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V25-1__LIVE-COMPOSITION__03__ROW2-FULL__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V25-1__LIVE-COMPOSITION__04__REVENUE-ROW2-BOUNDARY__1920x1080__<RUNSTAMP>.png
+
+==================================================
+GOOGLE DRIVE QA HANDOFF
+==================================================
+
+Use:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Upload all four PNG screenshots directly to My Drive root.
+Do NOT create folders.
+Preserve exact filenames.
+Return Drive IDs and links.
+Do not expose OAuth credentials or tokens.
+
+Also push the same screenshots to:
+repo: mohamedamouseo-a11y/67-patchs
+path: qa/v25.1-live-composition/
+
+Do NOT push developer-hub-67 source code.
+The user will push source manually after visual approval.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=V25
+TARGET_VERSION=V25.1
+RUNTIME_CSS=AdminDashboard.v25.1.css
+ELEMENT=LIVE_OPERATIONS_ONLY
+SPARSE_STATE_DEAD_SPACE_FIXED=
+SPARSE_SUMMARY_USES_EXISTING_METRICS=
+DENSE_STATE_SUPPORTS_5_EVENTS_BY_LAYOUT=
+LIVE_FOOTER_COMPOSED=
+LIVE_NOTIFICATION_DATA_CHANGED=NO
+LIVE_NOTIFICATION_ORDER_CHANGED=NO
+LIVE_NOTIFICATION_SOURCE_CHANGED=NO
+LIVE_CTA_BEHAVIOR_CHANGED=NO
+REVENUE_V24_1_PRESERVED=
+CURRENT_OPERATIONS_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+TRANSACTIONS_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
