@@ -1,0 +1,81 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+TASK=RUNTIME ACTIVATION V2 + BROWSER VERIFICATION
+MODE=DEPLOYMENT/RUNTIME ONLY — NO SOURCE DESIGN CHANGES — NO SOURCE PUSH
+
+The previous runtime activation logic was insufficient because it inferred /67/dist from the presence of the legacy asset instead of resolving the actual Nginx static root or proxied Node process working directory.
+
+Use this exact script:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.4-runtime-activation-v2-apply.sh
+
+Run it on the 67 server. Do not modify design/source logic beyond the already-applied V29.4 state.
+
+REQUIRED BEHAVIOR
+1. Confirm /67 is still at V29.4 and npm run build passes.
+2. Run the runtime activation V2 script.
+3. Report LIVE_MODE, LIVE_ROOT, UPSTREAM, UPSTREAM_PID, UPSTREAM_CWD and DEPLOY_ACTION exactly as returned.
+4. Require ORIGIN_MATCH_LOCAL_DIST=YES and PUBLIC_MATCH_LOCAL_DIST=YES before visual QA.
+5. If either match is NO, stop and report failure. Do not claim visual approval.
+6. If both match YES, open https://sixty-seven.net/admin/ with a unique cache-busting query.
+7. In browser context evaluate:
+   getComputedStyle(document.querySelector('.ov-header__motif')).backgroundImage
+8. Load that resolved background image URL in browser context and report naturalWidth/naturalHeight.
+9. Require width >= 2000 and height >= 600 and require the URL to NOT contain admin-v17-hero.
+10. Only after runtime verification passes, capture 4 fresh screenshots at 1920x1080:
+   - full page
+   - full hero
+   - car detail
+   - city detail
+11. Upload screenshots to My Drive root using the existing 67 QA upload workflow.
+12. Do NOT push source project.
+
+SCREENSHOT NAMES
+67__ADMIN__V29-4__RUNTIME-ACTIVATED__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-4__RUNTIME-ACTIVATED__02__HERO-FULL__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-4__RUNTIME-ACTIVATED__03__CAR-DETAIL__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-4__RUNTIME-ACTIVATED__04__CITY-DETAIL__1920x1080__<RUNSTAMP>.png
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN HERO — HIGH-RES ASSET REPLACEMENT
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+BUILD=
+LIVE_MODE=
+LIVE_ROOT=
+UPSTREAM=
+UPSTREAM_PID=
+UPSTREAM_CWD=
+DEPLOY_ACTION=
+LOCAL_INDEX_SHA=
+LIVE_INDEX_SHA_BEFORE=
+LIVE_INDEX_SHA_AFTER=
+ORIGIN_MATCH_LOCAL_DIST=
+PUBLIC_MATCH_LOCAL_DIST=
+EDGE_CACHE_STALE=
+EDGE_SERVER=
+CF_CACHE_STATUS=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_RENDERED=
+RUNTIME_ASSET_MISMATCH=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
