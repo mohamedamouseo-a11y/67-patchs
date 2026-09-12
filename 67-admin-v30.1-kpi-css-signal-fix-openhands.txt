@@ -1,0 +1,125 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V30.1
+TASK=KPI CSS SIGNAL FIX
+MODE=FRONTEND VISUAL FIX ONLY — NO DATA/BACKEND/AUTH CHANGES — NO SOURCE PUSH
+
+Use this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v30.1-kpi-css-signal-fix-apply.sh
+
+OBJECTIVE
+Fix the only failed V30 condition: KPI signal microbars were missing from the live DOM. Keep the approved V30 KPI card design and approved System Health design unchanged. Render the 5-step signal bars with CSS pseudo-elements so the visual no longer depends on .kpi-microbar DOM markup.
+
+DO NOT CHANGE
+- Hero image, hero geometry, hero copy, date strip, sidebar, revenue section.
+- KPI values, KPI labels, KPI logic, KPI order.
+- System Health structure, metrics, automotive visual, values or logic.
+- Backend, auth, APIs, data.
+- Do not source-push /67.
+
+REQUIRED STEPS
+1. cd /67
+2. Confirm current runtime imports AdminDashboard.v30.css.
+3. Run the exact patch above.
+4. Require BUILD=PASS.
+5. Activate runtime using the already verified 67 deploy/restart workflow only. Do not change Nginx or unrelated services.
+6. Open https://sixty-seven.net/admin/ at 1920x1080 with cache-busting query.
+7. Verify exactly 4 KPI cards.
+8. For each KPI card, inspect getComputedStyle(card.querySelector('.kpi-card__note'),'::before'). Require:
+   - content != none
+   - display != none
+   - width >= 24px
+   - height >= 12px
+   - backgroundImage contains multiple linear-gradients
+9. Visually confirm all 4 KPI notes show a five-step ascending signal bar and no duplicate bars.
+10. Confirm KPI values/labels/icons are not clipped and card heights remain equal.
+11. Confirm System Health remains visually identical to V30 and passes all prior checks.
+12. Confirm Hero and Date Strip regression = PASS and hero high-res remains 2172x724.
+13. Capture 4 fresh screenshots:
+   - Full page
+   - KPI row close-up showing all 4 signal bars
+   - System Health close-up
+   - Hero + KPI + System Health continuity
+14. Upload all 4 screenshots to My Drive root using existing QA workflow.
+15. Push screenshots only to QA repo if already configured. Do NOT source-push /67.
+
+PASS CONDITIONS
+KPI_COUNT=4
+KPI_EQUAL_HEIGHT=YES
+KPI_OVERFLOW=NO
+KPI_PRIMARY_VALUE_CLIPPED=NO
+KPI_CSS_SIGNAL_VISIBLE_COUNT=4
+KPI_CSS_SIGNAL_FIVE_STEP_PATTERN=PASS
+KPI_SIGNAL_DUPLICATION=NO
+KPI_PREMIUM_VISUAL=PASS
+SYSTEM_HEALTH_PREMIUM_VISUAL=PASS
+SYSTEM_HEALTH_CHANGED=NO
+HERO_GEOMETRY_SHIFT_PX=0
+HERO_IMAGE_FLASH_DETECTED=NO
+LEGACY_560X132_REQUESTED=NO
+DATE_STRIP_REGRESSION=PASS
+DATE_LOGIC_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V30.1
+MODULE=ADMIN DASHBOARD
+ELEMENT=KPI CSS SIGNAL FIX
+BASE_VERSION=V30
+TARGET_VERSION=V30.1
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=
+LIVE_RUNTIME_ACTIVATED=
+KPI_COUNT=
+KPI_EQUAL_HEIGHT=
+KPI_CARD_HEIGHT=
+KPI_OVERFLOW=
+KPI_PRIMARY_VALUE_CLIPPED=
+KPI_CSS_SIGNAL_VISIBLE_COUNT=
+KPI_CSS_SIGNAL_FIVE_STEP_PATTERN=
+KPI_SIGNAL_DUPLICATION=
+KPI_PREMIUM_VISUAL=
+SYSTEM_HEALTH_HEIGHT=
+SYSTEM_HEALTH_METRIC_COUNT=
+SYSTEM_HEALTH_METRIC_OVERLAP=
+SYSTEM_HEALTH_TEXT_CLIPPED=
+SYSTEM_HEALTH_AUTOMOTIVE_VISUAL_VISIBLE=
+SYSTEM_HEALTH_PREMIUM_VISUAL=
+SYSTEM_HEALTH_CHANGED=
+HERO_GEOMETRY_SHIFT_PX=
+HERO_SCALE_OR_TRANSFORM_DETECTED=
+HERO_IMAGE_FLASH_DETECTED=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_REQUESTED=
+DATE_STRIP_REGRESSION=
+DATE_LOGIC_CHANGED=
+HERO_CHANGED=
+SIDEBAR_CHANGED=
+REVENUE_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
