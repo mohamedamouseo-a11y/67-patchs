@@ -1,0 +1,63 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+TASK=HIGH-RES HERO RUNTIME VERIFICATION + QA RECAPTURE
+MODE=QA ONLY — NO SOURCE CHANGES — NO SOURCE PUSH
+
+The V29.4 patch/build report says the new 2172x724 asset exists, but the V29.4 screenshots are visually identical to V29.3. Do not modify source yet. Verify what the browser is actually rendering.
+
+EXPECTED RUNTIME:
+- AdminDashboard.v29.4.css is the active runtime stylesheet/build source.
+- Hero element: .ov-header__motif
+- Expected source asset: src/assets/admin-v29.4-hero-highres.jpg
+- Expected native dimensions: 2172x724
+- Legacy src/assets/admin-v17-hero.jpg (560x132) must NOT be rendered.
+
+STEPS:
+1. Confirm /67/src/pages/AdminDashboard.jsx imports AdminDashboard.v29.4.css.
+2. Confirm /67/src/pages/AdminDashboard.v29.4.css contains the V29.4 HIGH-RES HERO ASSET marker and background-image pointing to admin-v29.4-hero-highres.jpg.
+3. Confirm the high-res file exists and report exact width/height/bytes.
+4. Run npm run build and require PASS.
+5. Inspect dist/index.html and identify the current hashed JS/CSS bundles.
+6. Confirm the built CSS/bundle references the new high-res hero asset and that the corresponding built asset exists in dist/assets.
+7. Open the admin page with a cache-busting query string, e.g. /admin/?qa=v294-<RUNSTAMP>.
+8. Force a fresh reload / disable browser cache for this QA session. Do not reuse a stale screenshot/page state.
+9. In the browser, evaluate getComputedStyle(document.querySelector('.ov-header__motif')).backgroundImage and report the exact resolved URL.
+10. Fetch/load that exact resolved image URL in browser context and determine its naturalWidth and naturalHeight. Require width >= 2000 and height >= 600.
+11. If the resolved URL or dimensions point to the legacy 560x132 image, STOP and report RUNTIME_ASSET_MISMATCH=YES. Do not claim visual approval.
+12. If runtime verification passes, capture fresh screenshots at 1920x1080.
+
+SCREENSHOTS:
+- 67__ADMIN__V29-4__HIGHRES-RUNTIME-VERIFY__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+- 67__ADMIN__V29-4__HIGHRES-RUNTIME-VERIFY__02__HERO-FULL__1920x1080__<RUNSTAMP>.png
+- 67__ADMIN__V29-4__HIGHRES-RUNTIME-VERIFY__03__CAR-DETAIL__1920x1080__<RUNSTAMP>.png
+- 67__ADMIN__V29-4__HIGHRES-RUNTIME-VERIFY__04__CITY-DETAIL__1920x1080__<RUNSTAMP>.png
+
+Upload the 4 screenshots to My Drive root using the existing 67 QA upload workflow. QA repo fallback is allowed. Do not source-push.
+
+FINAL REPORT MUST INCLUDE:
+VERSION=V29.4
+SOURCE_CHANGED=NO
+BUILD=
+RUNTIME_CSS=AdminDashboard.v29.4.css
+SOURCE_HIGHRES_DIMENSIONS=
+BUILT_HIGHRES_ASSET_FOUND=
+BUILT_HIGHRES_ASSET_PATH=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+RUNTIME_ASSET_MISMATCH=YES/NO
+LEGACY_560X132_RENDERED=YES/NO
+CACHE_BYPASS_USED=YES
+VISUAL_QA=
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+SOURCE_PROJECT_PUSHED=NO
+ERROR=
