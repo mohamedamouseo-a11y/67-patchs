@@ -1,0 +1,185 @@
+==================================================
+PROJECT: 67 ADMIN DASHBOARD
+VERSION: V28.1
+MODULE: ADMIN DASHBOARD
+ELEMENT: LUXURY SIDEBAR — REFERENCE FIDELITY FIX
+CURRENT APPROVED VERSION: V27.1
+BASE: V28
+TARGET: V28.1
+STATUS: EXECUTE + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+CONTEXT
+V28 is technically working, but direct visual comparison against the approved sidebar reference showed that the visual fidelity is still too low.
+The reference has stronger individual command rows, visible chevrons, a much stronger active gold glow, richer footer/account treatment, and automotive decorative curves.
+Stay inside the SAME sidebar element/version chain. Do NOT move to Sellers or another dashboard element.
+
+PATCH
+Run exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v28.1-sidebar-reference-fidelity-apply.sh
+
+SERVER PROJECT
+/67
+
+MANDATORY SCOPE LOCK
+- SIDEBAR visual presentation ONLY.
+- Preserve all current labels exactly.
+- Preserve activeTab logic exactly.
+- Preserve route/back button behavior exactly.
+- Preserve logout behavior exactly.
+- Preserve GitHub Module behavior exactly.
+- Do NOT alter Hero, Date Filter, KPI, System Health, Revenue, Live Operations, Current Operations, Financial Ledger, Sellers table, Customers table, Documents, Community, Transactions, Notifications, Settings content.
+- Do NOT alter backend, auth, APIs, routes or data.
+- NO source project push.
+
+REFERENCE FIDELITY TARGET
+Use the approved sidebar reference already supplied in the ChatGPT workflow as the visual target.
+V28.1 must materially improve the following compared with V28:
+1. EVERY normal navigation item must read as an individual dark premium command row with its own visible border/background.
+2. Add a visible left-side chevron affordance to each normal navigation row visually only; do not change click logic.
+3. Active item must have an unmistakable bright gold border + gold ambient glow similar to the approved reference.
+4. Active icon tile must be gold-filled and materially stronger than inactive icon tiles.
+5. Inactive icon tiles must remain premium dark framed controls, not plain icons.
+6. Group labels must be clearer gold and visually separate each command section.
+7. Brand block must remain prominent with the official SIX SEVEN logo fully visible.
+8. Bottom Super Admin account panel must become stronger and more deliberate, with round gold avatar and visual disclosure cue.
+9. Logout must remain separate with restrained red framing.
+10. Add subtle automotive/gold decorative curve treatment near the lower sidebar, inspired by the reference, without covering any controls.
+11. Keep full sidebar usable at 1920x1080 with footer and logout visible.
+12. Main content must remain clear of the sidebar.
+
+BUILD
+Run:
+npm run build
+BUILD must PASS.
+
+VISUAL QA — REQUIRED
+Viewport: 1920x1080.
+Use the already configured authenticated session.
+Do not modify system data.
+Do not Save / Update / Delete / Assign anything.
+Do not click Logout.
+
+IMPORTANT SCREENSHOT RULE
+The Sidebar is fixed on the RIGHT side.
+For sidebar close-ups, capture the actual DOM element:
+aside.admin-sidebar
+Do NOT crop x=0 from the left side of the page.
+
+Capture exactly 4 screenshots using one RUNSTAMP:
+1. 67__ADMIN__V28-1__SIDEBAR-REFERENCE-FIDELITY__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+   - Full dashboard with complete sidebar and main/sidebar boundary.
+2. 67__ADMIN__V28-1__SIDEBAR-REFERENCE-FIDELITY__02__SIDEBAR-FULL__1920x1080__<RUNSTAMP>.png
+   - Exact screenshot of aside.admin-sidebar from brand to footer.
+3. 67__ADMIN__V28-1__SIDEBAR-REFERENCE-FIDELITY__03__ACTIVE-COMMAND-ROWS__1920x1080__<RUNSTAMP>.png
+   - Close framing showing brand, group heading, normal bordered rows, active glowing row, chevrons, and icon tiles.
+4. 67__ADMIN__V28-1__SIDEBAR-REFERENCE-FIDELITY__04__FOOTER-CURVES-ACCOUNT__1920x1080__<RUNSTAMP>.png
+   - Lower sidebar showing decorative curves, Super Admin account panel, logout and lower boundary.
+
+QA ACCEPTANCE CHECKS
+- Normal navigation rows have visible individual borders.
+- Normal navigation rows do NOT look like floating text.
+- Left chevrons are visible and aligned.
+- Active item gold glow is immediately obvious.
+- Active icon tile is gold-filled.
+- Group labels are readable gold.
+- Official logo is not cropped.
+- No nav label clipping.
+- Footer account panel fully visible.
+- Logout fully visible.
+- Decorative curve does not overlap controls.
+- No horizontal clipping.
+- No main-content overlap.
+- Navigation still switches tabs correctly.
+
+GOOGLE DRIVE
+Upload all 4 screenshots directly to My Drive root using:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the same 4 screenshots to:
+qa/v28.1-sidebar-reference-fidelity/
+Do not push source project.
+
+MANDATORY FINAL REPORT FORMAT
+Start exactly with:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V28.1
+MODULE=ADMIN DASHBOARD
+ELEMENT=LUXURY SIDEBAR — REFERENCE FIDELITY FIX
+CURRENT_APPROVED_VERSION=V27.1
+BASE_VERSION=V28
+TARGET_VERSION=V28.1
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report at minimum:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=SIDEBAR_ONLY
+REFERENCE_FIDELITY_FIX=
+COMMAND_ROWS_UPGRADED=
+CHEVRONS_ADDED_VISUALLY=
+ACTIVE_GOLD_GLOW_UPGRADED=
+ACTIVE_ICON_TILE_GOLD=
+GROUP_LABELS_REFINED=
+BRAND_BLOCK_PRESERVED=
+FOOTER_DECORATIVE_CURVES_ADDED=
+ACCOUNT_PANEL_UPGRADED=
+LOGOUT_PANEL_UPGRADED=
+NAVIGATION_LOGIC_CHANGED=NO
+TAB_BEHAVIOR_CHANGED=NO
+BACK_BUTTON_BEHAVIOR_CHANGED=NO
+LOGOUT_BEHAVIOR_CHANGED=NO
+GITHUB_MODULE_BEHAVIOR_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+FINANCIAL_LEDGER_CHANGED=NO
+SELLERS_TABLE_CHANGED=NO
+CUSTOMERS_TABLE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+IMPORTANT
+Even if VISUAL_QA=DONE, do NOT mark V28.1 approved or closed.
+ChatGPT will independently inspect the actual screenshots against the approved reference.
+Do not source-push.
