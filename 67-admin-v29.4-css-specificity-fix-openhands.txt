@@ -1,0 +1,89 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+TASK=HIGH-RES HERO CSS SPECIFICITY FIX + RUNTIME VERIFY
+MODE=FIX + BUILD + RUNTIME VERIFY + QA — DO NOT SOURCE PUSH
+
+Diagnosis is now confirmed:
+- Nginx/runtime deployment is correct.
+- Origin/public bundle hashes match /67/dist.
+- Browser still renders legacy admin-v17-hero 560x132.
+- Root cause: legacy !important CSS on .ov-header__motif wins over the V29.4 high-res rule.
+
+Use this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.4-css-specificity-fix-apply.sh
+
+REQUIRED STEPS
+1. Run the patch on /67.
+2. Require BUILD=PASS.
+3. Confirm AdminDashboard.v29.4.css contains marker:
+   SIX SEVEN ADMIN V29.4 — HERO HIGHRES SPECIFICITY FIX
+4. Confirm dist contains the 2172x724 high-res built asset.
+5. Run the existing V29.4 runtime trace/activation V3 workflow so live Node/Nginx serves the newest build.
+6. Open https://sixty-seven.net/admin/ with a unique cache-busting query and disabled cache.
+7. In browser context evaluate:
+   getComputedStyle(document.querySelector('.ov-header__motif')).backgroundImage
+8. Load that exact URL and report naturalWidth/naturalHeight.
+9. PASS only if:
+   - resolved URL does NOT contain admin-v17-hero
+   - width >= 2000
+   - height >= 600
+   - LEGACY_560X132_RENDERED=NO
+   - RUNTIME_ASSET_MISMATCH=NO
+10. Capture 4 fresh screenshots at 1920x1080 only after runtime verification passes:
+   - full page
+   - full hero
+   - car detail
+   - city detail
+11. Upload all 4 to My Drive root using the existing QA upload workflow.
+12. Do NOT push the source project.
+
+SCREENSHOT NAMES
+67__ADMIN__V29-4__CSS-SPECIFICITY-FIX__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-4__CSS-SPECIFICITY-FIX__02__HERO-FULL__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-4__CSS-SPECIFICITY-FIX__03__CAR-DETAIL__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-4__CSS-SPECIFICITY-FIX__04__CITY-DETAIL__1920x1080__<RUNSTAMP>.png
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN HERO — HIGH-RES ASSET REPLACEMENT
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=AdminDashboard.v29.4.css
+CSS_SPECIFICITY_FIX=
+HIGHRES_RULE_TARGET=
+ORIGIN_MATCH_LOCAL_DIST=
+PUBLIC_MATCH_LOCAL_DIST=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_RENDERED=
+RUNTIME_ASSET_MISMATCH=
+HERO_LAYOUT_CHANGED=NO
+HERO_COPY_CHANGED=NO
+DATE_DOCK_CHANGED=NO
+DATE_POPOVER_CHANGED=NO
+DATE_LOGIC_CHANGED=NO
+SIDEBAR_CHANGED=NO
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+Do not mark V29.4 approved. ChatGPT will review the fresh screenshots.
