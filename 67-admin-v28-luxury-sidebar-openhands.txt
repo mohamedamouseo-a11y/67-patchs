@@ -1,0 +1,176 @@
+==================================================
+PROJECT: 67 ADMIN DASHBOARD
+VERSION: V28
+MODULE: ADMIN DASHBOARD
+ELEMENT: LUXURY SIDEBAR
+CURRENT APPROVED VERSION: V27.1
+BASE: V27.1
+TARGET: V28
+STATUS: EXECUTE + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+CONTEXT
+V28 Sellers was PREVIEW/DISCOVERY ONLY and made NO source changes. Priority has now changed.
+V28 implementation target is the SIDEBAR ONLY.
+Current approved source remains V27.1.
+
+GOAL
+Upgrade the current right-side Admin Dashboard sidebar into a clearly premium / luxurious Saudi automotive executive command rail.
+The visual delta must be obvious at first glance, while preserving every navigation behavior exactly.
+
+PATCH
+Run exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v28-luxury-sidebar-apply.sh
+
+SERVER PROJECT
+/67
+
+MANDATORY SCOPE LOCK
+- SIDEBAR visual presentation ONLY.
+- Preserve all current tabs and their labels.
+- Preserve activeTab logic exactly.
+- Preserve route/back button behavior exactly.
+- Preserve logout behavior exactly.
+- Preserve GitHub Module behavior exactly.
+- Do NOT alter Hero, Date Filter, KPI, System Health, Revenue, Live Operations, Current Operations, Financial Ledger, Users/Sellers content, Documents, Community, Transactions, Notifications or Settings content.
+- Do NOT alter backend, auth, APIs, routes or data.
+- NO source project push.
+
+VISUAL INTENT
+The sidebar should read as a premium SIX SEVEN executive control rail, not a plain dark menu.
+Required visual qualities:
+1. Wider, more deliberate executive proportion on 1920px desktop.
+2. Premium dark navy/black layered background with restrained gold ambience.
+3. Strong branded top identity block using the existing official SIX SEVEN logo.
+4. Distinct grouped navigation sections with subtle panel framing.
+5. Navigation items with premium icon tiles.
+6. Active item must be unmistakable: gold luxury treatment, not just a faint background.
+7. Hover states should feel refined and subtle.
+8. Bottom Super Admin identity block should feel intentional and premium.
+9. Logout must remain visually separate and restrained red.
+10. No clipping, no label truncation, no overlap, no scrollbar covering content.
+11. Main content must shift correctly to match the wider sidebar and must not be covered.
+12. Sidebar should still fit correctly at 1920x1080 without hiding the logout block.
+
+BUILD
+Run:
+npm run build
+BUILD must PASS.
+
+VISUAL QA — REQUIRED
+Viewport: 1920x1080.
+Login/auth using the already configured session workflow.
+Do not modify any system data.
+Do not Save / Update / Delete / Assign anything.
+
+Capture exactly 4 screenshots using one RUNSTAMP:
+1. 67__ADMIN__V28__LUXURY-SIDEBAR__01__FULL-DASHBOARD__1920x1080__<RUNSTAMP>.png
+   - Full dashboard with complete sidebar visible top-to-bottom and enough main content to verify the new width/boundary.
+2. 67__ADMIN__V28__LUXURY-SIDEBAR__02__SIDEBAR-FULL__1920x1080__<RUNSTAMP>.png
+   - Tight framing of the full sidebar from brand block to logout; all navigation groups visible.
+3. 67__ADMIN__V28__LUXURY-SIDEBAR__03__ACTIVE-NAV-DETAIL__1920x1080__<RUNSTAMP>.png
+   - Close-up showing brand + at least one navigation group + active item treatment + icon tiles clearly.
+4. 67__ADMIN__V28__LUXURY-SIDEBAR__04__FOOTER-BOUNDARY__1920x1080__<RUNSTAMP>.png
+   - Lower sidebar showing final nav group, Super Admin identity, logout, and sidebar/main-content boundary.
+
+QA ACCEPTANCE CHECKS
+- Full official logo is visible and not cropped.
+- Brand block is visibly premium and balanced.
+- Every section label is readable.
+- Every nav label is fully visible.
+- Active state is obvious from first glance.
+- Icon tiles are aligned consistently.
+- No overlap between icon/text/active dot.
+- Footer identity and logout are fully visible.
+- No horizontal clipping.
+- No main-content overlap under the sidebar.
+- Main dashboard modules visually remain unchanged.
+- Navigation still switches tabs correctly.
+- Logout button is present but DO NOT click it during QA.
+
+GOOGLE DRIVE
+Upload all 4 screenshots directly to My Drive root using:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the same 4 screenshots to:
+qa/v28-luxury-sidebar/
+Do not push source project.
+
+MANDATORY FINAL REPORT FORMAT
+Start the report EXACTLY with:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V28
+MODULE=ADMIN DASHBOARD
+ELEMENT=LUXURY SIDEBAR
+CURRENT_APPROVED_VERSION=V27.1
+BASE_VERSION=V27.1
+TARGET_VERSION=V28
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report at minimum:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=SIDEBAR_ONLY
+SIDEBAR_WIDTH_DESKTOP=
+SIDEBAR_BRAND_LUXURY_BLOCK=
+SIDEBAR_GROUPED_COMMAND_RAIL=
+SIDEBAR_ACTIVE_STATE_UPGRADED=
+SIDEBAR_ICON_TILES_UPGRADED=
+SIDEBAR_IDENTITY_FOOTER_UPGRADED=
+SIDEBAR_LOGOUT_VISUAL_UPGRADED=
+NAVIGATION_LOGIC_CHANGED=NO
+TAB_BEHAVIOR_CHANGED=NO
+BACK_BUTTON_BEHAVIOR_CHANGED=NO
+LOGOUT_BEHAVIOR_CHANGED=NO
+GITHUB_MODULE_BEHAVIOR_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+FINANCIAL_LEDGER_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+IMPORTANT
+Even if VISUAL_QA=DONE, do NOT mark V28 approved or closed.
+ChatGPT will independently inspect the actual screenshots from Google Drive before approval.
+Do not source-push.
