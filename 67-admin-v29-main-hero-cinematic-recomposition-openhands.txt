@@ -1,0 +1,197 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN DASHBOARD HERO — CINEMATIC RECOMPOSITION
+CURRENT_APPROVED_VERSION=V28.3
+BASE_VERSION=V28.3
+TARGET_VERSION=V29
+STATUS=EXECUTE + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+CONTEXT
+The V28.3 sidebar is the current approved visual base on the server.
+The main overview Hero is now the only target.
+Current problem from visual review: the Hero reads as too stretched / banner-like across the page. The car and city composition feels horizontally pulled, the copy is not framed strongly enough, and the date controls create an oversized horizontal strip.
+
+GOAL
+Recompose the existing Hero into a cinematic premium automotive executive scene while preserving the existing hero asset and ALL current behavior.
+The result must feel intentional, deep, balanced, and expensive — not like a stretched banner.
+
+PATCH
+Run exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29-main-hero-cinematic-recomposition-apply.sh
+
+SERVER PROJECT
+/67
+
+MANDATORY SCOPE LOCK
+- MAIN OVERVIEW HERO VISUALS + DATE CONTROL VISUALS ONLY.
+- Preserve the existing hero image asset; do not generate or replace the image.
+- Preserve all hero text exactly.
+- Preserve date range logic exactly.
+- Preserve Today / 7 days / 30 days / Custom behavior exactly.
+- Preserve custom date popover behavior exactly.
+- Preserve Refresh action exactly.
+- Preserve Export / Print action exactly.
+- Do NOT alter Sidebar V28.3.
+- Do NOT alter KPI cards.
+- Do NOT alter System Health.
+- Do NOT alter Revenue.
+- Do NOT alter Live Operations.
+- Do NOT alter Current Operations.
+- Do NOT alter Financial Ledger.
+- Do NOT alter Sellers / Customers / other tabs.
+- Do NOT alter backend, auth, routes, APIs or data.
+- NO source project push.
+
+VISUAL TARGET
+1. Remove the stretched/banner feeling.
+2. Preserve image proportions: absolutely no 100% 100% image stretching.
+3. Use a cinematic crop with the vehicle as the focal subject.
+4. Keep the skyline secondary rather than visually competing with the car.
+5. Use stronger side gradients for premium depth and copy readability.
+6. Recompose the primary Arabic message into an intentional editorial block.
+7. Recompose the secondary right-side message so it does not compete with the vehicle.
+8. Convert the date controls into a compact floating premium control dock rather than a long horizontal bar spanning the Hero.
+9. Maintain a luxury black / warm gold / restrained red automotive visual language consistent with the approved Sidebar.
+10. No clipping, no overlap, no text truncation.
+
+TECHNICAL TARGET
+RUNTIME_CSS=AdminDashboard.v29.css
+The patch is CSS-only except for switching the runtime CSS import from V28.3 to V29.
+
+BUILD
+Run:
+npm run build
+BUILD must PASS.
+
+VISUAL QA — REQUIRED
+Viewport: 1920x1080.
+Use the existing authenticated session.
+Do not modify system data.
+Do not Save / Update / Delete / Assign anything.
+
+Capture exactly 4 screenshots using one RUNSTAMP:
+
+1. 67__ADMIN__V29__HERO-CINEMATIC__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+   - Full dashboard at the top of the overview page.
+   - Must show complete Hero + KPI row + complete V28.3 sidebar.
+   - Used to prove neighboring modules and sidebar remain unchanged.
+
+2. 67__ADMIN__V29__HERO-CINEMATIC__02__HERO-FULL__1920x1080__<RUNSTAMP>.png
+   - Tight framing of the complete Hero only, edge-to-edge.
+   - Must clearly show the car crop, skyline, both copy areas, and floating date dock.
+
+3. 67__ADMIN__V29__HERO-CINEMATIC__03__HERO-COPY-CAR__1920x1080__<RUNSTAMP>.png
+   - Close framing showing the primary copy, vehicle focal area, and secondary copy.
+   - Must prove image proportions look natural and not horizontally stretched.
+
+4. 67__ADMIN__V29__HERO-CINEMATIC__04__DATE-DOCK-OPEN__1920x1080__<RUNSTAMP>.png
+   - Open the custom date popover WITHOUT applying or changing any dates.
+   - Capture the floating date dock + open custom popover.
+   - Do not save/apply changes; close after capture if needed.
+
+QA ACCEPTANCE CHECKS
+- Hero no longer looks stretched or banner-like.
+- Vehicle body/wheels look naturally proportioned.
+- Car is the clear focal subject.
+- Skyline remains visible but secondary.
+- Primary headline block feels intentional and premium.
+- Secondary headline is readable without competing with the car.
+- Date dock is materially shorter and visually detached from Hero edges.
+- Today / 7 days / 30 days / Custom controls are all visible.
+- Refresh + Export actions remain visible.
+- Custom date popover opens correctly.
+- No date values are modified during QA.
+- No clipping or overlap.
+- Sidebar remains visually unchanged from approved V28.3.
+- KPI row remains visually unchanged.
+- Main page width remains correct.
+
+GOOGLE DRIVE
+Upload all 4 screenshots directly to My Drive root using:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the same 4 screenshots to:
+qa/v29-main-hero-cinematic/
+Do not push source project.
+
+MANDATORY FINAL REPORT FORMAT
+Start the report EXACTLY with:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN DASHBOARD HERO — CINEMATIC RECOMPOSITION
+CURRENT_APPROVED_VERSION=V28.3
+BASE_VERSION=V28.3
+TARGET_VERSION=V29
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report at minimum:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=HERO_AND_DATE_VISUALS_ONLY
+HERO_STRETCH_CORRECTED=
+HERO_IMAGE_ASPECT_PRESERVED=
+HERO_CINEMATIC_CROP=
+HERO_PRIMARY_COPY_RECOMPOSED=
+HERO_SECONDARY_COPY_RECOMPOSED=
+DATE_DOCK_COMPACTED=
+DATE_LOGIC_CHANGED=NO
+DATE_PRESET_BEHAVIOR_CHANGED=NO
+DATE_CUSTOM_RANGE_BEHAVIOR_CHANGED=NO
+REFRESH_ACTION_CHANGED=NO
+EXPORT_ACTION_CHANGED=NO
+SIDEBAR_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+FINANCIAL_LEDGER_CHANGED=NO
+SELLERS_TABLE_CHANGED=NO
+CUSTOMERS_TABLE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+IMPORTANT
+Do NOT mark V29 approved or closed.
+Do NOT source-push.
+ChatGPT will inspect the actual screenshots before approval.
