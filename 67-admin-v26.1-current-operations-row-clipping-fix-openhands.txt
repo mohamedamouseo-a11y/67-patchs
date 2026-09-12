@@ -1,0 +1,175 @@
+==================================================
+VERSION: V26.1
+MODULE: ADMIN DASHBOARD
+ELEMENT: CURRENT OPERATIONS — ROW CLIPPING FIX
+BASE: V26
+TARGET: V26.1
+==================================================
+
+Work only on:
+/67
+
+PURPOSE
+Fix the visual clipping found in V26 Current Operations QA.
+
+VISUAL BUG CONFIRMED
+In the V26 screenshots, the third Current Operations action row (`متاجر نشطة`) is collapsed/clipped to a thin green strip between `وثائق معلقة` and `عمليات دفع أخيرة`.
+
+ROOT CAUSE
+The V26 Current Operations vertical stack exceeds the fixed 286px row/card height:
+header + summary + 3 action rows + conditional recent-payment row + health footer + gaps/padding.
+
+V26.1 must correct geometry only.
+
+SCOPE LOCK
+ONLY adjust Current Operations layout geometry/sizing.
+Do NOT redesign the approved V26 concept.
+Do NOT change JSX content, values, counters, conditions or business logic.
+
+PASS REQUIREMENTS
+- `متاجر قيد المراجعة` row fully visible.
+- `وثائق معلقة` row fully visible.
+- `متاجر نشطة` row fully visible — NOT a thin strip.
+- Conditional `عمليات دفع أخيرة` row fully visible when present.
+- Green health footer fully visible.
+- No row overlaps another row.
+- No clipping at bottom edge.
+- Current Operations remains the same height as Live Operations beside it.
+- Current Operations keeps the approved V26 premium Action Queue visual language.
+
+LOCKED MODULES — ZERO CHANGES
+- Live Operations V25.1
+- Revenue V24.1
+- Hero
+- Date Filter
+- KPI V22.2
+- System Health V23
+- Session/Auth V22.3
+- Transactions
+- Sidebar
+- backend/auth APIs
+- business data
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v26.1-current-operations-row-clipping-fix-apply.sh
+
+EXECUTE
+cd /67
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v26.1-current-operations-row-clipping-fix-apply.sh \
+-o /tmp/67-admin-v26.1-current-operations-row-clipping-fix-apply.sh
+chmod +x /tmp/67-admin-v26.1-current-operations-row-clipping-fix-apply.sh
+bash /tmp/67-admin-v26.1-current-operations-row-clipping-fix-apply.sh
+
+Patch must return BUILD=PASS before QA.
+
+==================================================
+VISUAL QA — REQUIRED
+==================================================
+
+Use the existing authenticated browser session.
+Do not edit business data.
+Viewport: 1920x1080.
+
+IMPORTANT:
+Scroll so the FULL Current Operations card is centered and visible from top edge to bottom edge.
+Do not use a screenshot where the lower rows are outside the viewport.
+
+Review visually, not only with DOM/CSS checks.
+
+PASS CONDITIONS
+- All Current Operations rows are visibly complete.
+- The active-store row is fully readable.
+- The conditional recent-payment row is fully readable when present.
+- The bottom health strip is fully readable.
+- No vertical clipping, no collapsed rows, no hidden rows.
+- Live Operations beside it remains unchanged.
+- Revenue above remains unchanged.
+
+If any Current Operations row is clipped or collapsed, return VISUAL_QA=FAIL and do NOT recommend source push.
+
+Use one RUNSTAMP in YYYYMMDD-HHMMSS format.
+Required screenshots:
+1. 67__ADMIN__V26-1__CURRENT-OPS-FIX__01__CURRENT-CARD-FULL__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V26-1__CURRENT-OPS-FIX__02__CURRENT-ROWS-CLOSEUP__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V26-1__CURRENT-OPS-FIX__03__ROW2-BOTH-CARDS__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V26-1__CURRENT-OPS-FIX__04__BOTTOM-EDGE__1920x1080__<RUNSTAMP>.png
+
+==================================================
+GOOGLE DRIVE QA HANDOFF
+==================================================
+
+Use the installed helper:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Upload all four PNG screenshots directly to My Drive root.
+Do NOT create folders.
+Preserve exact filenames.
+Return file IDs and links.
+Do not expose OAuth credentials/tokens.
+
+Also push the same four QA screenshots to:
+repo: mohamedamouseo-a11y/67-patchs
+path: qa/v26.1-current-operations-fix/
+
+Do NOT push developer-hub-67 source code.
+The user will source-push manually after visual approval.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=V26
+TARGET_VERSION=V26.1
+RUNTIME_CSS=AdminDashboard.v26.1.css
+ELEMENT=CURRENT_OPERATIONS_ONLY
+ROOT_CAUSE=V26_VERTICAL_STACK_EXCEEDED_FIXED_CARD_HEIGHT
+CURRENT_ROW_CLIPPING_FIXED_BY_LAYOUT=
+CURRENT_ACTIVE_STORE_ROW_VISIBLE=
+CURRENT_PAYMENT_ROW_VISIBLE=
+CURRENT_HEALTH_FOOTER_VISIBLE=
+CURRENT_VALUES_CHANGED=NO
+CURRENT_LOGIC_CHANGED=NO
+CURRENT_MARKUP_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+REVENUE_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+TRANSACTIONS_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
