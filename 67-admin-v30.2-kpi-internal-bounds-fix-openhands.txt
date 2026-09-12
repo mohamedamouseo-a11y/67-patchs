@@ -1,0 +1,152 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V30.2
+TASK=KPI INTERNAL BOUNDS FIX
+MODE=FRONTEND VISUAL/GEOMETRY FIX ONLY — NO DATA/BACKEND/AUTH CHANGES — NO SOURCE PUSH
+
+Use this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v30.2-kpi-internal-bounds-fix-apply.sh
+
+OBJECTIVE
+Fix the remaining V30.1 KPI child overflow while preserving the successful CSS five-step signal bars and the approved V30 System Health premium visual. This is a geometry containment correction only.
+
+DO NOT CHANGE
+- Hero image, hero height, hero copy, hero composition.
+- Date strip appearance, position, logic, presets or behavior.
+- Sidebar.
+- Revenue section or lower dashboard modules.
+- KPI values, labels, icons, data or logic.
+- System Health styling from V30.
+- Backend, auth, APIs or business logic.
+- Do not source-push /67.
+
+REQUIRED STEPS
+1. cd /67
+2. Confirm current runtime source imports AdminDashboard.v30.1.css.
+3. Run the exact patch script above.
+4. Require BUILD=PASS.
+5. Activate the new runtime using the same verified 67 deployment/restart workflow already used for the dashboard. Do not alter Nginx routing or unrelated services.
+6. Open https://sixty-seven.net/admin/ at 1920x1080 with a cache-busting query.
+7. Verify exactly 4 KPI cards.
+8. For each .kpi-card, measure getBoundingClientRect() for the card and EVERY real descendant element. Require every descendant left/right/top/bottom to remain within the card bounds with 2px tolerance. Report the exact selector/tag of any failing child if one exists.
+9. Explicitly measure:
+   - .kpi-card__top
+   - .kpi-card__label
+   - .kpi-card__icon
+   - .kpi-card__value
+   - .kpi-card__note
+   - .kpi-card__note > svg
+   - .kpi-card__note .muted
+10. Require KPI card heights equal and 108px.
+11. Require primary values not clipped. Use clientWidth/scrollWidth and clientHeight/scrollHeight where relevant.
+12. Verify CSS signal bars remain visible in all 4 KPI cards and retain the five-step ascending pattern. Do not require .kpi-microbar DOM elements.
+13. Verify no duplicate signal bars.
+14. Verify System Health is visually and geometrically unchanged from V30/V30.1: height 126px, 4 metric cards, automotive visual visible, no clipping/overlap.
+15. Verify Hero and Date Strip regression checks still pass.
+16. Capture 4 fresh screenshots:
+   - Full page
+   - KPI row close detail
+   - System Health
+   - Hero + KPI + System Health continuity
+17. Upload all 4 screenshots to My Drive root using the existing QA workflow.
+18. Push screenshots only to the QA repo workflow if configured. Do NOT source-push /67.
+
+SCREENSHOT NAMES
+67__ADMIN__V30-2__KPI-INTERNAL-BOUNDS__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V30-2__KPI-INTERNAL-BOUNDS__02__KPI-ROW__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V30-2__KPI-INTERNAL-BOUNDS__03__SYSTEM-HEALTH__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V30-2__KPI-INTERNAL-BOUNDS__04__HERO-KPI-HEALTH-CONTINUITY__1920x1080__<RUNSTAMP>.png
+
+PASS CONDITIONS
+KPI_COUNT=4
+KPI_EQUAL_HEIGHT=YES
+KPI_CARD_HEIGHT=108
+KPI_OVERFLOW=NO
+KPI_PRIMARY_VALUE_CLIPPED=NO
+KPI_CSS_SIGNAL_VISIBLE_COUNT=4
+KPI_CSS_SIGNAL_FIVE_STEP_PATTERN=PASS
+KPI_SIGNAL_DUPLICATION=NO
+KPI_PREMIUM_VISUAL=PASS
+SYSTEM_HEALTH_HEIGHT=126
+SYSTEM_HEALTH_METRIC_COUNT=4
+SYSTEM_HEALTH_METRIC_OVERLAP=NO
+SYSTEM_HEALTH_TEXT_CLIPPED=NO
+SYSTEM_HEALTH_AUTOMOTIVE_VISUAL_VISIBLE=YES
+SYSTEM_HEALTH_PREMIUM_VISUAL=PASS
+SYSTEM_HEALTH_CHANGED=NO
+HERO_GEOMETRY_SHIFT_PX=0
+HERO_IMAGE_FLASH_DETECTED=NO
+LEGACY_560X132_REQUESTED=NO
+DATE_STRIP_REGRESSION=PASS
+DATE_LOGIC_CHANGED=NO
+HERO_CHANGED=NO
+SIDEBAR_CHANGED=NO
+REVENUE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V30.2
+MODULE=ADMIN DASHBOARD
+ELEMENT=KPI INTERNAL BOUNDS FIX
+BASE_VERSION=V30.1
+TARGET_VERSION=V30.2
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=
+LIVE_RUNTIME_ACTIVATED=
+KPI_COUNT=
+KPI_EQUAL_HEIGHT=
+KPI_CARD_HEIGHT=
+KPI_OVERFLOW=
+KPI_OVERFLOW_ELEMENT=
+KPI_PRIMARY_VALUE_CLIPPED=
+KPI_CSS_SIGNAL_VISIBLE_COUNT=
+KPI_CSS_SIGNAL_FIVE_STEP_PATTERN=
+KPI_SIGNAL_DUPLICATION=
+KPI_PREMIUM_VISUAL=
+SYSTEM_HEALTH_HEIGHT=
+SYSTEM_HEALTH_METRIC_COUNT=
+SYSTEM_HEALTH_METRIC_OVERLAP=
+SYSTEM_HEALTH_TEXT_CLIPPED=
+SYSTEM_HEALTH_AUTOMOTIVE_VISUAL_VISIBLE=
+SYSTEM_HEALTH_PREMIUM_VISUAL=
+SYSTEM_HEALTH_CHANGED=
+HERO_GEOMETRY_SHIFT_PX=
+HERO_SCALE_OR_TRANSFORM_DETECTED=
+HERO_IMAGE_FLASH_DETECTED=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_REQUESTED=
+DATE_STRIP_REGRESSION=
+DATE_LOGIC_CHANGED=
+HERO_CHANGED=
+SIDEBAR_CHANGED=
+REVENUE_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
