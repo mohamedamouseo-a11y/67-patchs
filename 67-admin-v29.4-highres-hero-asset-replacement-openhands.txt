@@ -1,0 +1,174 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN HERO — HIGH-RES ASSET REPLACEMENT
+CURRENT_APPROVED_VERSION=V29.2
+BASE_VERSION=V29.3
+TARGET_VERSION=V29.4
+STATUS=EXECUTE + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+GOAL
+Replace the low-resolution 560x132 hero source image with the new high-resolution hero asset while preserving the already-approved V29.2/V29.3 hero composition and all behavior.
+
+SCOPE LOCK
+- HERO IMAGE ASSET / IMAGE RENDERING ONLY.
+- Do NOT redesign the hero.
+- Do NOT move or resize hero copy.
+- Do NOT change hero height.
+- Do NOT change date dock layout.
+- Do NOT change date popover layout or behavior.
+- Do NOT change sidebar, KPI, system health, revenue, operations, sellers, customers, backend, auth, routes, APIs or data.
+- Do NOT source-push.
+
+HIGH-RES ASSET SOURCE
+Use the exact Google Drive file below. Do not search by title and do not substitute another image.
+
+DRIVE_FILE_ID=1mwEQTIn_zRrGFnTEP2pk9k4HHJAZkGz7
+DRIVE_FILE_NAME=67-admin-v29.4-hero-highres.jpg
+DRIVE_FILE_URL=https://drive.google.com/file/d/1mwEQTIn_zRrGFnTEP2pk9k4HHJAZkGz7/view?usp=drivesdk
+EXPECTED_NATIVE_DIMENSIONS=2172x724
+EXPECTED_MIN_FILE_SIZE_BYTES=180000
+
+ASSET STAGING — REQUIRED BEFORE PATCH
+1. Reuse the existing authenticated Google Drive credentials/environment already used by the 67 QA Drive tooling.
+2. Download the exact file ID above as raw media.
+3. Save it exactly to:
+   /tmp/67-admin-v29.4-hero-highres.jpg
+4. Verify the file exists and is a JPEG.
+5. Verify width >= 2000 and height >= 600.
+6. Verify file size >= 180000 bytes.
+
+If there is no existing Drive download helper, inspect the existing 67 Google Drive QA uploader authentication setup and use the same authenticated client to call Google Drive files.get with alt=media for the exact file ID. Do not use filename search.
+
+PATCH
+After the asset is staged successfully, apply exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.4-highres-hero-asset-replacement-apply.sh
+
+PROJECT ROOT
+/67
+
+EXPECTED RESULT
+- RUNTIME_CSS=AdminDashboard.v29.4.css
+- HIGHRES_ASSET_PATH=src/assets/admin-v29.4-hero-highres.jpg
+- HIGHRES_ASSET_DIMENSIONS should report approximately 2172x724
+- Legacy 560x132 asset must no longer be used by the V29.4 hero.
+- Hero composition remains the same as V29.2/V29.3.
+- Date dock and popover remain unchanged.
+
+BUILD
+Run the patch and confirm npm run build passes.
+
+VISUAL QA
+Viewport: 1920x1080.
+Use the existing authenticated admin session.
+Do not modify application data.
+Capture exactly four new screenshots with one RUNSTAMP:
+
+1. 67__ADMIN__V29-4__HERO-HIGHRES__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+   Full dashboard showing hero + sidebar + first dashboard modules.
+
+2. 67__ADMIN__V29-4__HERO-HIGHRES__02__HERO-FULL__1920x1080__<RUNSTAMP>.png
+   Full hero in closed state, including both copy blocks and date dock.
+
+3. 67__ADMIN__V29-4__HERO-HIGHRES__03__CAR-DETAIL__1920x1080__<RUNSTAMP>.png
+   Close crop/detail of the car area at native browser zoom so image sharpness can be reviewed.
+
+4. 67__ADMIN__V29-4__HERO-HIGHRES__04__CITY-DETAIL__1920x1080__<RUNSTAMP>.png
+   Close crop/detail of the skyline / city area at native browser zoom so image sharpness can be reviewed.
+
+QA ACCEPTANCE
+- Hero looks materially sharper than V29.3.
+- No visible low-resolution pixelation comparable to the 560x132 source.
+- Car detail is substantially clearer.
+- Skyline detail is substantially clearer.
+- No stretch.
+- No layout shift.
+- Hero text remains readable and unchanged.
+- Date dock remains unchanged.
+- Sidebar remains unchanged.
+- Main content boundary remains correct.
+
+GOOGLE DRIVE QA
+Upload all 4 screenshots to My Drive root using the existing 67 QA upload workflow.
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the same 4 QA screenshots to:
+qa/v29.4-hero-highres/
+Do not push the /67 source project.
+
+MANDATORY FINAL REPORT
+Start exactly with:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN HERO — HIGH-RES ASSET REPLACEMENT
+CURRENT_APPROVED_VERSION=V29.2
+BASE_VERSION=V29.3
+TARGET_VERSION=V29.4
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report at minimum:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=HERO_IMAGE_ASSET_ONLY
+HIGHRES_ASSET_STAGED=
+HIGHRES_ASSET_REPLACED=
+HIGHRES_ASSET_PATH=
+HIGHRES_ASSET_DIMENSIONS=
+HIGHRES_ASSET_BYTES=
+LEGACY_LOWRES_ASSET_USED=NO
+HERO_CLARITY_IMPROVED=
+HERO_COMPOSITION_CHANGED=NO
+HERO_HEIGHT_CHANGED=NO
+HERO_COPY_CHANGED=NO
+DATE_DOCK_CHANGED=NO
+DATE_POPOVER_CHANGED=NO
+DATE_LOGIC_CHANGED=NO
+SIDEBAR_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+IMPORTANT
+Do not mark V29.4 approved.
+Do not push the /67 source project.
+ChatGPT must visually approve the screenshots first.
