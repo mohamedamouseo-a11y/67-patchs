@@ -1,0 +1,141 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.6.3
+TASK=DATE STRIP FINAL POLISH
+MODE=FRONTEND VISUAL POLISH ONLY — NO DATA/BACKEND/AUTH CHANGES — NO SOURCE PUSH
+
+Use this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.6.3-date-strip-final-polish-apply.sh
+
+OBJECTIVE
+Polish the existing V29.6.2 inline luxury date strip only. The strip must remain directly below the hero in normal document flow. Fix the clipped gold Apply button, rebalance the internal columns and spacing, and keep the opening motion restrained and premium.
+
+DO NOT CHANGE
+- Hero image, hero height, hero copy or hero composition.
+- Date logic, presets, selected values, apply/cancel behavior.
+- KPI content/logic, sidebar, system health, revenue, data, backend, auth.
+- Do not reintroduce Portal/fixed overlay behavior.
+- Do not push the source project.
+
+REQUIRED STEPS
+1. cd /67
+2. Confirm current runtime source imports AdminDashboard.v29.6.2.css.
+3. Run the exact patch script above.
+4. Require BUILD=PASS.
+5. Activate the new runtime using the same verified 67 deployment/restart workflow already used for the dashboard. Do not alter Nginx routing or unrelated services.
+6. Open https://sixty-seven.net/admin/ at 1920x1080 with a cache-busting query.
+7. Capture closed geometry for hero and KPI.
+8. Open the custom date strip.
+9. Verify the strip remains in normal document flow below the hero and does not intersect hero or KPI.
+10. Verify BOTH action buttons are fully inside the panel bounds. Measure getBoundingClientRect() for:
+   - .executive-date-popover--flow
+   - .executive-date-popover__footer
+   - .executive-date-popover__buttons
+   - .executive-date-cancel
+   - .executive-date-apply
+   Require every button left/right/top/bottom to be within panel bounds with at least 2px tolerance.
+11. Verify the full visible text of "تطبيق الفترة" and "إلغاء" is not clipped. Check clientWidth >= scrollWidth for each action button.
+12. Verify internal layout is visually balanced: no column overflow, no negative offsets, no element protruding from the left/right edges.
+13. Open/close the strip 5 times. Require hero geometry shift = 0 and KPI returns exactly to its closed Y position after each close.
+14. Confirm high-res hero remains 2172x724 and legacy 560x132 is not requested.
+15. Capture 4 fresh screenshots:
+   - Full page closed
+   - Full page open
+   - Hero + polished strip + KPI
+   - Date strip action/footer detail showing both buttons completely
+16. Upload all 4 screenshots to My Drive root using the existing QA workflow.
+17. Push screenshots only to the QA repo workflow if that workflow is already configured. Do NOT source-push /67.
+
+SCREENSHOT NAMES
+67__ADMIN__V29-6-3__DATE-STRIP-FINAL-POLISH__01__FULL-PAGE-CLOSED__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-6-3__DATE-STRIP-FINAL-POLISH__02__FULL-PAGE-OPEN__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-6-3__DATE-STRIP-FINAL-POLISH__03__HERO-STRIP-KPI__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-6-3__DATE-STRIP-FINAL-POLISH__04__ACTIONS-DETAIL__1920x1080__<RUNSTAMP>.png
+
+PASS CONDITIONS
+DATE_PANEL_IN_DOCUMENT_FLOW=YES
+DATE_PANEL_INTERSECTS_HERO=NO
+DATE_PANEL_INTERSECTS_KPI=NO
+APPLY_BUTTON_FULLY_VISIBLE=YES
+CANCEL_BUTTON_FULLY_VISIBLE=YES
+ACTION_BUTTONS_WITHIN_PANEL=YES
+ACTION_BUTTON_TEXT_CLIPPED=NO
+DATE_STRIP_COLUMN_OVERFLOW=NO
+DATE_STRIP_VISUAL_BALANCE=PASS
+KPI_RETURNS_ON_CLOSE=YES
+KPI_RETURN_DELTA_PX=0
+HERO_GEOMETRY_SHIFT_PX=0
+HERO_IMAGE_FLASH_DETECTED=NO
+LEGACY_560X132_REQUESTED=NO
+DATE_PICKER_OPEN_CLOSE_5X_PASS=YES
+DATE_LOGIC_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.6.3
+MODULE=ADMIN DASHBOARD
+ELEMENT=DATE STRIP FINAL POLISH
+BASE_VERSION=V29.6.2
+TARGET_VERSION=V29.6.3
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=
+LIVE_RUNTIME_ACTIVATED=
+DATE_PANEL_IN_DOCUMENT_FLOW=
+DATE_PANEL_TOP=
+DATE_PANEL_BOTTOM=
+DATE_PANEL_HEIGHT=
+DATE_PANEL_WIDTH=
+DATE_PANEL_INTERSECTS_HERO=
+DATE_PANEL_INTERSECTS_KPI=
+APPLY_BUTTON_FULLY_VISIBLE=
+APPLY_BUTTON_CLIENT_WIDTH=
+APPLY_BUTTON_SCROLL_WIDTH=
+CANCEL_BUTTON_FULLY_VISIBLE=
+CANCEL_BUTTON_CLIENT_WIDTH=
+CANCEL_BUTTON_SCROLL_WIDTH=
+ACTION_BUTTONS_WITHIN_PANEL=
+ACTION_BUTTON_TEXT_CLIPPED=
+DATE_STRIP_COLUMN_OVERFLOW=
+DATE_STRIP_VISUAL_BALANCE=
+KPI_CLOSED_TOP=
+KPI_OPEN_TOP=
+KPI_SHIFT_ON_OPEN_PX=
+KPI_RETURNS_ON_CLOSE=
+KPI_RETURN_DELTA_PX=
+HERO_GEOMETRY_SHIFT_PX=
+HERO_SCALE_OR_TRANSFORM_DETECTED=
+HERO_IMAGE_FLASH_DETECTED=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_REQUESTED=
+DATE_PICKER_OPEN_CLOSE_5X_PASS=
+DATE_LOGIC_CHANGED=
+HERO_COPY_CHANGED=
+HERO_HEIGHT_CHANGED=
+SIDEBAR_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
