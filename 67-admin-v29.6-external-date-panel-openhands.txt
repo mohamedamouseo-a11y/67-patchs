@@ -1,0 +1,117 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.6
+TASK=EXTERNAL LUXURY DATE PANEL
+MODE=FRONTEND VISUAL PATCH + QA — NO SOURCE PUSH
+
+User requirement from live screenshot:
+The custom date picker must NOT open inside the hero image/frame. The trigger stays where it is in the hero toolbar, but the luxury date panel must open completely OUTSIDE the hero frame as a detached floating surface.
+
+Use this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.6-external-date-panel-apply.sh
+
+BASELINE
+- Current working runtime must be V29.5.
+- V29.5 high-res hero stability must remain intact.
+- Do not change hero image, hero copy, hero height, sidebar, KPI layout, data logic, backend or auth.
+- Do not source-push.
+
+REQUIRED RESULT
+1. Apply the V29.6 patch.
+2. Build and require PASS.
+3. Activate the frontend runtime using the already-proven 67 runtime/service deployment path.
+4. Open https://sixty-seven.net/admin/ at 1920x1080 with a fresh cache-busting query.
+5. Keep the date trigger/button in its current hero toolbar position.
+6. Click the custom date trigger.
+7. The date panel must open below the complete hero frame, as a floating detached panel over the page canvas.
+8. It must NOT overlap/intersect the hero rectangle at all.
+9. It must NOT increase hero height or push KPI/revenue content down.
+10. Hero artwork must remain stable: no image jump, scale, zoom, flash or pixelation.
+11. Date picker luxury styling from V29.5 must remain.
+12. Open/close the panel 5 times and confirm the hero bounding box is unchanged.
+
+BROWSER GEOMETRY VERIFICATION
+Evaluate in browser context after opening the panel:
+const hero = document.querySelector('.ov-header').getBoundingClientRect();
+const panel = document.querySelector('.executive-date-popover').getBoundingClientRect();
+const intersects = !(panel.bottom <= hero.top || panel.top >= hero.bottom || panel.right <= hero.left || panel.left >= hero.right);
+Report:
+- HERO_TOP / HERO_BOTTOM / HERO_HEIGHT
+- DATE_PANEL_TOP / DATE_PANEL_BOTTOM / DATE_PANEL_LEFT / DATE_PANEL_WIDTH
+- DATE_PANEL_OUTSIDE_HERO = panel.top >= hero.bottom + 8
+- DATE_PANEL_INTERSECTS_HERO = intersects
+Require DATE_PANEL_OUTSIDE_HERO=YES and DATE_PANEL_INTERSECTS_HERO=NO.
+
+Also verify:
+- HERO_GEOMETRY_SHIFT_PX=0 after 5 open/close cycles.
+- BROWSER_RENDERED_IMAGE_WIDTH >= 2000.
+- BROWSER_RENDERED_IMAGE_HEIGHT >= 600.
+- LEGACY_560X132_REQUESTED=NO.
+
+SCREENSHOTS — 1920x1080
+Capture fresh screenshots:
+1. 67__ADMIN__V29-6__EXTERNAL-DATE-PANEL__01__FULL-PAGE-CLOSED__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V29-6__EXTERNAL-DATE-PANEL__02__FULL-PAGE-OPEN__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V29-6__EXTERNAL-DATE-PANEL__03__HERO-AND-EXTERNAL-PANEL__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V29-6__EXTERNAL-DATE-PANEL__04__DATE-PANEL-DETAIL__1920x1080__<RUNSTAMP>.png
+
+Upload the 4 screenshots to My Drive root using the existing 67 QA upload workflow. QA repo fallback is allowed. Do not source-push.
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.6
+MODULE=ADMIN DASHBOARD
+ELEMENT=EXTERNAL LUXURY DATE PANEL
+BASE_VERSION=V29.5
+TARGET_VERSION=V29.6
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=AdminDashboard.v29.6.css
+LIVE_RUNTIME_ACTIVATED=
+DATE_PANEL_EXTERNAL_TO_HERO=
+DATE_PANEL_POSITION_MODE=
+HERO_TOP=
+HERO_BOTTOM=
+HERO_HEIGHT=
+DATE_PANEL_TOP=
+DATE_PANEL_BOTTOM=
+DATE_PANEL_LEFT=
+DATE_PANEL_WIDTH=
+DATE_PANEL_OUTSIDE_HERO=
+DATE_PANEL_INTERSECTS_HERO=
+DATE_TRIGGER_POSITION_CHANGED=NO
+HERO_GEOMETRY_SHIFT_PX=
+HERO_SCALE_OR_TRANSFORM_DETECTED=
+HERO_IMAGE_FLASH_DETECTED=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_REQUESTED=
+DATE_PICKER_OPEN_CLOSE_5X_PASS=
+DATE_PICKER_LUXURY_STYLE_PRESERVED=
+DATE_LOGIC_CHANGED=NO
+HERO_COPY_CHANGED=NO
+HERO_HEIGHT_CHANGED=NO
+KPI_LAYOUT_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
