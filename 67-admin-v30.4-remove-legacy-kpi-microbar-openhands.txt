@@ -1,0 +1,147 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V30.4
+TASK=REMOVE LEGACY KPI MICROBAR DOM
+MODE=FRONTEND STRUCTURAL CLEANUP ONLY — NO DATA/BACKEND/AUTH CHANGES — NO SOURCE PUSH
+
+Use this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v30.4-remove-legacy-kpi-microbar-apply.sh
+
+OBJECTIVE
+Finish the V30 KPI premium polish by removing the obsolete DOM-based .kpi-microbar markup from the four KPI cards. The visible five-step KPI signals must continue to be rendered only by the existing CSS pseudo-element system from V30.1/V30.3. This is not a visual redesign.
+
+DO NOT CHANGE
+- KPI labels, values, icons, notes, order, card dimensions, colors, or business data.
+- Existing CSS pseudo-signal design.
+- System Health visuals or metrics.
+- Hero image/composition/height/copy.
+- Date Strip behavior or date logic.
+- Sidebar, Revenue, current operations, live operations, backend, auth, APIs, data.
+- Do not source-push /67.
+
+REQUIRED STEPS
+1. cd /67
+2. Confirm current runtime source imports AdminDashboard.v30.3.css.
+3. Run the exact patch above.
+4. Require BUILD=PASS.
+5. Activate the V30.4 runtime using the same verified 67 frontend deployment/restart workflow. Do not change Nginx routing or unrelated services.
+6. Open https://sixty-seven.net/admin/ at 1920x1080 using a cache-busting query.
+7. Verify document.querySelectorAll('.kpi-microbar').length === 0.
+8. Verify exactly 4 KPI cards exist and all 4 visible CSS pseudo-signals still render with the five-step pattern.
+9. Verify KPI_SIGNAL_DUPLICATION=NO.
+10. For every .kpi-card, recursively inspect REAL DOM descendants with getBoundingClientRect(). Require each descendant rectangle to remain within the card rectangle with 1px tolerance. Ignore ::before/::after pseudo-elements because they are intentionally decorative and clipped by the card.
+11. Specifically verify .kpi-card__note is within bounds on all four cards.
+12. Verify primary KPI values are fully visible: clientWidth >= scrollWidth and clientHeight >= scrollHeight for every .kpi-card__value.
+13. Verify no visible text clipping in label/note/value and no horizontal scroll inside KPI cards.
+14. Confirm all 4 KPI cards remain equal height = 108px.
+15. Confirm System Health is unchanged from V30/V30.3: height 126px, 4 metrics, no overlap, no clipping, automotive visual visible.
+16. Confirm Hero geometry shift = 0; high-res hero remains 2172x724; legacy 560x132 is not requested.
+17. Open and close Date Strip once and verify regression PASS and KPI cards return normally after closing.
+18. Capture 4 fresh screenshots:
+   - Full page
+   - KPI row close detail
+   - System Health
+   - Hero + KPI + System Health continuity
+19. Upload all 4 screenshots to My Drive root using existing QA workflow.
+20. Push screenshots only to the configured QA repo if applicable. Do NOT source-push /67.
+
+SCREENSHOT NAMES
+67__ADMIN__V30-4__REMOVE-LEGACY-MICROBAR__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V30-4__REMOVE-LEGACY-MICROBAR__02__KPI-ROW__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V30-4__REMOVE-LEGACY-MICROBAR__03__SYSTEM-HEALTH__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V30-4__REMOVE-LEGACY-MICROBAR__04__HERO-KPI-HEALTH-CONTINUITY__1920x1080__<RUNSTAMP>.png
+
+PASS CONDITIONS
+LEGACY_KPI_MICROBAR_DOM_COUNT=0
+KPI_COUNT=4
+KPI_EQUAL_HEIGHT=YES
+KPI_CARD_HEIGHT=108
+KPI_OVERFLOW=NO
+KPI_NOTE_ALL_WITHIN_BOUNDS=YES
+KPI_PRIMARY_VALUE_CLIPPED=NO
+KPI_PRIMARY_VALUE_SCROLL_OVERFLOW=NO
+KPI_CSS_SIGNAL_VISIBLE_COUNT=4
+KPI_CSS_SIGNAL_FIVE_STEP_PATTERN=PASS
+KPI_SIGNAL_DUPLICATION=NO
+KPI_PREMIUM_VISUAL=PASS
+SYSTEM_HEALTH_PREMIUM_VISUAL=PASS
+SYSTEM_HEALTH_CHANGED=NO
+HERO_GEOMETRY_SHIFT_PX=0
+HERO_IMAGE_FLASH_DETECTED=NO
+LEGACY_560X132_REQUESTED=NO
+DATE_STRIP_REGRESSION=PASS
+DATE_LOGIC_CHANGED=NO
+HERO_CHANGED=NO
+SIDEBAR_CHANGED=NO
+REVENUE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V30.4
+MODULE=ADMIN DASHBOARD
+ELEMENT=REMOVE LEGACY KPI MICROBAR DOM
+BASE_VERSION=V30.3
+TARGET_VERSION=V30.4
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=
+LIVE_RUNTIME_ACTIVATED=
+LEGACY_KPI_MICROBAR_DOM_COUNT=
+KPI_COUNT=
+KPI_EQUAL_HEIGHT=
+KPI_CARD_HEIGHT=
+KPI_OVERFLOW=
+KPI_OVERFLOW_ELEMENT=
+KPI_NOTE_ALL_WITHIN_BOUNDS=
+KPI_PRIMARY_VALUE_CLIPPED=
+KPI_PRIMARY_VALUE_SCROLL_OVERFLOW=
+KPI_CSS_SIGNAL_VISIBLE_COUNT=
+KPI_CSS_SIGNAL_FIVE_STEP_PATTERN=
+KPI_SIGNAL_DUPLICATION=
+KPI_PREMIUM_VISUAL=
+SYSTEM_HEALTH_HEIGHT=
+SYSTEM_HEALTH_METRIC_COUNT=
+SYSTEM_HEALTH_METRIC_OVERLAP=
+SYSTEM_HEALTH_TEXT_CLIPPED=
+SYSTEM_HEALTH_AUTOMOTIVE_VISUAL_VISIBLE=
+SYSTEM_HEALTH_PREMIUM_VISUAL=
+SYSTEM_HEALTH_CHANGED=
+HERO_GEOMETRY_SHIFT_PX=
+HERO_SCALE_OR_TRANSFORM_DETECTED=
+HERO_IMAGE_FLASH_DETECTED=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_REQUESTED=
+DATE_STRIP_REGRESSION=
+DATE_LOGIC_CHANGED=
+HERO_CHANGED=
+SIDEBAR_CHANGED=
+REVENUE_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
