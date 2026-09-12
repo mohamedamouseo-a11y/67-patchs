@@ -1,0 +1,156 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V30
+TASK=KPI + SYSTEM HEALTH PREMIUM POLISH
+MODE=FRONTEND VISUAL POLISH ONLY — NO DATA/BACKEND/AUTH CHANGES — NO SOURCE PUSH
+
+Use this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v30-kpi-system-health-premium-apply.sh
+
+OBJECTIVE
+Upgrade ONLY the KPI signal row and the System Health / platform stability command center from approved baseline V29.6.3. The new visual language must match the luxury/executive quality already established by the Hero, Date Strip and Sidebar: restrained ivory/gold KPI material, stronger numeric hierarchy, differentiated signal accents, richer micro-trend treatment, and a premium dark infrastructure command-center surface.
+
+PROTECTED / DO NOT CHANGE
+- Hero image, Hero height, Hero copy, Hero toolbar, Hero geometry or preload behavior.
+- V29.6.3 inline Date Strip appearance, position, transition, logic, open/close behavior, KPI push-down behavior.
+- Sidebar design or Super Admin footer.
+- Revenue / charts / live operations sections.
+- Any displayed business values, labels, calculations, API calls, state, data, backend, auth, permissions or routing.
+- Do not introduce new dependencies.
+- Do not source-push /67.
+
+V30 DESIGN INTENT
+KPI ROW:
+- Keep exactly 4 KPI cards and the same content/order.
+- Premium warm ivory base with restrained per-card signal accent.
+- Stronger number hierarchy and tighter typography.
+- Refined square executive icon treatment, not oversized circles.
+- Restore/use the existing kpi-microbar markup as a tiny premium signal graph.
+- Subtle top signal line and ambient glow only; no loud neon or saturated backgrounds.
+- Preserve RTL readability and prevent value/note clipping.
+
+SYSTEM HEALTH:
+- Preserve existing title, status, 4 metrics, dynamic values and automotive background image.
+- Recompose visually as a dark executive command center while preserving the same semantic structure.
+- Strong left status/authority block, four equal metric modules, cinematic right visual.
+- Rich navy/charcoal depth, gold authority accents, green operational signal, restrained red road accent.
+- No text clipping, no overlapping metric cards, no loss of the automotive image.
+- Keep the component compact; do not turn it into a tall dashboard section.
+
+REQUIRED STEPS
+1. cd /67
+2. Confirm current source imports AdminDashboard.v29.6.3.css.
+3. Run the exact V30 patch above.
+4. Require BUILD=PASS.
+5. Confirm runtime import is AdminDashboard.v30.css.
+6. Activate the V30 runtime using the same verified 67 deployment/restart workflow already used. Do not modify Nginx routing or unrelated services.
+7. Open https://sixty-seven.net/admin/ at viewport 1920x1080 with cache busting.
+8. Keep the custom Date Strip CLOSED for primary V30 visual QA.
+9. Verify Hero geometry is unchanged from V29.6.3.
+10. Verify Date Strip CSS/behavior is unchanged. Open it once only for regression QA, then close it and verify KPI returns correctly.
+11. Verify exactly 4 KPI cards exist and no content/value/order changed.
+12. Measure all KPI card bounds. Require equal row height, no overlap, no horizontal overflow and no text clipping.
+13. Check each KPI value and note for clientWidth >= scrollWidth where applicable; no visible truncation of primary KPI values.
+14. Verify .kpi-microbar is visible inside all 4 KPI cards and remains inside card bounds.
+15. Verify System Health contains exactly 4 .syshealth__metric nodes.
+16. Verify all four System Health metric cards are inside the system-health container, with no overlap and no clipped labels/values.
+17. Verify System Health right automotive visual remains visible at 1920x1080.
+18. Verify no Hero image flash, no legacy 560x132 hero request, and current hero remains 2172x724.
+19. Capture 4 fresh screenshots:
+   - Full page closed state.
+   - KPI row detail showing all 4 KPI cards.
+   - System Health full component detail.
+   - Hero + KPI + System Health continuity crop to judge overall visual hierarchy.
+20. Upload all 4 screenshots to My Drive root using the existing QA workflow.
+21. Push screenshots only to the configured QA repo if already configured. Do NOT source-push /67.
+
+SCREENSHOT NAMES
+67__ADMIN__V30__KPI-SYSTEM-HEALTH-PREMIUM__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V30__KPI-SYSTEM-HEALTH-PREMIUM__02__KPI-ROW__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V30__KPI-SYSTEM-HEALTH-PREMIUM__03__SYSTEM-HEALTH__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V30__KPI-SYSTEM-HEALTH-PREMIUM__04__HERO-KPI-HEALTH-CONTINUITY__1920x1080__<RUNSTAMP>.png
+
+PASS CONDITIONS
+KPI_COUNT=4
+KPI_EQUAL_HEIGHT=YES
+KPI_OVERFLOW=NO
+KPI_PRIMARY_VALUE_CLIPPED=NO
+KPI_SIGNAL_MICROBARS_VISIBLE=YES
+KPI_PREMIUM_VISUAL=PASS
+SYSTEM_HEALTH_METRIC_COUNT=4
+SYSTEM_HEALTH_METRIC_OVERLAP=NO
+SYSTEM_HEALTH_TEXT_CLIPPED=NO
+SYSTEM_HEALTH_AUTOMOTIVE_VISUAL_VISIBLE=YES
+SYSTEM_HEALTH_PREMIUM_VISUAL=PASS
+HERO_GEOMETRY_SHIFT_PX=0
+HERO_IMAGE_FLASH_DETECTED=NO
+LEGACY_560X132_REQUESTED=NO
+DATE_STRIP_REGRESSION=PASS
+DATE_LOGIC_CHANGED=NO
+HERO_CHANGED=NO
+SIDEBAR_CHANGED=NO
+REVENUE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V30
+MODULE=ADMIN DASHBOARD
+ELEMENT=KPI + SYSTEM HEALTH PREMIUM POLISH
+BASE_VERSION=V29.6.3
+TARGET_VERSION=V30
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=
+LIVE_RUNTIME_ACTIVATED=
+KPI_COUNT=
+KPI_EQUAL_HEIGHT=
+KPI_CARD_HEIGHT=
+KPI_OVERFLOW=
+KPI_PRIMARY_VALUE_CLIPPED=
+KPI_SIGNAL_MICROBARS_VISIBLE=
+KPI_PREMIUM_VISUAL=
+SYSTEM_HEALTH_HEIGHT=
+SYSTEM_HEALTH_METRIC_COUNT=
+SYSTEM_HEALTH_METRIC_OVERLAP=
+SYSTEM_HEALTH_TEXT_CLIPPED=
+SYSTEM_HEALTH_AUTOMOTIVE_VISUAL_VISIBLE=
+SYSTEM_HEALTH_PREMIUM_VISUAL=
+HERO_GEOMETRY_SHIFT_PX=
+HERO_SCALE_OR_TRANSFORM_DETECTED=
+HERO_IMAGE_FLASH_DETECTED=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_REQUESTED=
+DATE_STRIP_REGRESSION=
+DATE_LOGIC_CHANGED=
+HERO_CHANGED=
+SIDEBAR_CHANGED=
+REVENUE_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
