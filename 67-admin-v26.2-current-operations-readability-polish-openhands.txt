@@ -1,0 +1,207 @@
+==================================================
+VERSION: V26.2
+MODULE: ADMIN DASHBOARD
+ELEMENT: CURRENT OPERATIONS READABILITY + PROPORTION POLISH
+BASE: V26.1
+TARGET: V26.2
+==================================================
+
+Work only on:
+/67
+
+PURPOSE
+Fix the visual readability problem visible in the user's latest real browser screenshot.
+
+REFERENCE PROBLEM
+V26.1 fixed clipping, but the Current Operations card is still visually too compressed:
+- action rows are too small,
+- row text is too tiny,
+- counts/status pills are too weak,
+- summary tiles dominate too much vertical space,
+- the card does not yet read as premium at normal browser scale.
+
+TARGET
+Keep the V26 structure and V26.1 no-clipping correction, but improve hierarchy and legibility:
+- reduce summary height,
+- increase all four action row heights,
+- increase row title/secondary text sizes,
+- enlarge count badges and status pills,
+- preserve all four rows fully visible,
+- preserve the green health footer fully visible,
+- preserve the 286px card height and alignment with Live Operations.
+
+SCOPE LOCK
+ONLY Current Operations CSS geometry/readability may change.
+NO markup changes.
+NO data changes.
+NO logic changes.
+
+LOCKED MODULES
+- Live Operations V25.1: zero visual/functional changes
+- Revenue V24.1
+- Hero
+- Date Filter
+- KPI V22.2
+- System Health V23
+- Transactions
+- Sidebar
+- backend/auth APIs
+- business data
+
+FUNCTIONAL LOCKS
+- `pendingReview` unchanged
+- pending documents calculation unchanged
+- `verifiedSellersCount` unchanged
+- conditional recent-payment row unchanged
+- row order unchanged
+- all labels/content unchanged from V26
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v26.2-current-operations-readability-polish-apply.sh
+
+EXECUTE
+cd /67
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v26.2-current-operations-readability-polish-apply.sh \
+-o /tmp/67-admin-v26.2-current-operations-readability-polish-apply.sh
+chmod +x /tmp/67-admin-v26.2-current-operations-readability-polish-apply.sh
+bash /tmp/67-admin-v26.2-current-operations-readability-polish-apply.sh
+
+Patch must return BUILD=PASS before QA.
+
+==================================================
+VISUAL QA — REQUIRED, REAL BROWSER JUDGMENT
+==================================================
+
+Use existing authenticated browser session.
+Do not mutate business data.
+Viewport: 1920x1080.
+
+IMPORTANT
+Do NOT approve merely because DOM/CSS checks pass.
+Judge the card visually at normal browser scale.
+
+PASS CONDITIONS
+- Current Operations is clearly more readable than V26.1.
+- Summary tiles are visually secondary to action rows.
+- All action rows are fully visible:
+  1) متاجر قيد المراجعة
+  2) وثائق معلقة
+  3) متاجر نشطة
+  4) عمليات دفع أخيرة (when condition is true)
+- Active-store row is NOT collapsed into a thin strip.
+- Each row title is readable without zooming.
+- Secondary description is readable.
+- Count badge is clearly legible.
+- Status pill is clearly legible.
+- Green health footer is fully visible.
+- No overlap, no clipping, no vertical scroll inside card.
+- Card remains aligned with Live Operations.
+- Live Operations itself is unchanged.
+
+If the card is still visually too tiny or any row is clipped, return VISUAL_QA=FAIL.
+
+==================================================
+SCREENSHOTS — FRAME THE TARGET CORRECTLY
+==================================================
+
+Use one RUNSTAMP in YYYYMMDD-HHMMSS.
+Do NOT repeat the old mistake of framing too much page and making the target unreadable.
+
+Required 1920x1080 screenshots:
+1. 67__ADMIN__V26-2__CURRENT-READABILITY__01__CURRENT-CARD-FULL__1920x1080__<RUNSTAMP>.png
+   - Scroll so Current Operations card is fully visible from header to bottom edge.
+   - Card must occupy a meaningful portion of screenshot.
+
+2. 67__ADMIN__V26-2__CURRENT-READABILITY__02__CURRENT-ROWS-CLOSEUP__1920x1080__<RUNSTAMP>.png
+   - Close framing centered on Current Operations.
+   - All four rows + summary + footer must be readable.
+
+3. 67__ADMIN__V26-2__CURRENT-READABILITY__03__ROW2-BOTH-CARDS__1920x1080__<RUNSTAMP>.png
+   - Show Live Operations and Current Operations fully side-by-side.
+   - Verify equal visual alignment.
+
+4. 67__ADMIN__V26-2__CURRENT-READABILITY__04__BOTTOM-EDGE__1920x1080__<RUNSTAMP>.png
+   - Explicitly prove active-store row, payment row, and green health footer are all fully visible.
+
+==================================================
+GOOGLE DRIVE QA HANDOFF
+==================================================
+
+Use:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Upload all four PNG screenshots directly to My Drive root.
+Do NOT create folders.
+Preserve exact filenames.
+Return Drive IDs and links.
+
+Also push the same QA screenshots to:
+repo: mohamedamouseo-a11y/67-patchs
+path: qa/v26.2-current-operations-readability/
+
+Do NOT push developer-hub-67 source code.
+User will source-push manually only after visual approval.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=V26.1
+TARGET_VERSION=V26.2
+RUNTIME_CSS=AdminDashboard.v26.2.css
+ELEMENT=CURRENT_OPERATIONS_ONLY
+REFERENCE=USER_SCREENSHOT_2026_09_12
+CURRENT_READABILITY_POLISHED=
+CURRENT_SUMMARY_HEIGHT=42PX_DESKTOP
+CURRENT_ACTION_ROW_HEIGHT=34PX_DESKTOP
+CURRENT_COUNTS_ENLARGED=
+CURRENT_STATUS_PILLS_ENLARGED=
+CURRENT_ACTIVE_STORE_ROW_VISIBLE=
+CURRENT_PAYMENT_ROW_VISIBLE=
+CURRENT_HEALTH_FOOTER_VISIBLE=
+CURRENT_VALUES_CHANGED=NO
+CURRENT_LOGIC_CHANGED=NO
+CURRENT_MARKUP_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+REVENUE_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+TRANSACTIONS_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
