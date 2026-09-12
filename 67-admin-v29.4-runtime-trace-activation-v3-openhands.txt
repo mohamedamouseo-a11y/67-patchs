@@ -1,0 +1,76 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+TASK=RUNTIME TRACE + ACTIVATION V3 + BROWSER VERIFICATION
+MODE=DEPLOYMENT/RUNTIME ONLY — NO DESIGN CHANGES — NO SOURCE PUSH
+
+The prior activation attempts failed because the actual Nginx route/upstream was not resolved with certainty. Use the exact script below to trace the real server_name route and activate the correct runtime target only:
+
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.4-runtime-trace-activation-v3-apply.sh
+
+REQUIRED WORKFLOW
+1. Confirm /67 source is still V29.4 and the high-res hero asset exists.
+2. Run the V3 script exactly.
+3. The script must inspect nginx -T and determine whether sixty-seven.net is served by a STATIC root/alias or PROXY upstream.
+4. If static, sync /67/dist only to the exact resolved static root and reload/restart Nginx only as the script allows.
+5. If proxied, resolve the actual upstream port/PID/CWD. Restart only a verified systemd service whose process cwd is /67 and command contains server/index.js.
+6. Do not guess an upstream, do not kill arbitrary processes, and do not modify source/design.
+7. Require ORIGIN_MATCH_LOCAL_DIST=YES and PUBLIC_MATCH_LOCAL_DIST=YES. If either is NO, stop and report the full routing diagnostics from the script.
+8. If both are YES, open https://sixty-seven.net/admin/ with a unique cache-busting query.
+9. In browser context evaluate getComputedStyle(document.querySelector('.ov-header__motif')).backgroundImage.
+10. Load that exact background URL and report naturalWidth/naturalHeight.
+11. Require width >= 2000, height >= 600, and URL must NOT contain admin-v17-hero.
+12. Only after runtime verification passes, capture four fresh screenshots at 1920x1080: full page, full hero, car detail, city detail.
+13. Upload the screenshots to My Drive root with the existing 67 QA upload workflow.
+14. Do NOT source-push.
+
+SCREENSHOT NAMES
+67__ADMIN__V29-4__RUNTIME-V3__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-4__RUNTIME-V3__02__HERO-FULL__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-4__RUNTIME-V3__03__CAR-DETAIL__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V29-4__RUNTIME-V3__04__CITY-DETAIL__1920x1080__<RUNSTAMP>.png
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN HERO — HIGH-RES ASSET REPLACEMENT
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+BUILD=
+NGINX_ROUTE_MODE=
+NGINX_ROUTE_TARGET=
+LIVE_ROOT=
+UPSTREAM_PORT=
+UPSTREAM_PID=
+UPSTREAM_CWD=
+UPSTREAM_CMD=
+SERVICE_UNIT=
+DEPLOY_ACTION=
+LOCAL_INDEX_SHA=
+ORIGIN_MATCH_LOCAL_DIST=
+PUBLIC_MATCH_LOCAL_DIST=
+LOCAL_DIST_REFS=
+ORIGIN_REFS=
+PUBLIC_REFS=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_RENDERED=
+RUNTIME_ASSET_MISMATCH=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
