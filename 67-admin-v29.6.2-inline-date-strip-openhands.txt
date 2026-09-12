@@ -1,0 +1,126 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.6.2
+TASK=INLINE LUXURY DATE STRIP + FLOW QA
+MODE=FRONTEND ONLY — NO SOURCE PUSH UNTIL CHATGPT VISUAL APPROVAL
+
+GOAL
+Replace the V29.6.1 floating portal panel with a compact luxury date strip directly BELOW the hero in normal document flow.
+
+The panel must NOT overlay the hero, KPI cards, system health, or charts.
+When open, it should occupy its own strip and push the KPI row down naturally.
+When closed, the KPI row must return to its exact original closed position.
+The hero itself must remain completely unchanged and stable.
+
+USE THIS PATCH EXACTLY:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.6.2-inline-date-strip-apply.sh
+
+REQUIRED STEPS
+1. Confirm current workspace is V29.6.1 and src/pages/AdminDashboard.jsx imports AdminDashboard.v29.6.1.css.
+2. Run the V29.6.2 patch above.
+3. Require PATCH_APPLIED=YES and BUILD=PASS.
+4. Confirm runtime import is AdminDashboard.v29.6.2.css.
+5. Activate the built frontend on the existing verified 67 runtime using the SAME safe deployment/restart method that successfully activated V29.5/V29.6.1. Do not alter Nginx architecture, backend logic, auth, or data.
+6. Open https://sixty-seven.net/admin/ at 1920x1080 using a unique cache-busting query.
+7. Capture geometry with the panel CLOSED:
+   - hero rect
+   - KPI row top
+8. Open the custom date panel.
+9. Confirm the panel is rendered inside .executive-date-flow-slot, NOT under document.body and NOT inside .ov-header.
+10. Capture geometry with panel OPEN:
+   - hero rect
+   - panel rect
+   - KPI row top
+11. REQUIRE:
+   - DATE_PANEL_IN_DOCUMENT_FLOW=YES
+   - DATE_PANEL_PARENT_IS_FLOW_SLOT=YES
+   - DATE_PANEL_INSIDE_HERO=NO
+   - DATE_PANEL_INTERSECTS_HERO=NO
+   - DATE_PANEL_INTERSECTS_KPI=NO
+   - PANEL_TOP >= HERO_BOTTOM
+   - KPI_OPEN_TOP > KPI_CLOSED_TOP
+   - HERO_GEOMETRY_SHIFT_PX=0
+12. Close the panel and confirm KPI row returns to original top position within 1px.
+13. Open/close the panel 5 times. Require no hero image flash, no hero scale/transform, no panel overlay collision, and no layout drift after the fifth close.
+14. Confirm high-res hero remains the actual rendered source and legacy 560x132 asset is not requested.
+15. Visually inspect that the panel is a COMPACT HORIZONTAL luxury strip, not a tall modal. It should preserve the dark executive material, gold accent, date cards, Apply/Cancel buttons, and readable Arabic hierarchy.
+16. Do NOT push source project.
+
+VISUAL QA SCREENSHOTS — 1920x1080
+Capture exactly these 4 fresh screenshots:
+- 67__ADMIN__V29-6-2__INLINE-DATE-STRIP__01__FULL-PAGE-CLOSED__1920x1080__<RUNSTAMP>.png
+- 67__ADMIN__V29-6-2__INLINE-DATE-STRIP__02__FULL-PAGE-OPEN__1920x1080__<RUNSTAMP>.png
+- 67__ADMIN__V29-6-2__INLINE-DATE-STRIP__03__HERO-PLUS-STRIP-PLUS-KPI__1920x1080__<RUNSTAMP>.png
+- 67__ADMIN__V29-6-2__INLINE-DATE-STRIP__04__DATE-STRIP-DETAIL__1920x1080__<RUNSTAMP>.png
+
+Upload all 4 to My Drive root using the existing 67 QA workflow. QA repo push is allowed. SOURCE PROJECT PUSH IS FORBIDDEN.
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.6.2
+MODULE=ADMIN DASHBOARD
+ELEMENT=INLINE LUXURY DATE STRIP
+BASE_VERSION=V29.6.1
+TARGET_VERSION=V29.6.2
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=
+LIVE_RUNTIME_ACTIVATED=
+DATE_PANEL_IN_DOCUMENT_FLOW=
+DATE_PANEL_PARENT_IS_FLOW_SLOT=
+DATE_PANEL_POSITION_MODE=
+DATE_PANEL_COMPACT_HORIZONTAL=
+HERO_TOP=
+HERO_BOTTOM=
+HERO_HEIGHT=
+DATE_PANEL_TOP=
+DATE_PANEL_BOTTOM=
+DATE_PANEL_HEIGHT=
+DATE_PANEL_WIDTH=
+DATE_PANEL_INSIDE_HERO=
+DATE_PANEL_INTERSECTS_HERO=
+DATE_PANEL_INTERSECTS_KPI=
+KPI_CLOSED_TOP=
+KPI_OPEN_TOP=
+KPI_SHIFT_ON_OPEN_PX=
+KPI_RETURNS_ON_CLOSE=
+KPI_RETURN_DELTA_PX=
+HERO_GEOMETRY_SHIFT_PX=
+HERO_SCALE_OR_TRANSFORM_DETECTED=
+HERO_IMAGE_FLASH_DETECTED=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_REQUESTED=
+DATE_PICKER_OPEN_CLOSE_5X_PASS=
+DATE_PICKER_LUXURY_STYLE_PRESERVED=
+DATE_LOGIC_CHANGED=NO
+HERO_COPY_CHANGED=NO
+HERO_HEIGHT_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+If any geometry requirement fails, set VISUAL_QA=BLOCKED and do not claim approval.
