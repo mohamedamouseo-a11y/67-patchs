@@ -1,0 +1,119 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.6.1
+TASK=EXTERNAL DATE PANEL — TRUE BODY PORTAL + LUXURY RESTORE
+MODE=FRONTEND ONLY — NO SOURCE PUSH
+
+The V29.6 QA failed because the popup was still physically inside the hero DOM tree. A transformed/backdrop-filter ancestor changed the containing block, so position:fixed rendered at panel_top=28 while hero_bottom=192. The date panel therefore intersected the hero.
+
+Apply this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.6.1-external-date-portal-fix-apply.sh
+
+GOAL
+- Keep the date trigger exactly where it is inside the hero toolbar.
+- Render only the opened .executive-date-popover through React createPortal(..., document.body).
+- The date panel must appear fully BELOW and OUTSIDE the hero rectangle.
+- The date panel must float over page content without increasing hero height or shifting KPI layout.
+- Restore the full V29.5 dark/gold luxury material treatment.
+- Preserve the current high-res hero, hero geometry, date logic, data, backend, auth and sidebar.
+
+REQUIRED STEPS
+1. cd /67.
+2. Confirm current runtime source imports AdminDashboard.v29.6.css.
+3. Run the V29.6.1 patch script and require BUILD=PASS.
+4. Run npm run build again and require PASS.
+5. Activate the current /67/dist using the already-verified 67 production runtime path from the prior V29.6/V29.5 QA. The live route is the same sixty-seven.net Node/Nginx runtime already diagnosed. Do not modify Nginx config.
+6. If the verified 67 systemd service needs restart to serve the rebuilt dist, restart only that verified 67 service.
+7. Open https://sixty-seven.net/admin/ with a unique cache-busting query and force fresh browser cache.
+8. Verify the hero high-res image still resolves to the 2172x724 asset and legacy 560x132 is not requested.
+9. Open the custom date panel.
+10. Verify DOM ownership:
+    const panel = document.querySelector('.executive-date-popover');
+    DATE_PANEL_PARENT_IS_BODY = panel?.parentElement === document.body
+    Require YES.
+11. Measure:
+    const hero = document.querySelector('.ov-header').getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    Report HERO_TOP, HERO_BOTTOM, HERO_HEIGHT, DATE_PANEL_TOP, DATE_PANEL_BOTTOM, DATE_PANEL_LEFT, DATE_PANEL_WIDTH.
+12. Geometry requirements:
+    - DATE_PANEL_TOP >= HERO_BOTTOM + 8
+    - DATE_PANEL_OUTSIDE_HERO=YES
+    - DATE_PANEL_INTERSECTS_HERO=NO
+13. Verify HERO_GEOMETRY_SHIFT_PX=0 by comparing hero top/left/width/height closed vs open.
+14. Open and close the panel 5 times. Require PASS and no image flash, zoom, shift or pixelation.
+15. Verify luxury computed style on panel:
+    - backdrop-filter is not none
+    - background-image contains gradient
+    - border radius >= 16px
+    - border color is gold-toned / non-transparent
+    Report DATE_PICKER_LUXURY_STYLE_PRESERVED=YES only if these checks pass.
+16. Do not change date logic or values during QA.
+17. Capture screenshots at 1920x1080 after all checks pass.
+
+SCREENSHOTS
+- 67__ADMIN__V29-6-1__EXTERNAL-DATE-PORTAL__01__FULL-PAGE-CLOSED__1920x1080__<RUNSTAMP>.png
+- 67__ADMIN__V29-6-1__EXTERNAL-DATE-PORTAL__02__FULL-PAGE-OPEN__1920x1080__<RUNSTAMP>.png
+- 67__ADMIN__V29-6-1__EXTERNAL-DATE-PORTAL__03__HERO-PLUS-EXTERNAL-PANEL__1920x1080__<RUNSTAMP>.png
+- 67__ADMIN__V29-6-1__EXTERNAL-DATE-PORTAL__04__PANEL-DETAIL__1920x1080__<RUNSTAMP>.png
+
+Upload the 4 screenshots to My Drive root using the existing 67 QA upload workflow. QA repo fallback is allowed. Do NOT push the source project.
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.6.1
+MODULE=ADMIN DASHBOARD
+ELEMENT=EXTERNAL LUXURY DATE PORTAL
+BASE_VERSION=V29.6
+TARGET_VERSION=V29.6.1
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=AdminDashboard.v29.6.1.css
+LIVE_RUNTIME_ACTIVATED=
+DATE_PANEL_PORTAL_TO_BODY=
+DATE_PANEL_PARENT_IS_BODY=
+DATE_PANEL_POSITION_MODE=FIXED_VIEWPORT_TRUE_PORTAL
+HERO_TOP=
+HERO_BOTTOM=
+HERO_HEIGHT=
+DATE_PANEL_TOP=
+DATE_PANEL_BOTTOM=
+DATE_PANEL_LEFT=
+DATE_PANEL_WIDTH=
+DATE_PANEL_OUTSIDE_HERO=
+DATE_PANEL_INTERSECTS_HERO=
+DATE_TRIGGER_POSITION_CHANGED=NO
+HERO_GEOMETRY_SHIFT_PX=
+HERO_SCALE_OR_TRANSFORM_DETECTED=
+HERO_IMAGE_FLASH_DETECTED=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_REQUESTED=
+DATE_PICKER_OPEN_CLOSE_5X_PASS=
+DATE_PICKER_LUXURY_STYLE_PRESERVED=
+DATE_LOGIC_CHANGED=NO
+HERO_COPY_CHANGED=NO
+HERO_HEIGHT_CHANGED=NO
+KPI_LAYOUT_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
