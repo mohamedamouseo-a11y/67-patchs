@@ -1,0 +1,97 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V28
+MODULE=ADMIN DASHBOARD
+ELEMENT=LUXURY SIDEBAR — QA RECAPTURE ONLY
+CURRENT_APPROVED_VERSION=V27.1
+BASE_VERSION=V27.1
+TARGET_VERSION=V28
+STATUS=VISUAL_QA_RECAPTURE_ONLY
+==================================================
+
+IMPORTANT
+V28 implementation is already applied and BUILD already passed.
+DO NOT rerun the patch.
+DO NOT change source code.
+DO NOT create V28.1.
+DO NOT source-push.
+This task is SCREENSHOT RECAPTURE ONLY because screenshots 02/03/04 were cropped from the LEFT side of the page instead of the RIGHT sidebar.
+
+CURRENT RUNTIME
+AdminDashboard.v28.css
+
+VIEWPORT
+1920x1080
+
+SIDEBAR LOCATION
+The admin sidebar is fixed on the RIGHT side of the viewport.
+At 1920px viewport width and ~300px sidebar width, the sidebar occupies approximately x=1620..1920.
+NEVER crop x=0..320 for sidebar screenshots.
+Prefer DOM element screenshots over manual pixel crops.
+
+RECOMMENDED CAPTURE METHOD
+Use Playwright/Puppeteer element screenshots:
+- Full sidebar: locator('aside.admin-sidebar')
+- Active navigation detail: capture a bounding box around `.admin-sidebar__brand` plus the first `.admin-sidebar__nav-group`, OR crop from the RIGHT side only.
+- Footer/account/logout: locator('.admin-sidebar__footer') plus enough surrounding right-sidebar context.
+
+CAPTURE EXACTLY 4 NEW SCREENSHOTS WITH ONE NEW RUNSTAMP
+1. 67__ADMIN__V28__SIDEBAR-LUXURY-QA2__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+   - full dashboard, complete sidebar visible.
+
+2. 67__ADMIN__V28__SIDEBAR-LUXURY-QA2__02__SIDEBAR-FULL__1920x1080__<RUNSTAMP>.png
+   - MUST show the complete RIGHT sidebar from official logo/brand block through account/logout.
+   - Expected image width roughly 300-340px.
+   - The image content itself must be the sidebar, NOT the left/main dashboard content.
+
+3. 67__ADMIN__V28__SIDEBAR-LUXURY-QA2__03__ACTIVE-SECTIONS__1920x1080__<RUNSTAMP>.png
+   - MUST show brand area + group labels + active gold navigation state + icon tiles from the RIGHT sidebar.
+
+4. 67__ADMIN__V28__SIDEBAR-LUXURY-QA2__04__ACCOUNT-LOGOUT__1920x1080__<RUNSTAMP>.png
+   - MUST show the lower RIGHT sidebar with final nav group, Super Admin identity, and logout button.
+
+SELF-VALIDATION BEFORE UPLOAD
+Open every screenshot after capture and visually verify:
+- Screenshot 02 contains the RIGHT sidebar, not page content.
+- Screenshot 03 contains active navigation/sidebar content.
+- Screenshot 04 contains Super Admin + logout.
+If any of these show chart/hero/KPI content instead, discard and recapture before reporting.
+
+GOOGLE DRIVE
+Upload all 4 corrected screenshots directly to My Drive root using:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the corrected screenshots to:
+qa/v28-luxury-sidebar-qa2/
+Do not push source project.
+
+RETURN
+VISUAL_QA_RECAPTURE=DONE
+SOURCE_CHANGED=NO
+RUNTIME_CSS=AdminDashboard.v28.css
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=4
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+ERROR=
