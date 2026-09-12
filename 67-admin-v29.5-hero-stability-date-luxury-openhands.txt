@@ -1,0 +1,141 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.5
+MODULE=ADMIN DASHBOARD
+ELEMENT=HERO STABILITY + LUXURY DATE PICKER
+BASE_VERSION=V29.4
+TARGET_VERSION=V29.5
+STATUS=EXECUTE + RUNTIME VERIFY + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+User-observed video issue:
+- On page open the hero briefly appears pixelated/low-resolution, then snaps to the clear high-resolution image.
+- During that swap the image appears to zoom/reposition inside the frame.
+- The custom date picker looks too simple/weak and needs a much more premium executive treatment.
+
+Use this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.5-hero-stability-date-luxury-apply.sh
+
+SCOPE
+- Hero rendering stability only.
+- Date picker visual redesign only.
+- Preserve date logic and preset behavior.
+- Preserve date custom range validation/apply behavior.
+- Preserve Hero text/copy, Hero height, Sidebar, KPI, System Health, Revenue, Operations, Sellers, Customers, backend, auth and data.
+- Do NOT source-push.
+
+EXECUTION
+1. Confirm /67 is currently at V29.4 source state and the high-res asset exists:
+   /67/src/assets/admin-v29.4-hero-highres.jpg
+2. Download and run the V29.5 patch.
+3. Require PATCH_APPLIED=YES and BUILD=PASS.
+4. Confirm AdminDashboard.jsx now imports AdminDashboard.v29.5.css.
+5. Confirm the built dist contains the 2172x724 high-res hero asset.
+6. Activate the build on the live runtime. The previous runtime trace proved sixty-seven.net proxies to the verified 67 Node service on 127.0.0.1:4173 with working directory /67. Restart only the verified 67 service/process; do not restart unrelated services.
+7. Confirm public and origin HTML reference the current local dist bundles before visual QA.
+
+MANDATORY BROWSER RUNTIME TESTS
+Open a fresh browser context at 1920x1080 with cache disabled and a unique query string.
+
+A) HIGH-RES FIRST-FRAME TEST
+- Inspect .ov-header__motif immediately after it exists in DOM.
+- Final computed background URL must NOT contain admin-v17-hero.
+- Load the resolved image and require naturalWidth >= 2000 and naturalHeight >= 600.
+- Confirm the motif receives hero-image-ready only after the high-res image is decoded/loaded.
+- Confirm the legacy 560x132 image is never visibly painted during page load.
+- Check performance resource entries and report whether admin-v17-hero was requested.
+
+B) HERO GEOMETRY STABILITY TEST
+Measure getBoundingClientRect() for .ov-header and .ov-header__motif:
+- immediately after first DOM render
+- after hero-image-ready
+- 500ms later
+- after opening the date picker
+- after closing the date picker
+Require no meaningful width/height/top/left shift (>1px) and no CSS transform/scale on the motif.
+The image must remain clipped correctly inside the Hero frame; no zoom, jump, overflow or reposition snap.
+
+C) DATE PICKER VISUAL TEST
+Open the custom date control.
+Verify:
+- premium dark executive material
+- clear gold hierarchy
+- stronger date cards
+- premium icon tiles
+- polished Apply/Cancel controls
+- no generic/simple admin appearance
+- no clipping or broken alignment
+- no Hero layout shift
+- date fields remain clickable and usable
+- do NOT change actual dates or apply a new period during QA
+
+D) INTERACTION LOOP
+Open and close the date picker 5 times.
+The Hero image must not reload, flash, pixelate, zoom, move or resize during any cycle.
+
+VISUAL QA — 1920x1080
+Capture exactly 4 fresh screenshots with one RUNSTAMP:
+1. 67__ADMIN__V29-5__HERO-STABLE-DATE-LUXURY__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V29-5__HERO-STABLE-DATE-LUXURY__02__HERO-CLEAR__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V29-5__HERO-STABLE-DATE-LUXURY__03__DATE-PICKER-OPEN__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V29-5__HERO-STABLE-DATE-LUXURY__04__HERO-CAR-DETAIL__1920x1080__<RUNSTAMP>.png
+
+Upload all 4 screenshots to My Drive root with the existing 67 QA workflow. QA repo fallback is allowed. Do not source-push.
+
+FINAL REPORT MUST START EXACTLY:
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.5
+MODULE=ADMIN DASHBOARD
+ELEMENT=HERO STABILITY + LUXURY DATE PICKER
+BASE_VERSION=V29.4
+TARGET_VERSION=V29.5
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then include:
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=AdminDashboard.v29.5.css
+LIVE_RUNTIME_ACTIVATED=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_REQUESTED=
+LEGACY_560X132_VISIBLE_FIRST_FRAME=
+HERO_HIGHRES_PRELOAD_GATE=
+HERO_READY_CLASS=
+HERO_GEOMETRY_SHIFT_PX=
+HERO_SCALE_OR_TRANSFORM_DETECTED=
+HERO_IMAGE_FLASH_DETECTED=
+HERO_PIXELATION_THEN_SWAP_DETECTED=
+DATE_PICKER_LUXURY_REDESIGN=
+DATE_PICKER_OPEN_CLOSE_5X_PASS=
+DATE_LOGIC_CHANGED=NO
+HERO_COPY_CHANGED=NO
+HERO_HEIGHT_CHANGED=NO
+SIDEBAR_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+Do not mark V29.5 approved. ChatGPT will review the actual screenshots and report.
