@@ -1,0 +1,173 @@
+==================================================
+VERSION: V26
+MODULE: ADMIN DASHBOARD
+ELEMENT: CURRENT OPERATIONS
+BASE: V25.1
+TARGET: V26
+==================================================
+
+Work only on:
+/67
+
+PURPOSE
+Translate the approved V26 preview into the live Admin Dashboard.
+
+SCOPE LOCK
+ONLY redesign the `العمليات الجارية` / Current Operations card.
+Do NOT redesign or reposition any other module.
+
+APPROVED VISUAL DIRECTION
+- Premium Action Queue consistent with the current ivory/gold dashboard language.
+- Stronger header with icon, title, supporting subtitle, and a dynamic `مطلوب إجراء` badge using the EXISTING pending-review + pending-document counts.
+- Keep the two existing summary metrics but improve hierarchy and supporting copy.
+- Convert each current-operation item into a clearer action row with:
+  - existing icon,
+  - existing item meaning/content,
+  - existing live numeric count,
+  - compact state label derived directly from the existing row meaning.
+- Amber treatment for pending/review states.
+- Green treatment for healthy/active/recent-payment states.
+- Preserve the conditional payment row exactly as conditional on existing live payment notifications.
+- Keep the green system-health strip fixed at the bottom.
+- Card stays 50/50 beside Live Operations V25.1 in row 2.
+- No clipping at 1920x1080.
+
+FUNCTIONAL / DATA LOCKS
+- Do NOT change pendingReview calculation/source.
+- Do NOT change pending-document calculation/source.
+- Do NOT change verifiedSellersCount.
+- Do NOT change liveNotifications or payment filtering.
+- Do NOT add new business data.
+- Do NOT change any action/navigation behavior.
+
+LOCKED MODULES — ZERO VISUAL OR FUNCTIONAL CHANGES
+- Live Operations V25.1
+- Revenue & Performance V24.1
+- Hero
+- Date Filter
+- KPI V22.2
+- System Health V23
+- Session/Auth V22.3
+- Transactions
+- Sidebar
+- backend/auth APIs
+- business data
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v26-premium-current-operations-apply.sh
+
+EXECUTE
+cd /67
+curl -L \
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v26-premium-current-operations-apply.sh \
+-o /tmp/67-admin-v26-premium-current-operations-apply.sh
+chmod +x /tmp/67-admin-v26-premium-current-operations-apply.sh
+bash /tmp/67-admin-v26-premium-current-operations-apply.sh
+
+Patch must return BUILD=PASS before QA.
+
+==================================================
+VISUAL QA — REQUIRED
+==================================================
+
+Use the existing authenticated browser session.
+Do not edit business data.
+Viewport: 1920x1080.
+
+IMPORTANT: scroll so the entire row-2 pair is visible. Do not submit screenshots where the Current Operations card is cropped by the viewport.
+
+PASS CONDITIONS
+- Current Operations card fully visible top-to-bottom.
+- Header, dynamic command badge, both summary tiles, all current rows and green footer strip visible.
+- Conditional payment row, when present, fits without clipping.
+- No dead space that makes the card look unfinished.
+- Live Operations V25.1 beside it remains visually unchanged.
+- Revenue V24.1 above remains unchanged.
+- Row-2 cards remain aligned and equal-height.
+- No Hero/KPI/System Health/Transactions/Sidebar regression.
+
+If any condition fails, return VISUAL_QA=FAIL and do NOT recommend source push.
+
+Use one RUNSTAMP in YYYYMMDD-HHMMSS format.
+Required screenshots:
+1. 67__ADMIN__V26__CURRENT-OPERATIONS__01__CURRENT-CARD-FULL__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V26__CURRENT-OPERATIONS__02__CURRENT-DETAILS__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V26__CURRENT-OPERATIONS__03__ROW2-FULL__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V26__CURRENT-OPERATIONS__04__REVENUE-ROW2-BOUNDARY__1920x1080__<RUNSTAMP>.png
+
+==================================================
+GOOGLE DRIVE QA HANDOFF
+==================================================
+
+Use the installed helper:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Upload all four PNG screenshots directly to My Drive root.
+DO NOT create folders.
+Preserve exact filenames.
+Return file IDs and links.
+Do not expose OAuth credentials/tokens.
+
+Also push the same four QA screenshots to:
+repo: mohamedamouseo-a11y/67-patchs
+path: qa/v26-current-operations/
+
+DO NOT push developer-hub-67 source code.
+The user will source-push manually after visual approval.
+
+==================================================
+RETURN EXACT STATUS
+==================================================
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+BASE_VERSION=V25.1
+TARGET_VERSION=V26
+RUNTIME_CSS=AdminDashboard.v26.css
+ELEMENT=CURRENT_OPERATIONS_ONLY
+APPROVED_CONCEPT_TRANSLATED=
+CURRENT_OPERATIONS_PREMIUM=
+CURRENT_SUMMARY_REDESIGNED=
+CURRENT_ACTION_ROWS_REDESIGNED=
+CURRENT_VALUES_CHANGED=NO
+CURRENT_LOGIC_CHANGED=NO
+LIVE_OPERATIONS_V25_1_PRESERVED=
+REVENUE_V24_1_PRESERVED=
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+TRANSACTIONS_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
