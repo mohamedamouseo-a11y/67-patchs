@@ -1,0 +1,172 @@
+==================================================
+PROJECT: 67 ADMIN DASHBOARD
+VERSION: V29.1
+MODULE: ADMIN DASHBOARD
+ELEMENT: MAIN HERO / DATE POPOVER STABILITY FIX
+CURRENT_APPROVED_VERSION: V28.3
+BASE: V29
+TARGET: V29.1
+STATUS: EXECUTE + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+CONTEXT
+V29 closed-state hero is visually improved and no longer feels stretched.
+However, QA exposed a critical visual-state regression when the custom date control is opened:
+- the hero expands vertically,
+- the date dock jumps to the top,
+- the primary hero copy disappears,
+- the composition stops matching the closed cinematic state.
+
+GOAL
+Preserve the approved V29 cinematic hero composition in BOTH closed and open date-control states.
+The custom date popover must overlay upward above the floating dock without changing hero height or hiding either hero copy block.
+
+PATCH
+Run exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.1-hero-date-popover-stability-fix-apply.sh
+
+SERVER PROJECT
+/67
+
+MANDATORY SCOPE LOCK
+- MAIN OVERVIEW HERO + DATE POPOVER VISUAL STATE ONLY.
+- Preserve V29 closed-state hero composition.
+- Preserve hero image/crop, primary copy, secondary copy and compact date dock.
+- Preserve all date filtering logic.
+- Preserve Today / 7 days / 30 days / Custom preset behavior.
+- Preserve custom date values and Apply / Cancel behavior.
+- Preserve Refresh and Export actions.
+- Do NOT alter sidebar, KPI, system health, revenue, live operations, current operations, ledger, sellers, customers or any other module.
+- Do NOT alter backend, auth, APIs, data or routes.
+- NO source project push.
+
+REQUIRED FIX
+When datePopoverOpen = true:
+1. Hero height must remain exactly the same as closed state.
+2. Date dock must remain at the bottom-left floating position.
+3. Primary copy "قيادة المستقبل تبدأ من هنا" must remain visible.
+4. Secondary copy "مستقبل أكثر تميزًا" must remain visible.
+5. Background crop/focal point must not jump.
+6. Custom date popover must be position:absolute and overlay upward above the dock.
+7. Popover must not participate in hero document height.
+8. No clipping of the popover contents.
+9. No horizontal overflow.
+10. Closing the popover must return to exactly the same hero state with no layout shift.
+
+BUILD
+Run:
+npm run build
+BUILD must PASS.
+
+VISUAL QA — REQUIRED
+Viewport: 1920x1080.
+Do not modify system data.
+
+Capture exactly 4 screenshots with one RUNSTAMP:
+1. 67__ADMIN__V29-1__HERO-DATE-STABILITY__01__CLOSED-FULL-PAGE__1920x1080__<RUNSTAMP>.png
+   - Full dashboard, date popover CLOSED.
+2. 67__ADMIN__V29-1__HERO-DATE-STABILITY__02__CLOSED-HERO__1920x1080__<RUNSTAMP>.png
+   - Hero close framing, popover CLOSED.
+3. 67__ADMIN__V29-1__HERO-DATE-STABILITY__03__OPEN-HERO__1920x1080__<RUNSTAMP>.png
+   - SAME hero framing with custom date popover OPEN; both copy blocks and date dock must remain visible and hero height unchanged.
+4. 67__ADMIN__V29-1__HERO-DATE-STABILITY__04__OPEN-POPOVER-DETAIL__1920x1080__<RUNSTAMP>.png
+   - Close framing showing compact dock + complete custom date popover overlay.
+
+QA ACCEPTANCE
+- Closed hero remains visually identical to V29 closed state.
+- Open hero does NOT become taller.
+- Date dock does NOT jump to top.
+- Primary copy remains visible while open.
+- Secondary copy remains visible while open.
+- Car/background focal point remains stable.
+- Popover overlays upward.
+- No clipping / overlap / horizontal overflow.
+- KPI cards remain at the same vertical position relative to hero bottom.
+- Sidebar unchanged.
+
+GOOGLE DRIVE
+Upload all 4 screenshots directly to My Drive root using:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the same 4 screenshots to:
+qa/v29.1-hero-date-popover-stability/
+Do not push source project.
+
+MANDATORY FINAL REPORT FORMAT
+Start EXACTLY with:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.1
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN HERO / DATE POPOVER STABILITY FIX
+CURRENT_APPROVED_VERSION=V28.3
+BASE_VERSION=V29
+TARGET_VERSION=V29.1
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report at minimum:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=HERO_AND_DATE_VISUALS_ONLY
+HERO_CLOSED_STATE_PRESERVED=
+HERO_OPEN_STATE_HEIGHT_STABLE=
+HERO_PRIMARY_COPY_VISIBLE_WHEN_OPEN=
+HERO_SECONDARY_COPY_VISIBLE_WHEN_OPEN=
+DATE_DOCK_POSITION_STABLE=
+DATE_POPOVER_OVERLAY_ONLY=
+DATE_LOGIC_CHANGED=NO
+DATE_PRESET_BEHAVIOR_CHANGED=NO
+DATE_CUSTOM_RANGE_BEHAVIOR_CHANGED=NO
+REFRESH_ACTION_CHANGED=NO
+EXPORT_ACTION_CHANGED=NO
+SIDEBAR_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+FINANCIAL_LEDGER_CHANGED=NO
+SELLERS_TABLE_CHANGED=NO
+CUSTOMERS_TABLE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+IMPORTANT
+Do NOT source-push.
+Do NOT mark V29.1 approved or closed.
+ChatGPT will review the screenshots first.
