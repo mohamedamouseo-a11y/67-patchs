@@ -1,0 +1,157 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.2
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN HERO / DATE POPOVER CORRIDOR FIX
+CURRENT_APPROVED_VERSION=V28.3
+BASE_VERSION=V29.1
+TARGET_VERSION=V29.2
+STATUS=EXECUTE + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+CONTEXT
+V29 fixed the stretched/banner hero feeling.
+V29.1 stabilized the hero height when the custom date panel opens.
+However, QA proves the V29.1 open popover still covers the primary hero copy "قيادة المستقبل تبدأ من هنا".
+V29.2 must fix ONLY that visual overlap while preserving the closed hero exactly.
+
+PATCH URL
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.2-hero-date-popover-corridor-fix-apply.sh
+
+SERVER PROJECT
+/67
+
+EXECUTION
+1) Download the patch from the exact URL above.
+2) chmod +x it.
+3) Execute it from /67.
+4) Confirm BUILD=PASS and RUNTIME_CSS=AdminDashboard.v29.2.css.
+
+STRICT SCOPE LOCK
+- HERO + DATE POPOVER VISUAL STATE ONLY.
+- Preserve V29.1 closed hero composition exactly.
+- Preserve all hero text exactly.
+- Preserve sidebar exactly.
+- Preserve all KPI/System Health/Revenue/Operations/Ledger/Sellers/Customers visuals and logic.
+- Preserve date preset logic, custom range logic, refresh action, export action.
+- No backend, auth, route or data changes.
+- DO NOT source-push.
+
+VISUAL TARGET
+When the custom date range is OPEN:
+- Hero height must remain exactly stable.
+- The compact dock must stay in the same bottom-left position.
+- The primary copy "قيادة المستقبل تبدأ من هنا" must remain fully visible.
+- The secondary copy "مستقبل أكثر تميزًا" must remain fully visible.
+- The custom-date popover must float in the visual corridor between the two copy blocks.
+- It must NOT cover either copy block.
+- It must feel compact and premium, not like a second hero card.
+- No clipping, no layout shift, no KPI movement.
+
+VIEWPORT
+1920x1080
+
+VISUAL QA — EXACTLY 4 SCREENSHOTS
+Use one RUNSTAMP.
+
+1) 67__ADMIN__V29-2__HERO-DATE-CORRIDOR__01__CLOSED-FULL-PAGE__1920x1080__<RUNSTAMP>.png
+   - Full page, date control closed.
+
+2) 67__ADMIN__V29-2__HERO-DATE-CORRIDOR__02__CLOSED-HERO__1920x1080__<RUNSTAMP>.png
+   - Hero close-up closed state.
+
+3) 67__ADMIN__V29-2__HERO-DATE-CORRIDOR__03__OPEN-HERO__1920x1080__<RUNSTAMP>.png
+   - Full hero with custom date popover open.
+   - Both left and right hero copy blocks MUST be visible in this same screenshot.
+
+4) 67__ADMIN__V29-2__HERO-DATE-CORRIDOR__04__OPEN-POPOVER-DETAIL__1920x1080__<RUNSTAMP>.png
+   - Detail showing popover + dock + enough surrounding hero to prove no overlap with copy.
+
+GOOGLE DRIVE
+Upload all 4 screenshots to My Drive root using the existing 67 QA upload tool.
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the same 4 screenshots to:
+qa/v29.2-hero-date-corridor/
+Do not push source project.
+
+MANDATORY FINAL REPORT
+Start EXACTLY with:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.2
+MODULE=ADMIN DASHBOARD
+ELEMENT=MAIN HERO / DATE POPOVER CORRIDOR FIX
+CURRENT_APPROVED_VERSION=V28.3
+BASE_VERSION=V29.1
+TARGET_VERSION=V29.2
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=HERO_AND_DATE_VISUALS_ONLY
+HERO_CLOSED_STATE_PRESERVED=
+HERO_OPEN_STATE_HEIGHT_STABLE=
+HERO_PRIMARY_COPY_VISIBLE_WHEN_OPEN=
+HERO_SECONDARY_COPY_VISIBLE_WHEN_OPEN=
+DATE_DOCK_POSITION_STABLE=
+DATE_POPOVER_CENTER_CORRIDOR=
+DATE_POPOVER_COMPACTED=
+DATE_POPOVER_COVERS_PRIMARY_COPY=NO
+DATE_POPOVER_COVERS_SECONDARY_COPY=NO
+DATE_LOGIC_CHANGED=NO
+DATE_PRESET_BEHAVIOR_CHANGED=NO
+DATE_CUSTOM_RANGE_BEHAVIOR_CHANGED=NO
+REFRESH_ACTION_CHANGED=NO
+EXPORT_ACTION_CHANGED=NO
+SIDEBAR_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+FINANCIAL_LEDGER_CHANGED=NO
+SELLERS_TABLE_CHANGED=NO
+CUSTOMERS_TABLE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+IMPORTANT
+Do not claim visual approval.
+Do not source-push.
+ChatGPT must review the screenshots first.
