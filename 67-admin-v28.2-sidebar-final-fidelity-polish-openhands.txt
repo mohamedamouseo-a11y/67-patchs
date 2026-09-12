@@ -1,0 +1,204 @@
+==================================================
+PROJECT: 67 ADMIN DASHBOARD
+VERSION: V28.2
+MODULE: ADMIN DASHBOARD
+ELEMENT: LUXURY SIDEBAR — FINAL REFERENCE FIDELITY POLISH
+CURRENT APPROVED VERSION: V27.1
+BASE: V28.1
+TARGET: V28.2
+STATUS: EXECUTE + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+CONTEXT
+V28.1 is a strong visual pass but direct comparison against the approved sidebar reference still shows small fidelity gaps.
+Do NOT redesign from scratch.
+Do NOT touch any dashboard element outside the sidebar.
+This is the FINAL micro-polish pass for the same sidebar element.
+
+PATCH
+Run exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v28.2-sidebar-final-fidelity-polish-apply.sh
+
+SERVER PROJECT
+/67
+
+MANDATORY SCOPE LOCK
+- SIDEBAR visual presentation ONLY.
+- Preserve all current labels and grouping.
+- Preserve activeTab logic exactly.
+- Preserve navigation switching exactly.
+- Preserve back button behavior exactly.
+- Preserve logout behavior exactly.
+- Preserve GitHub Module behavior exactly.
+- No JSX structural redesign beyond the runtime CSS import performed by the patch.
+- Do NOT alter Hero, Date Filter, KPI, System Health, Revenue, Live Operations, Current Operations, Financial Ledger, Sellers, Customers, Documents, Community, Transactions, Notifications or Settings content.
+- Do NOT alter backend, auth, APIs, routes or data.
+- NO source project push.
+
+FINAL REFERENCE FIDELITY TARGET
+Use the same approved sidebar reference already supplied in the task context.
+V28.2 should preserve the successful V28.1 design and close only these remaining gaps:
+
+1. PROPORTION
+- Desktop sidebar width should be closer to the reference, around 286px at 1920px viewport.
+- Main content must shift accordingly and remain completely unobstructed.
+- No nav label truncation.
+
+2. INACTIVE COMMAND ROWS
+- Keep every inactive nav item as a distinct dark command row.
+- Increase restrained gold presence in border, icon tile and chevron.
+- Do NOT make inactive rows compete with the active row.
+
+3. ACTIVE STATE
+- Keep the V28.1 strong gold active treatment.
+- Refine glow so it resembles the reference: bright edge + controlled outer gold aura.
+- Active icon tile remains premium gold.
+
+4. OUTER FRAME / AMBIENCE
+- Strengthen the right-rail luxury framing without making it gaudy.
+- Preserve black/navy automotive identity.
+- Add/refine subtle gold frame and lower decorative curve presence to resemble the reference.
+
+5. BRAND / FOOTER
+- Preserve the existing official SIX SEVEN logo and brand block.
+- Keep the account panel and logout panel independent and clearly readable.
+- Footer decorative line/curve must remain visible but restrained.
+
+BUILD
+Run:
+npm run build
+BUILD must PASS.
+
+VISUAL QA — REQUIRED
+Viewport: 1920x1080.
+Use the already configured authenticated session.
+Do not modify any system data.
+Do not click Save / Update / Delete / Assign / Logout.
+
+IMPORTANT SCREENSHOT RULE
+Do NOT manually crop from the left side of a full-page screenshot.
+For sidebar-specific screenshots, capture the actual DOM element using `aside.admin-sidebar` / element bounding box or locator screenshot so the RIGHT sidebar itself is captured.
+
+Capture exactly 4 screenshots using one RUNSTAMP:
+
+1. 67__ADMIN__V28-2__SIDEBAR-FINAL-FIDELITY__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+   - Entire dashboard at 1920x1080.
+   - Full sidebar visible top-to-bottom.
+   - Main content boundary visible.
+
+2. 67__ADMIN__V28-2__SIDEBAR-FINAL-FIDELITY__02__SIDEBAR-FULL__1920x1080__<RUNSTAMP>.png
+   - ACTUAL `aside.admin-sidebar` element screenshot.
+   - Brand through account/logout visible.
+
+3. 67__ADMIN__V28-2__SIDEBAR-FINAL-FIDELITY__03__COMMAND-ROWS-ACTIVE__1920x1080__<RUNSTAMP>.png
+   - Right sidebar framing showing group labels, inactive command rows, chevrons, icon tiles and active row together.
+   - Must clearly show the visual hierarchy between inactive and active items.
+
+4. 67__ADMIN__V28-2__SIDEBAR-FINAL-FIDELITY__04__FOOTER-FRAME__1920x1080__<RUNSTAMP>.png
+   - Lower right sidebar showing decorative curve/frame, account panel, logout panel and outer boundary.
+
+QA ACCEPTANCE CHECKS
+- Runtime CSS is AdminDashboard.v28.2.css.
+- Sidebar noticeably closer in proportion to the approved reference than V28.1.
+- Inactive rows have visible but restrained gold presence.
+- Active row is still unmistakably stronger than inactive rows.
+- Every chevron and icon tile is aligned.
+- No nav text clipping or ellipsis at 1920x1080.
+- Brand logo is fully visible.
+- All group labels are readable.
+- Footer account and logout are completely visible.
+- Decorative lower curve/frame is visible.
+- No horizontal overlap with main content.
+- Hero/KPI/System Health/Revenue and every non-sidebar module remain visually unchanged.
+- Navigation behavior still works.
+
+GOOGLE DRIVE
+Upload all 4 screenshots directly to My Drive root using:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the same 4 screenshots to:
+qa/v28.2-sidebar-final-fidelity/
+Do not push source project.
+
+MANDATORY FINAL REPORT FORMAT
+Start EXACTLY with:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V28.2
+MODULE=ADMIN DASHBOARD
+ELEMENT=LUXURY SIDEBAR — FINAL REFERENCE FIDELITY POLISH
+CURRENT_APPROVED_VERSION=V27.1
+BASE_VERSION=V28.1
+TARGET_VERSION=V28.2
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report at minimum:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=SIDEBAR_ONLY
+FINAL_FIDELITY_POLISH=
+SIDEBAR_WIDTH_DESKTOP=
+MAIN_CONTENT_MARGIN_DESKTOP=
+INACTIVE_COMMAND_ROWS_GOLD_PRESENCE=
+ACTIVE_GOLD_GLOW_REFINED=
+OUTER_FRAME_REFINED=
+DECORATIVE_CURVES_REFINED=
+ACCOUNT_PANEL_REFINED=
+LOGOUT_PANEL_REFINED=
+NAVIGATION_LOGIC_CHANGED=NO
+TAB_BEHAVIOR_CHANGED=NO
+BACK_BUTTON_BEHAVIOR_CHANGED=NO
+LOGOUT_BEHAVIOR_CHANGED=NO
+GITHUB_MODULE_BEHAVIOR_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+FINANCIAL_LEDGER_CHANGED=NO
+SELLERS_TABLE_CHANGED=NO
+CUSTOMERS_TABLE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+IMPORTANT
+Do not mark V28.2 approved or closed yourself.
+ChatGPT will compare the actual screenshots against the approved reference before source push.
+Do not source-push.
