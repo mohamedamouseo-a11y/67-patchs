@@ -1,0 +1,80 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.3
+BASE=V29.2
+TARGET=V29.3
+ELEMENT=MAIN HERO IMAGE CLARITY RESCUE
+
+Use this patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.3-hero-clarity-rescue-apply.sh
+
+Project path: /67
+
+Task:
+- Apply V29.3 on top of V29.2.
+- Run npm run build.
+- Keep the approved V29.2 hero composition unchanged.
+- Change only hero background image rendering quality.
+- Do not change hero height, copy positions, date dock, date popover, sidebar, KPI, system health, revenue, data, backend, auth, routes or logic.
+- Do not source-push.
+
+Asset diagnostic:
+Inspect src/assets/admin-v17-hero.jpg and report its native width and height if available from local image metadata. Do not replace the image in this version.
+
+Visual QA at 1920x1080:
+Create four screenshots with one RUNSTAMP:
+1. 67__ADMIN__V29-3__HERO-CLARITY__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V29-3__HERO-CLARITY__02__HERO-FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V29-3__HERO-CLARITY__03__CAR-DETAIL__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V29-3__HERO-CLARITY__04__CITY-DETAIL__1920x1080__<RUNSTAMP>.png
+
+The detail captures must come from the live rendered hero and must not be enlarged after capture.
+Upload the four QA screenshots to the same Google Drive QA destination used by the previous dashboard versions and to qa/v29.3-hero-clarity/ in the QA repository.
+
+Return a final report containing:
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.3
+CURRENT_APPROVED_VERSION=V29.2
+BASE_VERSION=V29.2
+TARGET_VERSION=V29.3
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=AdminDashboard.v29.3.css
+ELEMENT=HERO_IMAGE_RENDERING_ONLY
+HERO_EXTRA_SCALE_REMOVED=
+HERO_SOURCE_ASPECT_PRESERVED=
+HERO_CLARITY_RENDERING_REFINED=
+HERO_COMPOSITION_CHANGED=NO
+HERO_HEIGHT_CHANGED=NO
+HERO_COPY_CHANGED=NO
+DATE_DOCK_CHANGED=NO
+DATE_POPOVER_CHANGED=NO
+DATE_LOGIC_CHANGED=NO
+SIDEBAR_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+HERO_SOURCE_ASSET=src/assets/admin-v17-hero.jpg
+HERO_SOURCE_NATIVE_WIDTH=
+HERO_SOURCE_NATIVE_HEIGHT=
+HERO_SOURCE_RESOLUTION_DIAGNOSTIC=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+Do not mark V29.3 approved. ChatGPT will review the screenshots first.
