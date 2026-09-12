@@ -1,0 +1,60 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V29.4
+TASK=RUNTIME ACTIVATION FIX + FINAL HIGH-RES VERIFICATION
+MODE=DEPLOYMENT/RUNTIME ONLY — NO DESIGN CHANGES — NO SOURCE PUSH
+
+CONTEXT
+V29.4 source/build already contains the correct 2172x724 high-resolution hero asset, but the live browser still renders the legacy 560x132 admin-v17 hero. This is now a deployment/runtime activation problem, not a CSS/design problem.
+
+PATCH
+Run exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v29.4-runtime-activation-fix-apply.sh
+
+REQUIREMENTS
+1. Do not change JSX/CSS/design/version.
+2. Do not source-push.
+3. Let the runtime activation script determine whether the live site is serving a different dist root or a stale upstream/edge response.
+4. If the script resolves one exact live dist root and syncs /67/dist there, preserve the result.
+5. If the script reports EDGE_CACHE_STALE=YES or PUBLIC_EDGE_STILL_STALE, inspect only already-configured server/CDN runtime controls. Do not expose credentials. If an authorized cache purge mechanism already exists on the server, purge only sixty-seven.net admin HTML/assets needed for V29.4, then rerun the verification. If no authorized purge mechanism exists, stop and report the blocker; do not invent credentials or alter source.
+6. After runtime activation, open /admin/ with a fresh cache-busting query and disable browser cache for the QA session.
+7. Evaluate getComputedStyle(document.querySelector('.ov-header__motif')).backgroundImage.
+8. Load that exact resolved image URL and report naturalWidth/naturalHeight.
+9. PASS requires width >= 2000 and height >= 600. The legacy 560x132 image is an automatic FAIL.
+10. Once runtime verification passes, capture fresh 1920x1080 QA screenshots:
+   - 67__ADMIN__V29-4__RUNTIME-ACTIVATED__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+   - 67__ADMIN__V29-4__RUNTIME-ACTIVATED__02__HERO-FULL__1920x1080__<RUNSTAMP>.png
+   - 67__ADMIN__V29-4__RUNTIME-ACTIVATED__03__CAR-DETAIL__1920x1080__<RUNSTAMP>.png
+   - 67__ADMIN__V29-4__RUNTIME-ACTIVATED__04__CITY-DETAIL__1920x1080__<RUNSTAMP>.png
+11. Upload the four screenshots to My Drive root using the existing 67 QA upload workflow. QA repo fallback is allowed.
+
+FINAL REPORT MUST INCLUDE
+VERSION=V29.4
+BUILD=
+DEPLOY_ACTION=
+LIVE_ROOT=
+ORIGIN_MATCH_LOCAL_DIST=
+PUBLIC_MATCH_LOCAL_DIST=
+EDGE_CACHE_STALE=
+EDGE_SERVER=
+CF_CACHE_STATUS=
+BROWSER_COMPUTED_BACKGROUND_URL=
+BROWSER_RENDERED_IMAGE_WIDTH=
+BROWSER_RENDERED_IMAGE_HEIGHT=
+LEGACY_560X132_RENDERED=YES/NO
+RUNTIME_ASSET_MISMATCH=YES/NO
+VISUAL_QA=
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+Do not mark V29.4 approved. ChatGPT will review the runtime evidence and screenshots.
