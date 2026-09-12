@@ -1,0 +1,231 @@
+==================================================
+PROJECT: 67 ADMIN DASHBOARD
+VERSION: V27
+MODULE: ADMIN DASHBOARD
+ELEMENT: FINANCIAL LEDGER / LATEST TRANSACTIONS
+CURRENT APPROVED VERSION: V26.2
+BASE: V26.2
+TARGET: V27
+STATUS: IMPLEMENT + BUILD + VISUAL QA
+==================================================
+
+You are working on the live 67 project at:
+/67
+
+The source repository is:
+mohamedamouseo-a11y/developer-hub-67
+
+The patch repository is:
+mohamedamouseo-a11y/67-patchs
+
+PATCH URL:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v27-premium-financial-ledger-apply.sh
+
+IMPORTANT VERSION CHAIN
+-----------------------
+Approved source baseline: V26.2
+Working version in this task: V27
+Only after visual approval and a later manual source push can V27 become the approved source baseline.
+Do NOT report V27 as source-pushed or closed.
+
+SCOPE
+-----
+Upgrade ONLY the dashboard element:
+"السجل المالي — أحدث العمليات"
+Financial Ledger / Latest Transactions.
+
+The approved V26.2 modules above it are LOCKED and must not be redesigned:
+- Hero
+- Date Filter
+- KPI cards
+- System Health
+- Revenue & Performance
+- Live Operations
+- Current Operations
+- Sidebar
+
+Do NOT change backend, auth, API, payment source data, row order, transaction values, calculations or business logic.
+
+V27 VISUAL TARGET
+-----------------
+Translate the approved V27 preview direction into the existing live dashboard, but keep the actual live data and current behavior.
+
+Required improvements for the Financial Ledger only:
+- stronger premium ledger card composition
+- executive header with title icon, title, subtitle and existing payment count
+- cleaner search/filter/export command area
+- clearer table header hierarchy
+- stronger readable transaction rows
+- transaction IDs styled as compact premium identifiers
+- amounts visually stronger
+- complete / pending statuses clearer and more premium
+- row density must stay compact enough to fit naturally in the overview
+- RTL alignment must remain correct
+- no horizontal visual clipping at 1920x1080
+
+FUNCTIONAL LOCKS
+----------------
+Preserve exactly:
+- payments source array/data
+- current txQuery state
+- current search input behavior/onChange
+- current filtering expression
+- payment row order
+- p.id
+- p.buyer
+- p.seller
+- p.method
+- p.date
+- p.amount
+- p.status
+- existing filter button behavior
+- existing export button behavior
+
+Do not invent transactions or values.
+
+EXECUTION
+---------
+1. cd /67
+2. Confirm the runtime currently imports AdminDashboard.v26.2.css.
+3. Download and run the V27 patch from the exact PATCH URL above.
+4. Run npm build as performed by the patch.
+5. Do not push the source project.
+6. Perform visual QA at exactly 1920x1080.
+
+VISUAL QA — MANDATORY
+---------------------
+The agent status is NOT sufficient. Capture actual screenshots.
+
+Before screenshots:
+- open the Admin Dashboard
+- stay on the performance/stability overview tab
+- scroll so the complete Financial Ledger is visible
+- keep the whole ledger card visible including its header and bottom edge
+
+Capture exactly these 4 screenshots using RUNSTAMP YYYYMMDD-HHMMSS:
+
+1.
+67__ADMIN__V27__FINANCIAL-LEDGER__01__LEDGER-FULL__1920x1080__<RUNSTAMP>.png
+
+2.
+67__ADMIN__V27__FINANCIAL-LEDGER__02__HEADER-TOOLBAR__1920x1080__<RUNSTAMP>.png
+
+3.
+67__ADMIN__V27__FINANCIAL-LEDGER__03__ROWS-DETAIL__1920x1080__<RUNSTAMP>.png
+
+4.
+67__ADMIN__V27__FINANCIAL-LEDGER__04__ROW2-LEDGER-BOUNDARY__1920x1080__<RUNSTAMP>.png
+
+Screenshot requirements:
+- Ledger header fully visible.
+- Search, filter and export controls fully visible.
+- All visible transaction columns readable.
+- Transaction IDs visible.
+- Amounts visible.
+- Complete and pending status pills visible.
+- Ledger bottom edge visible in at least one screenshot.
+- No clipping or overlap.
+- Row2 above the ledger visible in screenshot 04 to prove V26.2 modules were preserved.
+
+GOOGLE DRIVE QA UPLOAD
+----------------------
+Upload all 4 screenshots directly to My Drive root using the installed helper:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+
+Do not create a Drive folder.
+Use the exact filenames above.
+
+QA GITHUB FALLBACK
+------------------
+Push the same screenshots to the QA fallback repository/path used by previous phases under:
+qa/v27-financial-ledger/
+
+Do NOT push the /67 source project.
+
+FINAL REPORT FORMAT — REQUIRED
+------------------------------
+Your final report MUST begin with this exact version block before any status lines:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V27
+MODULE=ADMIN DASHBOARD
+ELEMENT=FINANCIAL LEDGER / LATEST TRANSACTIONS
+CURRENT_APPROVED_VERSION=V26.2
+BASE_VERSION=V26.2
+TARGET_VERSION=V27
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report these keys:
+
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=
+FINANCIAL_LEDGER_PREMIUM=
+LEDGER_HEADER_REDESIGNED=
+LEDGER_TOOLBAR_REDESIGNED=
+LEDGER_TABLE_HIERARCHY_REDESIGNED=
+LEDGER_TRANSACTION_IDS_RESTYLED=
+LEDGER_AMOUNTS_RESTYLED=
+LEDGER_STATUSES_RESTYLED=
+PAYMENT_DATA_CHANGED=
+PAYMENT_ORDER_CHANGED=
+SEARCH_BEHAVIOR_CHANGED=
+FILTER_BUTTON_BEHAVIOR_CHANGED=
+EXPORT_BUTTON_BEHAVIOR_CHANGED=
+LIVE_OPERATIONS_CHANGED=
+CURRENT_OPERATIONS_CHANGED=
+REVENUE_CHANGED=
+HERO_CHANGED=
+DATE_CONTROL_CHANGED=
+KPI_CHANGED=
+SYSTEM_HEALTH_CHANGED=
+SIDEBAR_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+SERVICE_RESTART=
+VISUAL_QA=
+VIEWPORT=
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+SUCCESS CONDITIONS
+------------------
+- PATCH_APPLIED=YES
+- BUILD=PASS
+- VERSION=V27 clearly appears at the top of the report
+- RUNTIME_CSS=AdminDashboard.v27.css
+- Financial Ledger is the only redesigned element
+- all source values/logic preserved
+- four screenshots uploaded to Drive root
+- screenshots also pushed to QA fallback
+- source project NOT pushed
+
+If any required step fails, report it accurately. Do not claim visual approval. ChatGPT/user will visually review the screenshots and decide whether V27 is approved or needs V27.1.
