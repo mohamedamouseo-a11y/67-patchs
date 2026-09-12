@@ -1,0 +1,150 @@
+==================================================
+PROJECT: 67 ADMIN DASHBOARD
+VERSION: V28.3
+MODULE: ADMIN DASHBOARD
+ELEMENT: SIDEBAR LUXURY ENHANCEMENT
+CURRENT APPROVED VERSION: V28.2
+BASE: V28.2
+TARGET: V28.3
+STATUS: EXECUTE + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+PATCH
+Run exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v28.3-sidebar-luxury-enhancement-apply.sh
+
+SERVER PROJECT
+/67
+
+GOAL
+Upgrade the approved V28.2 sidebar into a more luxurious executive control rail, with special focus on the Super Admin account card and sign-out action.
+
+MANDATORY SCOPE LOCK
+- SIDEBAR visuals ONLY.
+- Preserve all labels and tab behavior.
+- Preserve activeTab logic.
+- Preserve back button behavior.
+- Preserve logout behavior.
+- Preserve GitHub Module behavior.
+- No backend/auth/API/data changes.
+- No Hero, Date, KPI, System Health, Revenue, Live Operations, Current Operations, Financial Ledger, Sellers or Customers changes.
+- NO source project push.
+
+BUILD
+Run npm run build. BUILD must PASS.
+
+VISUAL QA
+Viewport 1920x1080.
+Use existing authenticated session.
+Do not modify data.
+Capture exactly 4 screenshots with one RUNSTAMP:
+1. 67__ADMIN__V28-3__SIDEBAR-LUXURY-ENHANCEMENT__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V28-3__SIDEBAR-LUXURY-ENHANCEMENT__02__SIDEBAR-FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V28-3__SIDEBAR-LUXURY-ENHANCEMENT__03__ACTIVE-ROWS-BRAND__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V28-3__SIDEBAR-LUXURY-ENHANCEMENT__04__FOOTER-ADMIN-LOGOUT__1920x1080__<RUNSTAMP>.png
+
+IMPORTANT CAPTURE RULE
+For sidebar screenshots target the actual DOM element:
+aside.admin-sidebar
+Do not crop from the wrong side of the page.
+
+ACCEPTANCE
+- Sidebar visibly more luxurious than V28.2.
+- Super Admin panel materially redesigned and more premium.
+- Sign-out panel materially redesigned and more premium.
+- Gold ambience / outer frame / decorative curves refined.
+- Active row preserved.
+- Inactive command rows remain premium and readable.
+- No clipping, truncation, overlap or main-content coverage.
+- Navigation logic unchanged.
+- Do NOT click logout during QA.
+
+GOOGLE DRIVE
+Upload all 4 screenshots directly to My Drive root using:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the same 4 screenshots to:
+qa/v28.3-sidebar-luxury-enhancement/
+Do not source-push.
+
+MANDATORY FINAL REPORT FORMAT
+Start exactly with:
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V28.3
+MODULE=ADMIN DASHBOARD
+ELEMENT=SIDEBAR LUXURY ENHANCEMENT
+CURRENT_APPROVED_VERSION=V28.2
+BASE_VERSION=V28.2
+TARGET_VERSION=V28.3
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report at minimum:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=SIDEBAR_ONLY
+SUPER_ADMIN_PANEL_REDESIGNED=
+LOGOUT_PANEL_REDESIGNED=
+SIDEBAR_PREMIUM_LEVEL_UPGRADED=
+FOOTER_EXECUTIVE_PANEL_UPGRADED=
+LUXURY_GOLD_AMBIENCE_UPGRADED=
+DECORATIVE_FRAME_REFINED=
+DECORATIVE_CURVES_REFINED=
+ACTIVE_ROW_PRESERVED=
+INACTIVE_ROWS_PREMIUM_UPGRADED=
+NAVIGATION_LOGIC_CHANGED=NO
+TAB_BEHAVIOR_CHANGED=NO
+BACK_BUTTON_BEHAVIOR_CHANGED=NO
+LOGOUT_BEHAVIOR_CHANGED=NO
+GITHUB_MODULE_BEHAVIOR_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+REVENUE_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+FINANCIAL_LEDGER_CHANGED=NO
+SELLERS_TABLE_CHANGED=NO
+CUSTOMERS_TABLE_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+IMPORTANT
+Do not mark V28.3 approved or closed.
+ChatGPT will inspect the actual screenshots before approval.
+Do not source-push.
