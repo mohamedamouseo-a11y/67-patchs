@@ -1,0 +1,157 @@
+==================================================
+PROJECT: 67 ADMIN DASHBOARD
+VERSION: V27.1
+MODULE: ADMIN DASHBOARD
+ELEMENT: FINANCIAL LEDGER / LATEST TRANSACTIONS — VISUAL IMPACT FIX
+CURRENT APPROVED VERSION: V26.2
+BASE: V27
+TARGET: V27.1
+STATUS: EXECUTE + VISUAL QA — DO NOT SOURCE PUSH
+==================================================
+
+GOAL
+Fix V27 because the side-by-side visual delta versus V26.2 was too subtle. Stay inside the same element/version chain. Do NOT move to V28.
+
+PATCH
+Run exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v27.1-financial-ledger-visual-impact-fix-apply.sh
+
+SERVER PROJECT
+/67
+
+MANDATORY SCOPE LOCK
+- Financial Ledger / Latest Transactions ONLY.
+- Preserve V26.2-approved neighboring modules exactly.
+- Do NOT alter payment source data, row order, ids, buyers, sellers, methods, timestamps, amounts or statuses.
+- Preserve txQuery search behavior exactly.
+- Preserve Filter and Export button behavior exactly as currently implemented.
+- No backend/auth/data changes.
+- NO source project push.
+
+VISUAL INTENT
+The change must be unmistakable at first glance compared with V27:
+1. Stronger ledger header hierarchy.
+2. Premium command-bar toolbar.
+3. New summary rail using EXISTING payments only:
+   - total payments.length
+   - completed payments.filter(status === 'مكتمل').length
+   - pending/non-completed count
+4. Dark navy table header band with gold labels.
+5. Larger, clearly readable transaction rows.
+6. Stronger TXN id chips, amounts and status pills.
+7. Light zebra row treatment.
+8. No clipping, overlap, horizontal breakage or tiny text.
+
+BUILD
+Run npm build. BUILD must PASS.
+
+VISUAL QA — REQUIRED
+Viewport: 1920x1080.
+Login/auth as already configured.
+Scroll to the Financial Ledger section before screenshots.
+Do not judge from code alone.
+
+Capture exactly 4 screenshots with a single RUNSTAMP:
+1. 67__ADMIN__V27-1__LEDGER-VISUAL-IMPACT__01__LEDGER-FULL__1920x1080__<RUNSTAMP>.png
+   - whole Financial Ledger card top-to-bottom visible.
+2. 67__ADMIN__V27-1__LEDGER-VISUAL-IMPACT__02__HEADER-SUMMARY-TOOLBAR__1920x1080__<RUNSTAMP>.png
+   - close framing showing title, count badge, toolbar and full summary rail clearly.
+3. 67__ADMIN__V27-1__LEDGER-VISUAL-IMPACT__03__TABLE-ROWS__1920x1080__<RUNSTAMP>.png
+   - dark table header + all visible rows + IDs + amounts + statuses clearly readable.
+4. 67__ADMIN__V27-1__LEDGER-VISUAL-IMPACT__04__CONTEXT-BOUNDARY__1920x1080__<RUNSTAMP>.png
+   - lower edge of row 2 above plus full ledger to prove neighboring modules were not changed.
+
+QA ACCEPTANCE CHECKS
+- Ledger full top/bottom edge visible.
+- Summary rail visibly present.
+- Dark table header visibly present.
+- Rows materially larger than V27.
+- IDs, amounts, status pills materially stronger than V27.
+- No clipping or overlap.
+- Current Operations and Live Operations visually unchanged.
+- Revenue visually unchanged.
+
+GOOGLE DRIVE
+Upload all 4 screenshots directly to My Drive root using:
+/home/openhands/.openhands/qa-tools/67-gdrive-root-upload.mjs
+Do not create a folder.
+
+QA FALLBACK REPO
+Push the same 4 screenshots to:
+qa/v27.1-financial-ledger-visual-impact/
+Do not push source project.
+
+MANDATORY FINAL REPORT FORMAT
+Start the report EXACTLY with:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V27.1
+MODULE=ADMIN DASHBOARD
+ELEMENT=FINANCIAL LEDGER / LATEST TRANSACTIONS — VISUAL IMPACT FIX
+CURRENT_APPROVED_VERSION=V26.2
+BASE_VERSION=V27
+TARGET_VERSION=V27.1
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+Then report at minimum:
+PATCH_APPLIED=
+BUILD=
+STATE_ACTION=
+RUNTIME_CSS=
+ELEMENT=FINANCIAL_LEDGER_ONLY
+V27_VISUAL_DELTA_TOO_SUBTLE_FIXED=
+LEDGER_SUMMARY_RAIL_ADDED=
+LEDGER_DARK_HEADER_BAND=
+LEDGER_ROWS_ENLARGED=
+LEDGER_IDS_ENLARGED=
+LEDGER_AMOUNTS_ENLARGED=
+LEDGER_STATUSES_ENLARGED=
+PAYMENT_DATA_CHANGED=NO
+PAYMENT_ORDER_CHANGED=NO
+SEARCH_BEHAVIOR_CHANGED=NO
+FILTER_BUTTON_BEHAVIOR_CHANGED=NO
+EXPORT_BUTTON_BEHAVIOR_CHANGED=NO
+LIVE_OPERATIONS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+REVENUE_CHANGED=NO
+HERO_CHANGED=NO
+DATE_CONTROL_CHANGED=NO
+KPI_CHANGED=NO
+SYSTEM_HEALTH_CHANGED=NO
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SERVICE_RESTART=SKIPPED_FRONTEND_ONLY
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_DESTINATION=MY_DRIVE_ROOT
+DRIVE_FILE_01_NAME=
+DRIVE_FILE_01_ID=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_NAME=
+DRIVE_FILE_02_ID=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_NAME=
+DRIVE_FILE_03_ID=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_NAME=
+DRIVE_FILE_04_ID=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
+
+IMPORTANT
+Even if VISUAL_QA=DONE, ChatGPT will independently inspect the actual screenshots. Do not mark the version approved or closed. Do not source-push.
