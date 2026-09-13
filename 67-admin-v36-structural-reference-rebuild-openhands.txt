@@ -1,0 +1,272 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V36
+ELEMENT=STRUCTURAL REFERENCE REBUILD
+BASE_RUNTIME=V35
+TARGET_RUNTIME=V36
+STATUS=APPLY_AND_RETURN_FOR_FULL-PAGE_VISUAL_APPROVAL
+==================================================
+
+IMPORTANT
+This is NOT another local fidelity fix.
+Do NOT continue V34.x or V35 CSS patching.
+V36 is a structural JSX + consolidated master CSS rebuild of the Overview against the approved 1448x1086 automotive executive dashboard reference.
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v36-structural-reference-rebuild-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v36-structural-reference-rebuild-apply.sh
+3. chmod +x it
+4. Execute it
+5. Require BUILD=PASS
+6. Restart/activate the same proven live service
+7. Confirm local dist, origin and public index hashes match
+8. Browser QA at 1448x1086 first, then 1920x1080
+
+REFERENCE TARGET — JUDGE THE WHOLE PAGE
+Do not optimize one section in isolation.
+The full Overview should read as one coherent copy of the supplied reference:
+- right fixed dark executive sidebar around 200px
+- cinematic city/car hero with greeting/tools on physical left
+- large Arabic title below greeting
+- right-side slogan inside hero
+- dark date toolbar integrated along hero bottom
+- four equal ivory KPI cards with small waveform accents
+- full-width dark System Health band with left status, 4 middle metrics and right automotive scene/copy
+- full-width light Revenue card with 4 stats, large chart, dark right donut card
+- donut must be visibly multicolor (gold/cyan/blue) and include 3-line legend
+- two equal operations cards below Revenue: Live dark on physical left, Current light on physical right
+- full-width light Financial Ledger below operations
+- real sidebar promo artwork panel above actual Super Admin block
+
+REFERENCE GEOMETRY AT 1448x1086
+Use these as fidelity targets, tolerance approximately 4px unless content naturally requires a small difference:
+SIDEBAR_WIDTH_TARGET=208
+MAIN_RIGHT_OFFSET_TARGET=224
+HERO_HEIGHT_TARGET=178
+KPI_HEIGHT_TARGET=90
+SYSTEM_HEALTH_HEIGHT_TARGET=94
+REVENUE_HEIGHT_TARGET=278
+OPERATIONS_HEIGHT_TARGET=238
+OPERATIONS_COLUMNS=50_50
+LEDGER_FULL_WIDTH=YES
+
+STRUCTURAL DOM EXPECTATIONS
+These must exist as REAL DOM elements after V36, not pseudo elements and not inferred by QA:
+- .ref-v36-dashboard
+- .ref-v36-hero-tools
+- .ref-v36-sidebar-promo
+- .ref-v36-admin
+- .ref-v36-health-scene
+- .ref-v36-donut-legend
+
+PROTECTED
+Do not change:
+- any API endpoint
+- authentication/session behavior
+- routing
+- permissions
+- calculations
+- payment/seller/customer/document data
+- date filtering logic
+- transaction search logic
+- live notification logic
+- active tab logic
+
+Presentation JSX changes are allowed only to match the approved reference.
+
+REFERENCE HERO QA
+At 1448x1086 with date popover CLOSED:
+- HERO_VISIBLE=YES
+- HERO_HEIGHT_PX approximately 178
+- HERO_TOOLS_VISIBLE=YES using .ref-v36-hero-tools
+- HERO_GREETING_VISIBLE=YES
+- HERO_TITLE_VISIBLE=YES
+- HERO_TITLE_CLIPPED=NO
+- HERO_RIGHT_COPY_VISIBLE=YES
+- DATE_TOOLBAR_VISIBLE=YES
+- HERO_GEOMETRY_SHIFT_PX=0
+- HERO_IMAGE_FLASH_DETECTED=NO
+
+SIDEBAR QA
+- SIDEBAR_VISIBLE=YES
+- SIDEBAR_WIDTH_PX approximately 208
+- SIDEBAR_HORIZONTAL_OVERFLOW=NO
+- SIDEBAR_NAV_CLICKABLE=YES
+- SIDEBAR_PROMO_PANEL_VISIBLE=YES using .ref-v36-sidebar-promo
+- SIDEBAR_ADMIN_BLOCK_VISIBLE=YES using .ref-v36-admin
+- SIDEBAR_PROMO_WITHIN_BOUNDS=YES
+- SIDEBAR_ADMIN_WITHIN_BOUNDS=YES
+
+KPI QA
+- KPI_COUNT=4
+- KPI_EQUAL_WIDTH=YES
+- KPI_HEIGHT_PX approximately 90
+- KPI_TEXT_CLIPPED=NO
+- KPI_PRIMARY_VALUES_VISIBLE=YES
+
+SYSTEM HEALTH QA
+Check .syshealth and its real descendants.
+- SYSTEM_HEALTH_VISIBLE=YES
+- SYSTEM_HEALTH_HEIGHT_PX approximately 94
+- SYSTEM_HEALTH_CHILD_OVERFLOW=NO
+- SYSTEM_HEALTH_TEXT_CLIPPED=NO
+- SYSTEM_HEALTH_METRIC_COUNT=4
+- SYSTEM_HEALTH_VISUAL_VISIBLE=YES using .ref-v36-health-scene
+- SYSTEM_HEALTH_PREMIUM_VISUAL=PASS
+
+REVENUE QA
+- REVENUE_VISIBLE=YES
+- REVENUE_FULL_WIDTH=YES meaning the card spans both columns of .admin-command-grid
+- REVENUE_HEIGHT_PX approximately 278
+- REVENUE_TEXT_CLIPPED=NO
+- REVENUE_CHART_VISIBLE=YES
+- REVENUE_DONUT_VISIBLE=YES
+- REVENUE_DONUT_MULTICOLOR=YES
+- REVENUE_DONUT_LEGEND_VISIBLE=YES using .ref-v36-donut-legend
+- REVENUE_DONUT_LEGEND_COUNT=3
+
+OPERATIONS QA
+- OPERATIONS_TWO_COLUMN=YES
+- LIVE_OPERATIONS_VISIBLE=YES
+- CURRENT_OPERATIONS_VISIBLE=YES
+- LIVE_CURRENT_HEIGHT_DELTA_PX<=4
+- LIVE_TEXT_CLIPPED=NO
+- OPS_TEXT_CLIPPED=NO
+- OPS_ROW_COUNT=3
+- OPS_STATUS_PILLS_VISIBLE=YES
+- OPS_HEALTH_STRIP_VISIBLE=YES
+
+LEDGER QA
+- TX_LEDGER_VISIBLE=YES
+- TX_LEDGER_FULL_WIDTH=YES
+- TX_LEDGER_LIGHT_HEADER=YES
+- TX_TABLE_VISIBLE=YES
+- TX_TEXT_CLIPPED=NO
+- TX_SEARCH_VISIBLE=YES
+- TX_FILTER_BUTTON_VISIBLE=YES
+- TX_EXPORT_BUTTON_VISIBLE=YES
+- TX_SEARCH_REGRESSION=PASS
+
+DATE POPOVER QA
+First verify open/close behavior still passes.
+Then CLOSE the popover before all reference screenshots and geometry measurements.
+- DATE_POPOVER_OPEN_CLOSE=PASS
+- DATE_POPOVER_OPEN_AT_SCREENSHOT_TIME=NO
+
+FULL PAGE QA
+- PAGE_HORIZONTAL_OVERFLOW=NO
+- DATA_CHANGED=NO
+- LOGIC_CHANGED=NO
+- BACKEND_CHANGED=NO
+- AUTH_CHANGED=NO
+
+IMPORTANT VISUAL REVIEW RULE
+Do not mark the result PASS merely because selectors exist.
+At 1448x1086 visually compare the page as one composition against the approved reference. Verify:
+- same dark/light rhythm
+- same approximate vertical section proportions
+- same sidebar visual weight
+- same hero text hierarchy
+- same large chart + right donut balance
+- same dark-left/light-right operations row
+- same full-width ledger placement
+
+If the page still clearly looks like the old dashboard with styled pieces rather than the reference composition, set REFERENCE_FULL_PAGE_FIDELITY=FAIL even if geometry checks pass.
+
+SCREENSHOTS
+Capture exactly 4:
+1. 67__ADMIN__V36__STRUCTURAL-REFERENCE__01__FULL__1448x1086__<RUNSTAMP>.png
+2. 67__ADMIN__V36__STRUCTURAL-REFERENCE__02__FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V36__STRUCTURAL-REFERENCE__03__HERO-HEALTH-REVENUE__1448x1086__<RUNSTAMP>.png
+4. 67__ADMIN__V36__STRUCTURAL-REFERENCE__04__OPERATIONS-LEDGER-SIDEBAR__1448x1086__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to existing QA repo.
+Do NOT source-push /67.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Upload if available. Drive/client-side failure is NON-BLOCKING after browser QA/screenshots are complete.
+
+FINAL REPORT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V36
+ELEMENT=STRUCTURAL REFERENCE REBUILD
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v36.css
+VISUAL_STRATEGY=STRUCTURAL_JSX_PLUS_MASTER_CSS
+LEGACY_OVERRIDE_STACK_USED=NO
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+REFERENCE_VIEWPORT=1448x1086
+SIDEBAR_WIDTH_PX=<number>
+SIDEBAR_HORIZONTAL_OVERFLOW=<YES/NO>
+SIDEBAR_PROMO_PANEL_VISIBLE=<YES/NO>
+SIDEBAR_ADMIN_BLOCK_VISIBLE=<YES/NO>
+HERO_HEIGHT_PX=<number>
+HERO_TOOLS_VISIBLE=<YES/NO>
+HERO_GREETING_VISIBLE=<YES/NO>
+HERO_TITLE_CLIPPED=<YES/NO>
+HERO_RIGHT_COPY_VISIBLE=<YES/NO>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+KPI_COUNT=<number>
+KPI_EQUAL_WIDTH=<YES/NO>
+KPI_HEIGHT_PX=<number>
+KPI_TEXT_CLIPPED=<YES/NO>
+SYSTEM_HEALTH_HEIGHT_PX=<number>
+SYSTEM_HEALTH_CHILD_OVERFLOW=<YES/NO>
+SYSTEM_HEALTH_TEXT_CLIPPED=<YES/NO>
+SYSTEM_HEALTH_METRIC_COUNT=<number>
+SYSTEM_HEALTH_VISUAL_VISIBLE=<YES/NO>
+SYSTEM_HEALTH_PREMIUM_VISUAL=<PASS/FAIL>
+REVENUE_FULL_WIDTH=<YES/NO>
+REVENUE_HEIGHT_PX=<number>
+REVENUE_TEXT_CLIPPED=<YES/NO>
+REVENUE_CHART_VISIBLE=<YES/NO>
+REVENUE_DONUT_VISIBLE=<YES/NO>
+REVENUE_DONUT_MULTICOLOR=<YES/NO>
+REVENUE_DONUT_LEGEND_VISIBLE=<YES/NO>
+REVENUE_DONUT_LEGEND_COUNT=<number>
+OPERATIONS_TWO_COLUMN=<YES/NO>
+LIVE_OPERATIONS_VISIBLE=<YES/NO>
+CURRENT_OPERATIONS_VISIBLE=<YES/NO>
+LIVE_CURRENT_HEIGHT_DELTA_PX=<number>
+LIVE_TEXT_CLIPPED=<YES/NO>
+OPS_TEXT_CLIPPED=<YES/NO>
+OPS_ROW_COUNT=<number>
+TX_LEDGER_VISIBLE=<YES/NO>
+TX_LEDGER_FULL_WIDTH=<YES/NO>
+TX_LEDGER_LIGHT_HEADER=<YES/NO>
+TX_TABLE_VISIBLE=<YES/NO>
+TX_TEXT_CLIPPED=<YES/NO>
+DATE_POPOVER_OPEN_CLOSE=<PASS/FAIL>
+DATE_POPOVER_OPEN_AT_SCREENSHOT_TIME=<YES/NO>
+TX_SEARCH_REGRESSION=<PASS/FAIL>
+PAGE_HORIZONTAL_OVERFLOW=<YES/NO>
+REFERENCE_FULL_PAGE_FIDELITY=<PASS/FAIL>
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
