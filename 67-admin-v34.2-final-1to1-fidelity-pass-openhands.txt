@@ -1,0 +1,61 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V34.2
+BASE_VERSION=V34.1
+TARGET_VERSION=V34.2
+
+Apply:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v34.2-final-1to1-fidelity-pass-apply.sh
+
+Then rebuild, restart the same live service, verify local/origin/public hashes match, and run browser QA at 1448x1086 and 1920x1080. Do not source-push.
+
+Visual target: match the approved 1448x1086 luxury automotive dashboard reference as closely as possible. Check sidebar proportion, unclipped hero left headline, visible hero right copy, four equal KPI cards, readable System Health, full-width Revenue chart with visible CSS donut, balanced Live/Current Operations, and LIGHT ivory Financial Ledger header.
+
+Important corrected QA rules:
+- Donut visibility: check .rev-total, .rev-total__ring and .rev-total__ring-core. The donut is CSS-rendered, not SVG/canvas.
+- Hero right copy: check .ov-header__copy-right and its direct text children.
+- Text clipping: do not fail from scrollWidth/clientWidth alone. Compare painted text-node Range rectangles against the containing card with 2px tolerance; ignore decorative pseudo-elements and SVG chart labels.
+- Hero stability: set scrollY=0, wait for fonts and hero ready, measure twice 500ms apart without scrolling. Pass shift <=1px. Initial decode of the same high-res image is not a flash.
+- Sidebar regression: verify visible nav buttons remain accessible and sidebar has no horizontal overflow.
+
+Required:
+PATCH_APPLIED=YES
+BUILD=PASS
+RUNTIME_CSS=AdminDashboard.v34.2.css
+LIVE_RUNTIME_ACTIVATED=YES
+ORIGIN_MATCH_LOCAL_DIST=YES
+PUBLIC_MATCH_LOCAL_DIST=YES
+SIDEBAR_NAV_REGRESSION=PASS
+SIDEBAR_HORIZONTAL_OVERFLOW=NO
+HERO_LEFT_COPY_CLIPPED=NO
+HERO_RIGHT_COPY_VISIBLE=YES
+HERO_GEOMETRY_SHIFT_PX<=1
+HERO_IMAGE_FLASH_DETECTED=NO
+KPI_COUNT=4
+KPI_EQUAL_WIDTH=YES
+KPI_TEXT_CLIPPED=NO
+SYSTEM_HEALTH_TEXT_CLIPPED=NO
+REVENUE_TEXT_CLIPPED=NO
+REVENUE_CHART_VISIBLE=YES
+REVENUE_DONUT_VISIBLE=YES
+LIVE_OPERATIONS_VISIBLE=YES
+CURRENT_OPERATIONS_VISIBLE=YES
+OPS_ROW_COUNT=3
+TX_LEDGER_VISIBLE=YES
+TX_LEDGER_HEADER_LIGHT=YES
+PAGE_HORIZONTAL_OVERFLOW=NO
+DATE_STRIP_REGRESSION=PASS
+DATE_POPOVER_OPEN_CLOSE=PASS
+TX_SEARCH_REGRESSION=PASS
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+Capture 4 screenshots:
+67__ADMIN__V34-2__FINAL-1TO1__01__FULL__1448x1086__<RUNSTAMP>.png
+67__ADMIN__V34-2__FINAL-1TO1__02__FULL__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V34-2__FINAL-1TO1__03__HERO-KPI-HEALTH-REVENUE__1448x1086__<RUNSTAMP>.png
+67__ADMIN__V34-2__FINAL-1TO1__04__OPERATIONS-LEDGER__1448x1086__<RUNSTAMP>.png
+
+Push screenshots to the existing QA location. Drive upload failure is non-blocking and must not invalidate completed browser QA. Return the full report and screenshot names.
