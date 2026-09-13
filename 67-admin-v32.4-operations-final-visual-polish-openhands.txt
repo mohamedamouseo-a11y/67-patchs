@@ -1,0 +1,287 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.4
+MODULE=ADMIN DASHBOARD
+ELEMENT=OPERATIONS FINAL VISUAL POLISH
+BASE_VERSION=V32.3
+TARGET_VERSION=V32.4
+STATUS=APPLY_PATCH_AND_RETURN_FOR_VISUAL_QA
+==================================================
+
+OBJECTIVE
+Polish the already-visible V32.3 operations cards based on direct screenshot review.
+Do NOT treat the V32.3 structural visibility flags as ground truth when screenshots prove the elements are visible.
+
+DIRECT SCREENSHOT FINDINGS
+- Live Operations structure is visible: header, 2 events, activity summary, footer chips and CTA are all rendered.
+- Real Live issue: too much dead space under the content and typography is still too small.
+- Current Operations structure is visibly successful: command badge, 2 summary tiles, 3 main rows, status pills, optional payment row and health strip are all rendered.
+- Real Current issue: typography is slightly too small; geometry should otherwise be preserved.
+- HERO_GEOMETRY_SHIFT_PX=663 in V32.3 is a QA artifact caused by scrollIntoView changing viewport scroll position, not a real hero layout shift.
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v32.4-operations-final-visual-polish-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v32.4-operations-final-visual-polish-apply.sh
+3. chmod +x it.
+4. Execute it.
+5. Require BUILD=PASS.
+6. Activate live runtime using the same proven restart mechanism used for V32.3.
+7. Confirm local dist, origin and public index hashes match.
+8. Browser QA at 1920x1080.
+
+STRICT SCOPE
+Allowed:
+- CSS-only changes for .live-card and descendants
+- CSS-only typography uplift for .ops-card and descendants
+
+PROTECTED — MUST NOT CHANGE
+- Hero DOM/CSS/geometry
+- Date Strip/date logic
+- KPI row
+- System Health
+- Revenue & Performance/chart/donut
+- Sidebar
+- Financial ledger/transactions
+- data values/counts
+- liveNotifications logic
+- current operations logic
+- backend/auth/API/routing/permissions
+
+DO NOT
+- rewrite JSX
+- remove/hide rows
+- change values/text/counts
+- source-push /67 before ChatGPT approval
+
+QA VISIBILITY RULE — IMPORTANT
+For existence/visibility checks, use DOM/computed style + positive rect dimensions.
+Do NOT require viewport intersection after another element was scrolled into view.
+
+Use these exact structural checks:
+- document.querySelector('.live-card__footer')
+- document.querySelector('.live-cta')
+- document.querySelector('.live-activity-summary')
+- document.querySelector('.live-activity-summary__metrics')
+- document.querySelector('.ops-card__command-badge')
+- document.querySelectorAll('.ops-card .ops-tiles > .ops-tile').length === 3
+- document.querySelectorAll('.ops-card .ops-tiles > .ops-tile .ops-tile__state').length === 3
+- document.querySelector('.ops-card > .ops-tile--payment') when rendered
+- document.querySelector('.ops-good-strip')
+
+VISIBLE means:
+- element exists
+- computed display != none
+- computed visibility != hidden/collapse
+- computed opacity > 0
+- rect.width > 0 and rect.height > 0
+
+HERO REGRESSION RULE — IMPORTANT
+Do not compare hero viewport Y coordinates before vs after scrollIntoView.
+Instead:
+1. window.scrollTo(0,0)
+2. wait for layout settle
+3. capture hero rect width/height and page-space top = rect.top + window.scrollY
+4. perform operations checks/screenshots
+5. window.scrollTo(0,0)
+6. wait
+7. capture hero rect again
+8. HERO_GEOMETRY_SHIFT_PX = max(abs(width delta), abs(height delta), abs(page-space top delta))
+Required: 0 or <=1px tolerance.
+
+LIVE OPERATIONS QA
+Required:
+- LIVE_CARD_VISIBLE=YES
+- LIVE_CARD_CHILD_OVERFLOW=NO
+- LIVE_TEXT_CLIPPED=NO
+- LIVE_HEADER_VISIBLE=YES
+- LIVE_EVENT_ITEMS_VISIBLE=YES
+- LIVE_EVENT_COUNT_PRESERVED=YES
+- LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=YES
+- LIVE_ACTIVITY_METRICS_VISIBLE=YES
+- LIVE_FOOTER_VISIBLE=YES
+- LIVE_FOOTER_WITHIN_CARD=YES
+- LIVE_CTA_VISIBLE=YES
+- LIVE_CTA_WITHIN_CARD=YES
+- LIVE_DEAD_SPACE_BOTTOM_PX<=24
+- LIVE_PRIMARY_TEXT_MIN_PX>=8
+- LIVE_SECONDARY_TEXT_MIN_PX>=7
+- LIVE_OPERATIONS_PREMIUM_VISUAL=PASS
+
+For font checks use meaningful text selectors only:
+Primary:
+- .live-card__head h3
+- .live-item__body p
+- .live-activity-summary__lead strong
+- .live-activity-summary__metrics strong
+- .live-cta
+Secondary:
+- .live-item__body small
+- .live-activity-summary__lead small
+- .live-activity-summary__lead span
+- .live-activity-summary__metrics small
+- .live-pending span
+- .live-quick span
+Do not scan decorative/helper elements not listed above.
+
+LIVE_DEAD_SPACE_BOTTOM_PX
+Measure: live-card bottom - bottom of the lowest visible actionable child (.live-cta preferred, otherwise footer). Because V32.4 places footer/CTA at bottom, require <=24px.
+
+CURRENT OPERATIONS QA
+Required:
+- OPS_CARD_VISIBLE=YES
+- OPS_CARD_CHILD_OVERFLOW=NO
+- OPS_TEXT_CLIPPED=NO
+- OPS_HEADER_VISIBLE=YES
+- OPS_COMMAND_BADGE_VISIBLE=YES
+- OPS_SUMMARY_TILES_VISIBLE=YES
+- OPS_ROWS_VISIBLE=YES
+- OPS_ROW_COUNT=3
+- OPS_STATUS_PILLS_VISIBLE=YES
+- OPS_PAYMENT_ROW_VISIBLE=YES/NOT_RENDERED
+- OPS_HEALTH_STRIP_VISIBLE=YES
+- OPS_HEALTH_STRIP_WITHIN_CARD=YES
+- OPS_PRIMARY_TEXT_MIN_PX>=8
+- OPS_SECONDARY_TEXT_MIN_PX>=7
+- CURRENT_OPERATIONS_PREMIUM_VISUAL=PASS
+
+For font checks use meaningful text selectors only:
+Primary:
+- .ops-card__title-group h3
+- .ops-summary-tile strong
+- .ops-tile__info strong
+- .ops-tile__count
+Secondary:
+- .ops-card__title-group small
+- .ops-card__command-badge
+- .ops-summary-tile span
+- .ops-summary-tile small
+- .ops-tile__info small
+- .ops-tile__state
+- .ops-good-strip
+
+TEXT CLIPPING RULE
+Flag only actual visual clipping: text painting cut by own box or ancestor/card boundary.
+Do not flag because scrollWidth differs by a subpixel when overflow is visible and the rendered text is fully painted inside the card.
+If failure, report exact selector + rect + clientWidth/clientHeight + scrollWidth/scrollHeight.
+
+CHILD CONTAINMENT RULE
+Measure visible real descendants against their own target card with 1px tolerance.
+If overflow exists, report exact selector and deltas on all sides.
+
+VISUAL QUALITY
+From screenshots verify:
+- Live dark card uses the full height intentionally; no large empty block under CTA.
+- Live text is readable at normal dashboard zoom.
+- Current ivory/gold card keeps V32.3 successful layout.
+- Command badge, 3 rows, pills and health strip are visually obvious.
+- Both cards remain balanced with the approved Revenue card and full page.
+
+REGRESSIONS
+- REVENUE_REGRESSION=PASS
+- HERO_GEOMETRY_SHIFT_PX<=1
+- HERO_IMAGE_FLASH_DETECTED=NO
+- DATE_STRIP_REGRESSION=PASS
+- KPI_REGRESSION=PASS
+- SYSTEM_HEALTH_REGRESSION=PASS
+- SIDEBAR_CHANGED=NO
+- DATA_CHANGED=NO
+- LOGIC_CHANGED=NO
+- BACKEND_CHANGED=NO
+- AUTH_CHANGED=NO
+
+SCREENSHOTS
+Capture exactly 4 at 1920x1080:
+1. 67__ADMIN__V32-4__OPERATIONS-FINAL-POLISH__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V32-4__OPERATIONS-FINAL-POLISH__02__LIVE-OPERATIONS__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V32-4__OPERATIONS-FINAL-POLISH__03__CURRENT-OPERATIONS__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V32-4__OPERATIONS-FINAL-POLISH__04__REVENUE-OPERATIONS-CONTINUITY__1920x1080__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to existing QA repo.
+Do NOT source-push /67.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Attempt upload to My Drive root.
+Drive/client-side failure is NON-BLOCKING for browser/design QA.
+
+FINAL REPORT FORMAT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.4
+MODULE=ADMIN DASHBOARD
+ELEMENT=OPERATIONS FINAL VISUAL POLISH
+BASE_VERSION=V32.3
+TARGET_VERSION=V32.4
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v32.4.css
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+LIVE_CARD_VISIBLE=<YES/NO>
+LIVE_CARD_CHILD_OVERFLOW=<YES/NO>
+LIVE_OVERFLOW_ELEMENT=<NONE or selector>
+LIVE_TEXT_CLIPPED=<YES/NO>
+LIVE_HEADER_VISIBLE=<YES/NO>
+LIVE_EVENT_ITEMS_VISIBLE=<YES/NO>
+LIVE_EVENT_COUNT_PRESERVED=<YES/NO>
+LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=<YES/NO>
+LIVE_ACTIVITY_METRICS_VISIBLE=<YES/NO>
+LIVE_FOOTER_VISIBLE=<YES/NO>
+LIVE_FOOTER_WITHIN_CARD=<YES/NO>
+LIVE_CTA_VISIBLE=<YES/NO>
+LIVE_CTA_WITHIN_CARD=<YES/NO>
+LIVE_DEAD_SPACE_BOTTOM_PX=<number>
+LIVE_PRIMARY_TEXT_MIN_PX=<number>
+LIVE_SECONDARY_TEXT_MIN_PX=<number>
+LIVE_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+OPS_CARD_VISIBLE=<YES/NO>
+OPS_CARD_CHILD_OVERFLOW=<YES/NO>
+OPS_OVERFLOW_ELEMENT=<NONE or selector>
+OPS_TEXT_CLIPPED=<YES/NO>
+OPS_HEADER_VISIBLE=<YES/NO>
+OPS_COMMAND_BADGE_VISIBLE=<YES/NO>
+OPS_SUMMARY_TILES_VISIBLE=<YES/NO>
+OPS_ROWS_VISIBLE=<YES/NO>
+OPS_ROW_COUNT=<number>
+OPS_STATUS_PILLS_VISIBLE=<YES/NO>
+OPS_PAYMENT_ROW_VISIBLE=<YES/NO/NOT_RENDERED>
+OPS_HEALTH_STRIP_VISIBLE=<YES/NO>
+OPS_HEALTH_STRIP_WITHIN_CARD=<YES/NO>
+OPS_PRIMARY_TEXT_MIN_PX=<number>
+OPS_SECONDARY_TEXT_MIN_PX=<number>
+CURRENT_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+REVENUE_REGRESSION=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+KPI_REGRESSION=<PASS/FAIL>
+SYSTEM_HEALTH_REGRESSION=<PASS/FAIL>
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+VIEWPORT=1920x1080
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+PASS CONDITION
+Set STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL only when the actual rendered screenshots and corrected DOM checks agree: Live has no dead lower block, typography is readable, Current preserves its successful V32.3 structure, all real children are contained, and protected regressions pass.
