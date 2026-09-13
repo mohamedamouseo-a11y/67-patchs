@@ -1,0 +1,297 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V38
+ELEMENT=EXACT USER REFERENCE REBUILD
+BASE_RUNTIME=V37
+TARGET_RUNTIME=V38
+STATUS=APPLY_AND_RETURN_FOR_FULL-PAGE_VISUAL_APPROVAL
+==================================================
+
+IMPORTANT
+Stop all V34/V35/V36/V37 incremental fixes.
+V38 is a full Overview DOM replacement against the exact user-approved 1448x1086 reference composition.
+Do not reuse the V37 overview DOM.
+Do not source-push /67.
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v38-exact-reference-rebuild-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v38-exact-reference-rebuild-apply.sh
+3. chmod +x it
+4. Execute it
+5. Require BUILD=PASS
+6. Restart/activate the same proven live service
+7. Confirm local dist/origin/public index hashes match
+8. Browser QA at 1448x1086 FIRST, then 1920x1080
+
+REFERENCE PIXEL MAP — MEASURED FROM THE USER'S ACTUAL 1448x1086 REFERENCE IMAGE
+This is the fidelity lock. Use it instead of guessing.
+- viewport: 1448 x 1086
+- sidebar dark rail begins at x ~= 1249; width ~= 199px
+- main content must visually reach the sidebar; no 96px white gutter
+- hero vertical band: y ~= 0..175
+- KPI band: y ~= 180..281
+- System Health band: y ~= 283..377
+- Revenue band: y ~= 385..659
+- Operations band: y ~= 676..919
+- Ledger starts around y ~= 930 and must be visibly present inside the 1086px screenshot
+
+REFERENCE COMPOSITION
+- fixed dark right sidebar, ~200px, premium gold accents
+- full-width cinematic city/car hero on the main canvas
+- greeting/tools top-left inside hero
+- large Arabic headline below greeting
+- slogan on physical right inside hero
+- dark date toolbar integrated along hero bottom
+- four equal ivory KPI cards
+- dark full-width System Health band: left status, 4 center metrics, automotive visual on right
+- light full-width Revenue card: 4 summary cells, large chart left, dark multicolor donut panel right
+- donut colors visibly gold + cyan + blue with a 3-line legend
+- Operations row: dark Live card left + light Current card right, equal height/width
+- Financial Ledger: full width, light header, search + filter + export visible, compact table
+
+PRECONDITIONS
+- Runtime before patch must import AdminDashboard.v37.css
+- After patch must import AdminDashboard.v38.css
+- .v38-dashboard must exist
+- .v38-hero, .v38-health, .v38-revenue, .v38-ops-grid, .v38-ledger must exist
+
+PROTECTED
+Do not change:
+- APIs
+- backend
+- authentication/session
+- routing
+- permissions
+- calculations
+- payments/sellers/customers/documents data
+- analytics/date calculations
+- live notification data
+- transaction search behavior
+- non-overview tabs
+
+Presentation JSX replacement for Overview is intentional and allowed.
+
+GEOMETRY QA AT 1448x1086
+Measure after document fonts/layout settle and with date popover CLOSED.
+Tolerance 4px unless explicitly stated.
+
+SIDEBAR
+- SIDEBAR_WIDTH_PX ~= 200
+- SIDEBAR_LEFT_X ~= 1248
+- SIDEBAR_HORIZONTAL_OVERFLOW=NO
+- SIDEBAR_NAV_CLICKABLE=YES
+- SIDEBAR_PROMO_VISIBLE=YES
+- SIDEBAR_ADMIN_VISIBLE=YES
+
+MAIN / SIDEBAR JOIN
+Measure sidebar.left and the right edge of .v38-hero.
+- MAIN_TO_SIDEBAR_GAP_PX <= 12
+- HERO_RIGHT_EDGE_TO_SIDEBAR_PX <= 12
+The V37 value of 96px is an automatic FAIL.
+
+HERO
+- HERO_VISIBLE=YES
+- HERO_HEIGHT_PX ~= 176
+- HERO_TOOLS_VISIBLE=YES
+- HERO_GREETING_VISIBLE=YES
+- HERO_TITLE_VISIBLE=YES
+- HERO_TITLE_CLIPPED=NO
+- HERO_RIGHT_COPY_VISIBLE=YES
+- HERO_DATEBAR_VISIBLE=YES
+- HERO_IMAGE_FLASH_DETECTED=NO
+- HERO_GEOMETRY_SHIFT_PX=0
+
+DATE POPOVER INTERACTION
+Use the real V38 controls:
+1. Click .v38-date-display
+2. Require .v38-date-popover visible and aria-expanded=true
+3. Click .v38-date-close
+4. Require .v38-date-popover absent and aria-expanded=false
+Then keep it CLOSED for all screenshots.
+- DATE_POPOVER_OPEN_CLOSE=PASS
+- DATE_POPOVER_OPEN_AT_SCREENSHOT_TIME=NO
+
+KPI
+- KPI_COUNT=4
+- KPI_EQUAL_WIDTH=YES
+- KPI_HEIGHT_PX ~= 90
+- KPI_TEXT_CLIPPED=NO
+- KPI_PRIMARY_VALUES_VISIBLE=YES
+
+SYSTEM HEALTH
+- HEALTH_VISIBLE=YES
+- HEALTH_HEIGHT_PX ~= 94
+- HEALTH_CHILD_OVERFLOW=NO
+- HEALTH_TEXT_CLIPPED=NO
+- HEALTH_METRIC_COUNT=4
+- HEALTH_SCENE_VISIBLE=YES
+- HEALTH_PREMIUM_VISUAL=PASS
+
+REVENUE
+- REVENUE_VISIBLE=YES
+- REVENUE_WIDTH_MATCH_MAIN=YES: abs(revenue.width - hero.width) <= 4px
+- REVENUE_LEFT_MATCH_MAIN=YES: abs(revenue.left - hero.left) <= 4px
+- REVENUE_RIGHT_MATCH_MAIN=YES: abs(revenue.right - hero.right) <= 4px
+- REVENUE_HEIGHT_PX ~= 276
+- REVENUE_TEXT_CLIPPED=NO
+- REVENUE_CHART_VISIBLE=YES
+- REVENUE_DONUT_VISIBLE=YES
+- REVENUE_DONUT_LEGEND_COUNT=3
+- REVENUE_DONUT_MULTICOLOR=YES
+For multicolor verification inspect computed background-image of .v38-donut-ring; it must contain a conic-gradient with at least three distinct color stops (gold/cyan/blue). Do not use a stale V37 selector.
+
+OPERATIONS
+- OPS_GRID_VISIBLE=YES
+- OPERATIONS_TWO_COLUMN=YES
+- LIVE_VISIBLE=YES
+- CURRENT_VISIBLE=YES
+- LIVE_CURRENT_WIDTH_DELTA_PX <= 4
+- LIVE_CURRENT_HEIGHT_DELTA_PX <= 4
+- LIVE_TEXT_CLIPPED=NO
+- CURRENT_TEXT_CLIPPED=NO
+- CURRENT_TABLE_VISIBLE=YES
+
+LEDGER
+- LEDGER_VISIBLE=YES
+- LEDGER_WIDTH_MATCH_MAIN=YES: abs(ledger.width - hero.width) <= 4px
+- LEDGER_LEFT_MATCH_MAIN=YES
+- LEDGER_RIGHT_MATCH_MAIN=YES
+- LEDGER_TOP_PX should be approximately 920..970 at reference viewport
+- LEDGER_SEARCH_VISIBLE=YES using .v38-ledger-search
+- LEDGER_FILTER_VISIBLE=YES using .v38-ledger-filter
+- LEDGER_EXPORT_VISIBLE=YES using .v38-ledger-export
+- LEDGER_TABLE_VISIBLE=YES
+- LEDGER_TEXT_CLIPPED=NO
+
+TRANSACTION SEARCH REGRESSION
+Use .v38-ledger-search.
+- capture row count
+- type a known payment ID or buyer name
+- ensure rows filter accordingly
+- clear query
+- ensure rows restore
+TX_SEARCH_REGRESSION=PASS
+
+FULL PAGE FIDELITY
+Do not PASS only because selectors exist.
+At 1448x1086 visually inspect the complete screenshot and compare the composition to the user reference:
+- sidebar ≈200px and touches the main canvas with only a narrow gutter
+- hero, KPI, health, revenue, operations and ledger appear in the same vertical rhythm
+- Revenue has the same chart-left / dark-donut-right visual balance
+- operations are two equal cards
+- ledger is visible in the same screenshot, not pushed far below the fold
+- no giant white gap anywhere between main and sidebar
+
+Set REFERENCE_FULL_PAGE_FIDELITY=PASS only if the whole page reads like the supplied reference, not like the old dashboard restyled.
+
+1920x1080 REGRESSION
+At 1920x1080 confirm:
+- no horizontal overflow
+- sidebar still fixed on right
+- main fills available width
+- no text clipping
+- date popover open/close still works
+
+SCREENSHOTS — EXACTLY 4
+1. 67__ADMIN__V38__EXACT-REFERENCE__01__FULL__1448x1086__<RUNSTAMP>.png
+2. 67__ADMIN__V38__EXACT-REFERENCE__02__FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V38__EXACT-REFERENCE__03__HERO-KPI-HEALTH-REVENUE__1448x1086__<RUNSTAMP>.png
+4. 67__ADMIN__V38__EXACT-REFERENCE__04__OPERATIONS-LEDGER-SIDEBAR__1448x1086__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to the existing QA location.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Attempt upload only AFTER browser QA and screenshot capture.
+Drive/client-side tool failure is NON-BLOCKING.
+If it fails report DRIVE_UPLOAD=FAILED_TOOL_UNAVAILABLE and continue to final report.
+Never state that browser verification did not happen if it already completed.
+
+FINAL REPORT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V38
+ELEMENT=EXACT USER REFERENCE REBUILD
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v38.css
+VISUAL_STRATEGY=FULL_OVERVIEW_DOM_REPLACEMENT_REFERENCE_LOCK
+V37_OVERVIEW_REUSED=NO
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+REFERENCE_VIEWPORT=1448x1086
+SIDEBAR_WIDTH_PX=<number>
+SIDEBAR_LEFT_X=<number>
+SIDEBAR_HORIZONTAL_OVERFLOW=<YES/NO>
+MAIN_TO_SIDEBAR_GAP_PX=<number>
+HERO_RIGHT_EDGE_TO_SIDEBAR_PX=<number>
+HERO_HEIGHT_PX=<number>
+HERO_TOOLS_VISIBLE=<YES/NO>
+HERO_GREETING_VISIBLE=<YES/NO>
+HERO_TITLE_CLIPPED=<YES/NO>
+HERO_RIGHT_COPY_VISIBLE=<YES/NO>
+HERO_DATEBAR_VISIBLE=<YES/NO>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_POPOVER_OPEN_CLOSE=<PASS/FAIL>
+DATE_POPOVER_OPEN_AT_SCREENSHOT_TIME=<YES/NO>
+KPI_COUNT=<number>
+KPI_EQUAL_WIDTH=<YES/NO>
+KPI_HEIGHT_PX=<number>
+KPI_TEXT_CLIPPED=<YES/NO>
+HEALTH_HEIGHT_PX=<number>
+HEALTH_CHILD_OVERFLOW=<YES/NO>
+HEALTH_TEXT_CLIPPED=<YES/NO>
+HEALTH_METRIC_COUNT=<number>
+HEALTH_SCENE_VISIBLE=<YES/NO>
+HEALTH_PREMIUM_VISUAL=<PASS/FAIL>
+REVENUE_WIDTH_MATCH_MAIN=<YES/NO>
+REVENUE_HEIGHT_PX=<number>
+REVENUE_TEXT_CLIPPED=<YES/NO>
+REVENUE_CHART_VISIBLE=<YES/NO>
+REVENUE_DONUT_VISIBLE=<YES/NO>
+REVENUE_DONUT_MULTICOLOR=<YES/NO>
+REVENUE_DONUT_LEGEND_COUNT=<number>
+OPERATIONS_TWO_COLUMN=<YES/NO>
+LIVE_CURRENT_WIDTH_DELTA_PX=<number>
+LIVE_CURRENT_HEIGHT_DELTA_PX=<number>
+LIVE_TEXT_CLIPPED=<YES/NO>
+CURRENT_TEXT_CLIPPED=<YES/NO>
+CURRENT_TABLE_VISIBLE=<YES/NO>
+LEDGER_WIDTH_MATCH_MAIN=<YES/NO>
+LEDGER_TOP_PX=<number>
+LEDGER_SEARCH_VISIBLE=<YES/NO>
+LEDGER_FILTER_VISIBLE=<YES/NO>
+LEDGER_EXPORT_VISIBLE=<YES/NO>
+LEDGER_TABLE_VISIBLE=<YES/NO>
+LEDGER_TEXT_CLIPPED=<YES/NO>
+TX_SEARCH_REGRESSION=<PASS/FAIL>
+PAGE_HORIZONTAL_OVERFLOW=<YES/NO>
+REFERENCE_FULL_PAGE_FIDELITY=<PASS/FAIL>
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+PASS CONDITION
+Only set STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL when all structural checks pass AND REFERENCE_FULL_PAGE_FIDELITY=PASS.
