@@ -1,0 +1,185 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.4 RETRY
+MODULE=ADMIN DASHBOARD
+ELEMENT=OPERATIONS FINAL VISUAL POLISH
+BASE_VERSION=V32.3
+TARGET_VERSION=V32.4
+STATUS=RETRY_FROM_LAST_CONFIRMED_RESULT
+==================================================
+
+CONTEXT
+The previous attempt did NOT execute or verify anything. It failed before execution with:
+"The task requires a client-side tool action, but recovery did not produce a valid tool call. No execution or verification was performed; retry the action from the latest confirmed tool result."
+
+Therefore:
+- DO NOT create V32.5
+- DO NOT change the patch
+- DO NOT assume V32.4 is applied
+- Start from the latest confirmed runtime: V32.3
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v32.4-operations-final-visual-polish-apply.sh
+
+EXECUTION ORDER
+1. cd /67
+2. Confirm AdminDashboard.jsx currently imports AdminDashboard.v32.3.css
+3. Download the V32.4 patch to /tmp/67-admin-v32.4-operations-final-visual-polish-apply.sh
+4. chmod +x it
+5. Execute it
+6. Require BUILD=PASS
+7. Restart/activate the live service using the same proven mechanism used for V32.3
+8. Confirm local dist, origin, and public index hashes match
+9. Perform browser QA at 1920x1080
+10. Capture the required screenshots
+11. Push screenshots to the QA repo
+12. Only after all browser QA is complete, optionally attempt Google Drive upload
+
+CRITICAL CLIENT-SIDE TOOL RULE
+Google Drive/client-side upload is NON-BLOCKING and MUST NOT interrupt patch execution, runtime activation, browser QA, screenshot capture, QA repo push, or final reporting.
+
+If any client-side tool action fails:
+- set DRIVE_UPLOAD=FAILED_TOOL_UNAVAILABLE
+- continue immediately
+- preserve all already-completed execution/browser QA results
+- DO NOT say "No execution or verification was performed" if patch/runtime/browser steps already ran
+- DO NOT retry Drive before final reporting
+
+BROWSER QA RULE
+Use the real DOM after layout settles. Scroll target cards into view only for target-card screenshots/measurements. Before Hero regression measurement, restore window scroll position to the original top-of-page position and wait for layout stabilization. HERO_GEOMETRY_SHIFT_PX must compare the Hero at the SAME scroll position before and after patch.
+
+VISUAL EXPECTATION
+V32.4 is a final polish over the already structurally-correct V32.3 appearance:
+- Live Operations: remove the large dead empty zone; keep footer + CTA intentionally positioned at the bottom; improve readable typography.
+- Current Operations: preserve the visible command badge, summary tiles, operation rows, status pills, payment row (when rendered), and green health strip; improve readable typography without rebuilding the successful structure.
+- Do not re-hide or compress elements.
+
+PROTECTED
+- Hero
+- Date Strip/date logic
+- KPI row
+- System Health
+- Revenue & Performance/chart/donut
+- Sidebar
+- transactions/ledger
+- liveNotifications data/logic
+- current operations data/logic
+- backend/auth/API/routing/permissions
+
+DO NOT
+- source-push /67
+- rewrite JSX
+- change business data or counts
+- create another version if V32.4 fails; report the exact failure
+
+REQUIRED QA
+LIVE_CARD_VISIBLE=YES
+LIVE_CARD_CHILD_OVERFLOW=NO
+LIVE_TEXT_CLIPPED=NO
+LIVE_HEADER_VISIBLE=YES
+LIVE_EVENT_ITEMS_VISIBLE=YES
+LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=YES/NOT_RENDERED
+LIVE_ACTIVITY_METRICS_VISIBLE=YES/NOT_RENDERED
+LIVE_FOOTER_VISIBLE=YES
+LIVE_FOOTER_WITHIN_CARD=YES
+LIVE_CTA_VISIBLE=YES
+LIVE_CTA_WITHIN_CARD=YES
+LIVE_DEAD_SPACE_EXCESSIVE=NO
+LIVE_OPERATIONS_PREMIUM_VISUAL=PASS
+
+OPS_CARD_VISIBLE=YES
+OPS_CARD_CHILD_OVERFLOW=NO
+OPS_TEXT_CLIPPED=NO
+OPS_HEADER_VISIBLE=YES
+OPS_COMMAND_BADGE_VISIBLE=YES
+OPS_SUMMARY_TILES_VISIBLE=YES
+OPS_ROWS_VISIBLE=YES
+OPS_ROW_COUNT=3
+OPS_STATUS_PILLS_VISIBLE=YES
+OPS_PAYMENT_ROW_VISIBLE=YES/NOT_RENDERED
+OPS_PAYMENT_ROW_WITHIN_CARD=YES/NOT_RENDERED
+OPS_HEALTH_STRIP_VISIBLE=YES
+OPS_HEALTH_STRIP_WITHIN_CARD=YES
+CURRENT_OPERATIONS_PREMIUM_VISUAL=PASS
+
+REGRESSIONS
+REVENUE_REGRESSION=PASS
+HERO_GEOMETRY_SHIFT_PX=0
+HERO_IMAGE_FLASH_DETECTED=NO
+DATE_STRIP_REGRESSION=PASS
+KPI_REGRESSION=PASS
+SYSTEM_HEALTH_REGRESSION=PASS
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+
+SCREENSHOTS
+Capture exactly 4 at 1920x1080:
+1. 67__ADMIN__V32-4__OPERATIONS-FINAL-POLISH__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V32-4__OPERATIONS-FINAL-POLISH__02__LIVE-OPERATIONS__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V32-4__OPERATIONS-FINAL-POLISH__03__CURRENT-OPERATIONS__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V32-4__OPERATIONS-FINAL-POLISH__04__REVENUE-OPERATIONS-CONTINUITY__1920x1080__<RUNSTAMP>.png
+
+FINAL REPORT
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.4
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v32.4.css
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+LIVE_CARD_VISIBLE=<YES/NO>
+LIVE_CARD_CHILD_OVERFLOW=<YES/NO>
+LIVE_TEXT_CLIPPED=<YES/NO>
+LIVE_HEADER_VISIBLE=<YES/NO>
+LIVE_EVENT_ITEMS_VISIBLE=<YES/NO>
+LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=<YES/NO/NOT_RENDERED>
+LIVE_ACTIVITY_METRICS_VISIBLE=<YES/NO/NOT_RENDERED>
+LIVE_FOOTER_VISIBLE=<YES/NO>
+LIVE_FOOTER_WITHIN_CARD=<YES/NO>
+LIVE_CTA_VISIBLE=<YES/NO>
+LIVE_CTA_WITHIN_CARD=<YES/NO>
+LIVE_DEAD_SPACE_EXCESSIVE=<YES/NO>
+LIVE_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+OPS_CARD_VISIBLE=<YES/NO>
+OPS_CARD_CHILD_OVERFLOW=<YES/NO>
+OPS_TEXT_CLIPPED=<YES/NO>
+OPS_HEADER_VISIBLE=<YES/NO>
+OPS_COMMAND_BADGE_VISIBLE=<YES/NO>
+OPS_SUMMARY_TILES_VISIBLE=<YES/NO>
+OPS_ROWS_VISIBLE=<YES/NO>
+OPS_ROW_COUNT=<number>
+OPS_STATUS_PILLS_VISIBLE=<YES/NO>
+OPS_PAYMENT_ROW_VISIBLE=<YES/NO/NOT_RENDERED>
+OPS_PAYMENT_ROW_WITHIN_CARD=<YES/NO/NOT_RENDERED>
+OPS_HEALTH_STRIP_VISIBLE=<YES/NO>
+OPS_HEALTH_STRIP_WITHIN_CARD=<YES/NO>
+CURRENT_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+REVENUE_REGRESSION=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+KPI_REGRESSION=<PASS/FAIL>
+SYSTEM_HEALTH_REGRESSION=<PASS/FAIL>
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+VIEWPORT=1920x1080
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
