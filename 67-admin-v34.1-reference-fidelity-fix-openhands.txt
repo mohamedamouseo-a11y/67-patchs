@@ -1,0 +1,189 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V34.1
+ELEMENT=REFERENCE FIDELITY FIX
+BASE_VERSION=V34
+TARGET_VERSION=V34.1
+STATUS=APPLY_PATCH_AND_RETURN_FOR_VISUAL_QA
+==================================================
+
+OBJECTIVE
+Apply a second-pass visual fidelity correction to make the live 67 admin dashboard match the approved generated reference as closely as possible in composition, proportions, spacing, typography, dark/light balance, and section hierarchy.
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v34.1-reference-fidelity-fix-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v34.1-reference-fidelity-fix-apply.sh
+3. chmod +x it
+4. Execute it
+5. Require BUILD=PASS
+6. Restart/activate live runtime using the same proven service mechanism
+7. Confirm local dist, origin, and public index hashes match
+8. Perform visual QA at EXACT viewport 1448x1086 first, then 1920x1080
+
+REFERENCE FIDELITY PRIORITIES
+The approved reference has these visual traits and they must be preserved:
+- Right executive sidebar with strong dark/gold weight and premium brand presence.
+- Hero cinematic city/car composition with readable text on both sides and bottom date toolbar.
+- Four equal KPI cards with readable values and subtle sparkline-like accents.
+- Compact dark System Health strip with left status, four center metrics, automotive scene on the right.
+- Revenue card full-width above operations with four summary tiles, large chart, and visible dark donut summary card.
+- Operations below revenue in two equal columns: Live Operations dark on left, Current Operations ivory/light on right.
+- Financial ledger full-width below operations with a LIGHT ivory toolbar/header, not a dark banner.
+- Warm ivory canvas, restrained gold borders, dark navy premium blocks, green operational accents.
+
+V34 ISSUES THIS PASS MUST FIX
+- Hero left title/copy must not be clipped or oversized.
+- Sidebar must retain readable navigation and reference visual weight.
+- KPI text clipping must be NO.
+- System Health text clipping must be NO.
+- Revenue text clipping must be NO.
+- Revenue donut must be visible.
+- Sidebar nav regression must pass.
+- Hero geometry shift must be 0px.
+- Hero low-res/blank flash must not occur.
+- Ledger header must visually match the light reference treatment.
+
+STRICT PROTECTION
+Do NOT change:
+- data values
+- mock/live data sources
+- payment calculations
+- revenue calculations
+- date filtering logic
+- search logic
+- backend
+- auth
+- API calls
+- routing
+- permissions
+- active tab behavior
+
+No source push before ChatGPT approval.
+SOURCE_PROJECT_PUSHED=NO
+
+STRUCTURAL QA — 1448x1086
+Required:
+- SIDEBAR_VISIBLE=YES
+- SIDEBAR_NAV_VISIBLE=YES
+- SIDEBAR_NAV_CLICKABLE=YES
+- HERO_VISIBLE=YES
+- HERO_TITLE_CLIPPED=NO
+- HERO_RIGHT_COPY_VISIBLE=YES
+- DATE_TOOLBAR_VISIBLE=YES
+- KPI_COUNT=4
+- KPI_EQUAL_WIDTH=YES
+- KPI_TEXT_CLIPPED=NO
+- SYSTEM_HEALTH_VISIBLE=YES
+- SYSTEM_HEALTH_TEXT_CLIPPED=NO
+- REVENUE_FULL_WIDTH=YES
+- REVENUE_TEXT_CLIPPED=NO
+- REVENUE_CHART_VISIBLE=YES
+- REVENUE_DONUT_VISIBLE=YES
+- OPERATIONS_TWO_COLUMN=YES
+- LIVE_OPERATIONS_VISIBLE=YES
+- CURRENT_OPERATIONS_VISIBLE=YES
+- LIVE_CURRENT_HEIGHT_DELTA_PX<=2
+- TX_LEDGER_VISIBLE=YES
+- TX_LEDGER_LIGHT_HEADER=YES
+- TX_TABLE_VISIBLE=YES
+- PAGE_HORIZONTAL_OVERFLOW=NO
+
+HERO STABILITY QA
+Measure hero rect before any scroll and after full page render WITHOUT using scrollIntoView on hero.
+Required:
+- HERO_GEOMETRY_SHIFT_PX=0
+- HERO_IMAGE_FLASH_DETECTED=NO
+
+VISUAL COMPARISON NOTES
+At 1448x1086 visually inspect:
+- main content scale should feel like the reference, not miniature
+- hero title must be fully readable and contained
+- sidebar must not appear underweighted/narrow
+- KPI values must be legible at normal zoom
+- System Health must not look crushed
+- revenue donut must remain clearly visible beside chart
+- Live/Current operations must be balanced 50/50
+- ledger must end the composition cleanly with a light header and readable rows
+
+SCREENSHOTS
+Capture exactly 4 screenshots:
+1. 67__ADMIN__V34-1__REFERENCE-FIDELITY__01__FULL__1448x1086__<RUNSTAMP>.png
+2. 67__ADMIN__V34-1__REFERENCE-FIDELITY__02__FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V34-1__REFERENCE-FIDELITY__03__HERO-KPI-HEALTH-REVENUE__1448x1086__<RUNSTAMP>.png
+4. 67__ADMIN__V34-1__REFERENCE-FIDELITY__04__OPERATIONS-LEDGER__1448x1086__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to existing QA repo/folder for V34.1.
+Do NOT source-push /67.
+
+GOOGLE DRIVE
+Upload screenshots to My Drive root if available.
+Drive failure is NON-BLOCKING.
+
+FINAL REPORT FORMAT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V34.1
+ELEMENT=REFERENCE FIDELITY FIX
+BASE_VERSION=V34
+TARGET_VERSION=V34.1
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v34.1.css
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+REFERENCE_VIEWPORT=1448x1086
+SIDEBAR_VISIBLE=<YES/NO>
+SIDEBAR_NAV_VISIBLE=<YES/NO>
+SIDEBAR_NAV_CLICKABLE=<YES/NO>
+HERO_VISIBLE=<YES/NO>
+HERO_TITLE_CLIPPED=<YES/NO>
+HERO_RIGHT_COPY_VISIBLE=<YES/NO>
+DATE_TOOLBAR_VISIBLE=<YES/NO>
+KPI_COUNT=<number>
+KPI_EQUAL_WIDTH=<YES/NO>
+KPI_TEXT_CLIPPED=<YES/NO>
+SYSTEM_HEALTH_VISIBLE=<YES/NO>
+SYSTEM_HEALTH_TEXT_CLIPPED=<YES/NO>
+REVENUE_FULL_WIDTH=<YES/NO>
+REVENUE_TEXT_CLIPPED=<YES/NO>
+REVENUE_CHART_VISIBLE=<YES/NO>
+REVENUE_DONUT_VISIBLE=<YES/NO>
+OPERATIONS_TWO_COLUMN=<YES/NO>
+LIVE_OPERATIONS_VISIBLE=<YES/NO>
+CURRENT_OPERATIONS_VISIBLE=<YES/NO>
+LIVE_CURRENT_HEIGHT_DELTA_PX=<number>
+TX_LEDGER_VISIBLE=<YES/NO>
+TX_LEDGER_LIGHT_HEADER=<YES/NO>
+TX_TABLE_VISIBLE=<YES/NO>
+PAGE_HORIZONTAL_OVERFLOW=<YES/NO>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+TX_SEARCH_REGRESSION=<PASS/FAIL>
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+PASS CONDITION
+Set STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL only if every required structural check passes, there is no clipping or overflow, revenue donut is visible, hero is stable, sidebar navigation remains functional, and the 1448x1086 screenshot visually approaches the approved reference composition.
