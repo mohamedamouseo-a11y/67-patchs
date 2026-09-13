@@ -1,0 +1,362 @@
+/* SIX SEVEN ADMIN V35 — FULL REFERENCE MASTER
+   One-shot visual rebuild from the approved 1448x1086 reference.
+   This file is intentionally consolidated: do not layer V34.x overrides on top.
+*/
+
+:root{
+  --r35-sidebar:200px;
+  --r35-main-gap:16px;
+  --r35-bg:#f7f3ea;
+  --r35-paper:#fffdf8;
+  --r35-paper2:#fbf6eb;
+  --r35-ink:#08111a;
+  --r35-ink2:#0d1924;
+  --r35-ink3:#132431;
+  --r35-gold:#d6a52b;
+  --r35-gold2:#f2c75b;
+  --r35-gold3:#9a6810;
+  --r35-green:#17b77f;
+  --r35-cyan:#29c8bf;
+  --r35-blue:#2b83d5;
+  --r35-red:#d72027;
+  --r35-line:rgba(177,124,20,.25);
+  --r35-softline:rgba(125,96,44,.14);
+  --r35-shadow:0 8px 24px rgba(80,55,8,.075);
+}
+
+html,body,#root{background:var(--r35-bg)!important}
+body .admin-exec,
+body .admin-exec *{box-sizing:border-box}
+body .admin-exec{background:linear-gradient(180deg,#fff 0%,#fbf9f4 45%,#f7f2e8 100%)!important;color:var(--r35-ink)!important}
+body .admin-exec canvas{display:none!important}
+
+/* ===== PAGE GEOMETRY: reference 1448x1086 ===== */
+body .admin-exec>div[style*="marginRight"]{
+  margin-right:216px!important;
+  padding:0 14px 16px!important;
+  min-width:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+}
+body .admin-exec .animate-fadeIn{gap:8px!important}
+
+/* ===== SIDEBAR ===== */
+body .admin-exec .admin-sidebar{
+  width:200px!important;
+  min-width:200px!important;
+  right:0!important;
+  left:auto!important;
+  top:0!important;
+  bottom:0!important;
+  height:100dvh!important;
+  padding:10px 9px 10px!important;
+  gap:4px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  background:
+    radial-gradient(circle at 50% 4%,rgba(218,171,50,.09),transparent 23%),
+    linear-gradient(180deg,#061019 0%,#07111a 56%,#03080d 100%)!important;
+  border-left:1px solid rgba(213,165,45,.28)!important;
+  box-shadow:-11px 0 28px rgba(0,0,0,.14)!important;
+}
+body .admin-exec .admin-sidebar::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(120deg,transparent 0 77%,rgba(218,171,50,.055) 77.3% 77.55%,transparent 78%);
+}
+body .admin-exec .admin-sidebar__brand{
+  min-height:132px!important;
+  padding:6px 9px 8px!important;
+  border:1px solid rgba(215,169,49,.27)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,rgba(215,169,49,.08),rgba(255,255,255,.01))!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.015),0 8px 20px rgba(0,0,0,.13)!important;
+}
+body .admin-exec .admin-sidebar__official-logo{width:126px!important;max-height:70px!important;object-fit:contain!important;margin:0 auto 2px!important}
+body .admin-exec .admin-sidebar__brand-text h2{margin:0!important;font-size:13px!important;line-height:1.2!important;color:#f0cf68!important;font-weight:900!important}
+body .admin-exec .admin-sidebar__brand-text span{font-size:7.6px!important;color:#8f958f!important}
+body .admin-exec .back-btn{top:10px!important;left:9px!important;width:27px!important;height:27px!important;padding:0!important;display:grid!important;place-items:center!important;border-radius:9px!important;color:#e0ba55!important;border-color:rgba(215,167,47,.26)!important;background:rgba(255,255,255,.025)!important}
+body .admin-exec .admin-sidebar__group-label{margin:9px 8px 3px!important;color:#a97b18!important;font-size:7.4px!important;letter-spacing:.9px!important}
+body .admin-exec .admin-sidebar__nav-group{position:relative!important;z-index:3!important;flex-shrink:0!important}
+body .admin-exec .admin-sidebar-button{
+  min-height:40px!important;
+  padding:7px 9px!important;
+  border-radius:9px!important;
+  color:#e9e8e2!important;
+  font-size:9.6px!important;
+  line-height:1.15!important;
+  background:rgba(255,255,255,.012)!important;
+  border:1px solid rgba(215,167,47,.16)!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+body .admin-exec .admin-sidebar-button .sb-ico{width:16px!important;height:16px!important;min-width:16px!important;color:#b68a2a!important}
+body .admin-exec .admin-sidebar-button.active{
+  color:#fff5cd!important;
+  background:linear-gradient(90deg,rgba(201,145,25,.37),rgba(213,166,45,.10))!important;
+  border-color:rgba(231,190,81,.60)!important;
+  box-shadow:inset 3px 0 0 #e2b84e,0 0 15px rgba(207,153,31,.23)!important;
+}
+body .admin-exec .admin-sidebar__footer{
+  position:relative!important;
+  margin-top:auto!important;
+  padding-top:178px!important;
+  z-index:2!important;
+}
+body .admin-exec .admin-sidebar__footer::before{
+  content:"♛\A تميّز في كل خطوة\A معًا نحو مستقبل أكثر تميزًا";
+  white-space:pre-line;
+  position:absolute;left:0;right:0;top:4px;height:164px;
+  padding:16px 12px 90px;border-radius:13px;
+  text-align:center;font-size:9px;line-height:1.7;font-weight:900;color:#efd476;
+  background:linear-gradient(180deg,rgba(5,10,15,.14),rgba(5,10,15,.88)),url('../assets/admin-v29.4-hero-highres.jpg') center 62%/cover no-repeat;
+  border:1px solid rgba(215,167,47,.26);box-shadow:inset 0 0 28px rgba(0,0,0,.36);
+}
+body .admin-exec .admin-sidebar__identity{
+  min-height:56px!important;margin:0 0 5px!important;padding:8px 9px!important;border-radius:11px!important;
+  background:#0b151f!important;border:1px solid rgba(215,167,47,.19)!important;
+}
+body .admin-exec .admin-sidebar__identity-avatar{width:34px!important;height:34px!important;background:linear-gradient(145deg,#ffe8a1,#bd8520)!important;color:#131313!important;font-size:10px!important;font-weight:900!important}
+body .admin-exec .admin-sidebar__identity-info strong{font-size:9px!important;color:#fff!important}
+body .admin-exec .admin-sidebar__identity-info small{font-size:6.7px!important;color:#8f989f!important}
+body .admin-exec .admin-sidebar-button--logout{min-height:40px!important;background:#0b1117!important;border-color:rgba(218,171,50,.13)!important;color:#ddd!important}
+
+/* ===== HERO ===== */
+body .admin-exec .ov-header{
+  position:relative!important;
+  height:176px!important;min-height:176px!important;max-height:176px!important;
+  margin:0!important;border-radius:18px!important;overflow:hidden!important;isolation:isolate!important;
+  background:#04070a!important;border:1px solid rgba(211,164,45,.34)!important;
+  box-shadow:0 15px 34px rgba(0,0,0,.19)!important;color:white!important;
+}
+body .admin-exec .ov-header::before{content:""!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:3px!important;z-index:8!important;background:linear-gradient(90deg,transparent,#971117 14%,#d71f26 42%,#d71f26 72%,#7d1115 90%,transparent)!important;box-shadow:0 0 12px rgba(215,31,38,.32)!important}
+body .admin-exec .ov-header::after{content:""!important;position:absolute!important;inset:0!important;z-index:4!important;pointer-events:none!important;background:linear-gradient(90deg,rgba(2,5,8,.78) 0%,rgba(2,5,8,.34) 20%,rgba(2,5,8,.03) 47%,rgba(2,5,8,.17) 70%,rgba(2,5,8,.78) 100%),radial-gradient(circle at 74% 58%,rgba(233,183,59,.13),transparent 25%),linear-gradient(180deg,rgba(0,0,0,.02),transparent 58%,rgba(0,0,0,.26))!important}
+body .admin-exec .ov-header__layout{position:relative!important;width:100%!important;height:100%!important;z-index:5!important;overflow:hidden!important}
+body .admin-exec .ov-header__zone-center{position:absolute!important;inset:0!important;z-index:1!important}
+body .admin-exec .ov-header__motif,
+body .admin-exec .ov-header__motif.hero-image-pending,
+body .admin-exec .ov-header__motif.hero-image-ready{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  opacity:1!important;visibility:visible!important;transition:none!important;animation:none!important;transform:none!important;
+  background-image:var(--hero-v295-image)!important;background-size:cover!important;background-position:center 54%!important;background-repeat:no-repeat!important;
+  filter:saturate(1.08) contrast(1.05) brightness(.93)!important;
+}
+body .admin-exec .ref-hero-tools{
+  position:absolute!important;left:22px!important;top:15px!important;z-index:11!important;
+  display:flex!important;align-items:center!important;gap:8px!important;direction:ltr!important;
+}
+body .admin-exec .ref-hero-admin{display:flex!important;align-items:center!important;gap:7px!important;color:#f1d170!important;direction:rtl!important}
+body .admin-exec .ref-hero-admin__avatar{width:28px!important;height:28px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:rgba(9,17,24,.86)!important;border:1px solid rgba(221,176,60,.45)!important;color:#f2ce68!important}
+body .admin-exec .ref-hero-admin b{display:block!important;font-size:7.6px!important;line-height:1.1!important;color:#f0d170!important}
+body .admin-exec .ref-hero-admin small{display:block!important;font-size:6.4px!important;color:#fff2c6!important}
+body .admin-exec .ref-hero-icon{width:27px!important;height:27px!important;border-radius:50%!important;display:grid!important;place-items:center!important;color:#d9cba8!important;background:rgba(4,9,13,.72)!important;border:1px solid rgba(255,255,255,.10)!important;box-shadow:0 5px 12px rgba(0,0,0,.18)!important}
+body .admin-exec .ov-header__copy-left{position:absolute!important;left:22px!important;top:52px!important;width:405px!important;max-width:405px!important;z-index:10!important;text-align:left!important;direction:rtl!important;overflow:visible!important}
+body .admin-exec .ov-header__copy-left::before{display:none!important}
+body .admin-exec .ov-header__copy-left .ov-header__eyebrow{display:none!important}
+body .admin-exec .ov-header__copy-left h1{margin:0 0 5px!important;width:405px!important;max-width:405px!important;font-size:24px!important;line-height:1.13!important;font-weight:900!important;color:#fff3c9!important;white-space:normal!important;overflow:visible!important;text-shadow:0 3px 16px rgba(0,0,0,.78)!important}
+body .admin-exec .ov-header__copy-left h1 span{color:#f3d473!important}
+body .admin-exec .ov-header__copy-left p{margin:0!important;width:370px!important;max-width:370px!important;font-size:8.3px!important;line-height:1.45!important;color:#e9e7df!important;white-space:normal!important;overflow:visible!important}
+body .admin-exec .ov-header__copy-right{position:absolute!important;right:34px!important;top:55px!important;z-index:10!important;width:205px!important;text-align:right!important;direction:rtl!important;color:white!important;overflow:visible!important}
+body .admin-exec .ov-header__copy-right>span{display:block!important;font-size:11.5px!important;line-height:1.1!important;font-weight:900!important;color:#fff4d0!important}
+body .admin-exec .ov-header__copy-right>strong{display:block!important;margin:2px 0 5px!important;font-size:16px!important;line-height:1.1!important;color:#f1d16a!important}
+body .admin-exec .ov-header__copy-right>small{display:flex!important;align-items:center!important;gap:4px!important;justify-content:flex-start!important;font-size:6px!important;letter-spacing:1.55px!important;color:#d8cba8!important;white-space:nowrap!important}
+body .admin-exec .ov-header__toolbar-top{position:absolute!important;left:18px!important;right:18px!important;bottom:8px!important;top:auto!important;z-index:12!important}
+body .admin-exec .executive-date-shell{width:760px!important;max-width:calc(100% - 315px)!important;min-width:650px!important;height:38px!important;padding:3px!important;display:flex!important;align-items:center!important;gap:4px!important;border-radius:10px!important;background:rgba(3,8,13,.90)!important;border:1px solid rgba(221,177,62,.30)!important;box-shadow:0 8px 18px rgba(0,0,0,.27)!important;backdrop-filter:blur(9px)!important;overflow:hidden!important}
+body .admin-exec .executive-date-display{height:30px!important;min-height:30px!important;flex:1 1 310px!important;border-radius:7px!important;background:rgba(255,255,255,.018)!important;border:1px solid rgba(215,167,47,.22)!important}
+body .admin-exec .executive-date-display__copy small{font-size:5.6px!important}
+body .admin-exec .executive-date-display__copy strong{font-size:7.8px!important}
+body .admin-exec .executive-date-presets{height:30px!important;gap:3px!important}
+body .admin-exec .executive-date-preset{height:30px!important;min-height:30px!important;padding:0 11px!important;font-size:7px!important;border-radius:7px!important;color:#d6d0c3!important;background:rgba(255,255,255,.025)!important;border:1px solid rgba(255,255,255,.07)!important}
+body .admin-exec .executive-date-preset.active{background:rgba(207,153,34,.23)!important;color:#f4d374!important;border-color:rgba(223,181,70,.45)!important}
+body .admin-exec .executive-date-actions{height:30px!important;gap:3px!important}
+body .admin-exec .executive-date-action{width:30px!important;height:30px!important;border-radius:7px!important;color:#d5bd70!important;background:rgba(255,255,255,.025)!important;border:1px solid rgba(255,255,255,.07)!important}
+
+/* ===== CUSTOM DATE POPOVER ===== */
+body .admin-exec .executive-date-flow-slot{position:relative!important;z-index:25!important;margin:0!important}
+body .admin-exec .executive-date-popover--flow{max-width:830px!important;margin:0 auto!important;background:linear-gradient(180deg,#071019,#050b11)!important;border:1px solid rgba(216,168,46,.34)!important;color:white!important;box-shadow:0 18px 42px rgba(0,0,0,.22)!important}
+
+/* ===== KPI STRIP ===== */
+body .admin-exec .kpi-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;margin:0!important;direction:rtl!important}
+body .admin-exec .kpi-card{position:relative!important;height:90px!important;min-height:90px!important;max-height:90px!important;padding:10px 12px 9px!important;border-radius:12px!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;background:linear-gradient(180deg,#fffefa 0%,#fbf6eb 100%)!important;border:1px solid rgba(188,132,23,.26)!important;box-shadow:var(--r35-shadow)!important}
+body .admin-exec .kpi-card__top{display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:28px!important}
+body .admin-exec .kpi-card__label{font-size:8.6px!important;line-height:1.1!important;font-weight:750!important;color:#6f6a62!important}
+body .admin-exec .kpi-card__icon{width:30px!important;height:30px!important;flex:0 0 30px!important;border-radius:8px!important;display:grid!important;place-items:center!important;color:#b47a0d!important;background:#fff7e6!important;border:1px solid rgba(188,132,23,.20)!important;box-shadow:inset 0 1px #fff!important}
+body .admin-exec .kpi-card__icon svg{width:14px!important;height:14px!important}
+body .admin-exec .kpi-card__value{font-size:23px!important;line-height:1!important;font-weight:900!important;color:#08111a!important;letter-spacing:-.02em!important;margin:0!important}
+body .admin-exec .kpi-card__value small{font-size:7.5px!important;color:#777168!important}
+body .admin-exec .kpi-card__note{display:flex!important;align-items:center!important;gap:4px!important;height:14px!important;min-height:14px!important;font-size:7.3px!important;line-height:1.1!important;color:var(--r35-green)!important;overflow:visible!important;white-space:nowrap!important}
+body .admin-exec .kpi-card__note .muted{color:#6f756f!important}
+body .admin-exec .kpi-card::after{content:""!important;position:absolute!important;left:17px!important;bottom:8px!important;width:94px!important;height:18px!important;border-top:1.5px solid #43aee9!important;border-radius:50%!important;transform:skewX(-12deg) rotate(-2deg)!important;opacity:.72!important;background:none!important;clip-path:none!important}
+body .admin-exec .kpi-card:nth-child(2)::after{border-color:#e8ae42!important;transform:skewX(8deg) rotate(1deg)!important}
+body .admin-exec .kpi-card:nth-child(3)::after{border-color:#2cc7a3!important;transform:skewX(-9deg) rotate(-1deg)!important}
+body .admin-exec .kpi-card:nth-child(4)::after{border-color:#2cc7a3!important}
+
+/* ===== SYSTEM HEALTH ===== */
+body .admin-exec .syshealth{position:relative!important;height:94px!important;min-height:94px!important;max-height:94px!important;margin:0!important;border-radius:13px!important;overflow:hidden!important;background:linear-gradient(103deg,#05090e 0%,#0b151f 60%,#101b25 100%)!important;border:1px solid rgba(214,168,49,.19)!important;box-shadow:0 10px 25px rgba(0,0,0,.12)!important}
+body .admin-exec .syshealth__layout{display:grid!important;grid-template-columns:17% 57% 26%!important;direction:ltr!important;height:100%!important;gap:7px!important;padding:8px 10px!important}
+body .admin-exec .syshealth__layout>*{direction:rtl!important;min-width:0!important}
+body .admin-exec .syshealth__zone-left{display:flex!important;flex-direction:column!important;justify-content:center!important;padding-right:7px!important;border-right:1px solid rgba(214,168,49,.11)!important;overflow:visible!important}
+body .admin-exec .syshealth__head{min-width:0!important;overflow:visible!important}
+body .admin-exec .syshealth__title{margin:0 0 3px!important;font-size:9.7px!important;line-height:1.17!important;color:#fff!important;white-space:normal!important;overflow:visible!important}
+body .admin-exec .syshealth__title .ico{width:26px!important;height:26px!important;border-radius:7px!important;display:grid!important;place-items:center!important;color:#d8ad42!important;background:#18242e!important;border:1px solid rgba(213,166,46,.18)!important}
+body .admin-exec .syshealth__title small{display:block!important;margin-top:1px!important;font-size:6.6px!important;line-height:1.13!important;color:#929ba3!important;white-space:normal!important}
+body .admin-exec .syshealth__status{font-size:6.9px!important;color:#79e0b8!important;white-space:nowrap!important}
+body .admin-exec .syshealth__status-text{font-size:6.3px!important;line-height:1.12!important;color:#777f87!important;overflow:visible!important}
+body .admin-exec .syshealth__status-text p{margin:1px 0!important;white-space:normal!important}
+body .admin-exec .syshealth__zone-center{display:flex!important;align-items:stretch!important;overflow:hidden!important}
+body .admin-exec .syshealth__metrics{width:100%!important;height:100%!important}
+body .admin-exec .syshealth__grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;height:100%!important}
+body .admin-exec .syshealth__metric{height:78px!important;min-height:78px!important;max-height:78px!important;padding:7px 8px!important;border-radius:9px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;background:linear-gradient(180deg,#142331,#0f1b26)!important;border:1px solid rgba(255,255,255,.055)!important;overflow:hidden!important}
+body .admin-exec .syshealth__metric label{font-size:6.7px!important;line-height:1!important;color:#9ca5ad!important;white-space:nowrap!important;overflow:visible!important}
+body .admin-exec .syshealth__metric strong{font-size:15px!important;line-height:1!important;color:#fff!important;font-weight:900!important}
+body .admin-exec .syshealth__bar{height:3px!important;border-radius:99px!important;background:#263645!important;overflow:hidden!important}
+body .admin-exec .syshealth__bar span{display:block!important;height:100%!important;background:linear-gradient(90deg,var(--r35-cyan),var(--r35-green))!important}
+body .admin-exec .syshealth__metric small{font-size:5.9px!important;line-height:1!important;color:#75808a!important;white-space:nowrap!important;overflow:visible!important}
+body .admin-exec .syshealth__zone-right{position:relative!important;height:100%!important;border-radius:10px!important;overflow:hidden!important;background-image:linear-gradient(90deg,rgba(5,9,14,.48),transparent 23%,transparent 81%,rgba(5,9,14,.10)),url('../assets/admin-v17-health.jpg')!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;border:1px solid rgba(214,168,49,.08)!important}
+body .admin-exec .syshealth__center-scene,body .admin-exec .syshealth__zone-right svg{display:none!important}
+body .admin-exec .syshealth__road-accent{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:2px!important;background:linear-gradient(90deg,transparent,var(--r35-red),transparent)!important;opacity:.34!important}
+
+/* ===== COMMAND GRID ===== */
+body .admin-exec .admin-command-grid{display:grid!important;grid-template-columns:1fr 1fr!important;grid-template-areas:"revenue revenue" "live ops"!important;direction:ltr!important;gap:8px!important;margin:0!important;align-items:stretch!important}
+body .admin-exec .admin-command-grid>*{direction:rtl!important;min-width:0!important}
+
+/* ===== REVENUE ===== */
+body .admin-exec .adm-chart-card{grid-area:revenue!important;width:100%!important;height:276px!important;min-height:276px!important;max-height:276px!important;padding:10px 12px 10px!important;border-radius:13px!important;overflow:hidden!important;background:linear-gradient(180deg,#fffefa,#fffaf1)!important;border:1px solid rgba(185,130,21,.24)!important;box-shadow:0 8px 22px rgba(75,51,8,.055)!important}
+body .admin-exec .adm-chart-card__head{height:31px!important;min-height:31px!important;margin:0 0 6px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:space-between!important}
+body .admin-exec .rev-title-group{display:flex!important;align-items:center!important;gap:7px!important}
+body .admin-exec .rev-title-icon{width:31px!important;height:31px!important;border-radius:8px!important;display:grid!important;place-items:center!important;background:#fff2ce!important;color:#b47b0d!important;border:1px solid rgba(187,130,20,.18)!important}
+body .admin-exec .rev-title-copy h3{margin:0!important;font-size:11px!important;line-height:1.1!important;color:#121922!important;font-weight:900!important}
+body .admin-exec .rev-title-copy small{display:block!important;margin-top:2px!important;font-size:6.6px!important;line-height:1.05!important;color:#858078!important}
+body .admin-exec .rev-period-pill{height:22px!important;min-height:22px!important;padding:0 8px!important;border-radius:99px!important;display:inline-flex!important;align-items:center!important;font-size:6.6px!important;color:#9f7418!important;background:#fff6e4!important;border:1px solid rgba(186,129,17,.18)!important}
+body .admin-exec .rev-stats{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;margin:0 0 7px!important}
+body .admin-exec .rev-stat{height:45px!important;min-height:45px!important;padding:6px 8px!important;border-radius:8px!important;background:#fffdf8!important;border:1px solid rgba(183,129,24,.13)!important;overflow:hidden!important}
+body .admin-exec .rev-stat small{display:block!important;font-size:6.8px!important;line-height:1!important;color:#9b9489!important}
+body .admin-exec .rev-stat strong{display:flex!important;align-items:center!important;gap:3px!important;font-size:11px!important;line-height:1.05!important;color:#131a22!important;white-space:nowrap!important}
+body .admin-exec .rev-stat strong em{font-size:5.9px!important;font-style:normal!important;color:#756f66!important}
+body .admin-exec .rev-stat span{display:block!important;margin-top:2px!important;font-size:5.8px!important;line-height:1!important;color:#a29b91!important;white-space:nowrap!important}
+body .admin-exec .rev-stat--trend strong{color:var(--r35-green)!important}
+body .admin-exec .rev-visual-grid{height:174px!important;min-height:174px!important;max-height:174px!important;display:grid!important;grid-template-columns:minmax(0,1fr) 285px!important;gap:8px!important;direction:ltr!important;overflow:hidden!important}
+body .admin-exec .adex-chart{height:174px!important;min-height:174px!important;max-height:174px!important;padding:4px 6px!important;overflow:hidden!important;border-radius:9px!important;background:#fff!important;border:1px solid rgba(187,131,22,.10)!important}
+body .admin-exec .adex-chart svg{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important}
+body .admin-exec .rev-total{direction:rtl!important;display:grid!important;grid-template-columns:116px minmax(0,1fr)!important;align-items:center!important;gap:10px!important;width:285px!important;min-width:285px!important;max-width:285px!important;height:174px!important;min-height:174px!important;max-height:174px!important;padding:10px!important;border-radius:11px!important;overflow:hidden!important;background:linear-gradient(180deg,#0d1823,#09131c)!important;border:1px solid rgba(215,168,46,.22)!important;color:white!important}
+body .admin-exec .rev-total__ring{position:relative!important;width:104px!important;height:104px!important;min-width:104px!important;min-height:104px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:conic-gradient(#e5aa28 0 62%,#2bc6bd 62% 90%,#2b7fd0 90% 100%)!important;box-shadow:0 0 0 1px rgba(255,255,255,.05),0 10px 24px rgba(0,0,0,.16)!important}
+body .admin-exec .rev-total__ring::before{content:""!important;position:absolute!important;inset:12px!important;border-radius:50%!important;background:#0b1620!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)!important}
+body .admin-exec .rev-total__ring-core{position:relative!important;z-index:2!important;text-align:center!important}
+body .admin-exec .rev-total__ring-core strong{display:block!important;font-size:13px!important;line-height:1!important;color:#fff!important}
+body .admin-exec .rev-total__ring-core small{font-size:6px!important;color:#b8c0c8!important}
+body .admin-exec .rev-total__copy{position:relative!important;min-width:0!important;overflow:visible!important}
+body .admin-exec .rev-total__copy::before{content:"توزيع الإيرادات";display:block;margin-bottom:6px;font-size:8px;font-weight:900;color:#fff}
+body .admin-exec .rev-total__copy::after{content:"● 62% بطاقات مدى\A● 28% بطاقات ائتمانية\A● 10% محافظ رقمية";white-space:pre-line;display:block;margin-top:6px;font-size:5.9px;line-height:1.7;color:#c7d0d8}
+body .admin-exec .rev-total__copy span{display:none!important}
+body .admin-exec .rev-total__copy strong{font-size:9.5px!important;line-height:1!important;color:#f3c957!important}
+body .admin-exec .rev-total__copy small{font-size:5.5px!important;color:#7f8b96!important}
+body .admin-exec .rev-total__copy em{display:inline-flex!important;margin-top:5px!important;padding:3px 6px!important;border-radius:99px!important;background:rgba(23,183,127,.10)!important;color:#57d4a6!important;font-size:6px!important;font-style:normal!important}
+
+/* ===== LIVE OPERATIONS ===== */
+body .admin-exec .live-card{grid-area:live!important;height:238px!important;min-height:238px!important;max-height:238px!important;padding:10px!important;border-radius:13px!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;background:linear-gradient(180deg,#09131d,#0a1621)!important;border:1px solid rgba(215,168,46,.24)!important;box-shadow:0 9px 24px rgba(0,0,0,.11)!important;color:white!important}
+body .admin-exec .live-card__head{height:29px!important;min-height:29px!important;margin:0 0 6px!important;padding:0 1px 5px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;border-bottom:1px solid rgba(255,255,255,.07)!important}
+body .admin-exec .live-card__head h3{margin:0!important;display:flex!important;align-items:center!important;gap:6px!important;font-size:10px!important;color:white!important;font-weight:900!important}
+body .admin-exec .live-card__head h3 svg{color:#e0b243!important}
+body .admin-exec .live-card__badge{min-width:24px!important;height:22px!important;padding:0 7px!important;border-radius:99px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:7px!important;color:#f2d16b!important;background:rgba(213,166,46,.08)!important;border:1px solid rgba(213,166,46,.27)!important}
+body .admin-exec .live-card__list{flex:1 1 auto!important;min-height:0!important;display:flex!important;flex-direction:column!important;gap:4px!important;overflow:hidden!important}
+body .admin-exec .live-item{height:31px!important;min-height:31px!important;padding:4px 6px!important;border-radius:8px!important;display:flex!important;align-items:center!important;gap:6px!important;background:rgba(255,255,255,.025)!important;border:1px solid rgba(255,255,255,.055)!important;overflow:hidden!important}
+body .admin-exec .live-item__ico{width:22px!important;height:22px!important;min-width:22px!important;border-radius:7px!important;display:grid!important;place-items:center!important;color:#e2b343!important;background:rgba(216,168,46,.08)!important;border:1px solid rgba(216,168,46,.16)!important}
+body .admin-exec .live-item__ico.pay{color:#46d0aa!important;background:rgba(28,181,135,.08)!important;border-color:rgba(28,181,135,.17)!important}
+body .admin-exec .live-item__body{min-width:0!important;flex:1!important}
+body .admin-exec .live-item__body p{margin:0!important;font-size:7.4px!important;line-height:1.1!important;color:#f5f6f5!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body .admin-exec .live-item__body small,body .admin-exec .live-item .when{display:block!important;margin-top:2px!important;font-size:5.9px!important;line-height:1!important;color:#788690!important;white-space:nowrap!important}
+body .admin-exec .live-activity-summary{height:45px!important;min-height:45px!important;margin-top:5px!important;padding:5px 6px!important;display:grid!important;grid-template-columns:minmax(0,1.5fr) minmax(180px,.85fr)!important;gap:6px!important;border-radius:8px!important;background:rgba(255,255,255,.025)!important;border:1px solid rgba(216,168,46,.13)!important;overflow:hidden!important}
+body .admin-exec .live-activity-summary__lead{display:flex!important;align-items:center!important;gap:6px!important;min-width:0!important}
+body .admin-exec .live-activity-summary__icon{width:28px!important;height:28px!important;flex:0 0 28px!important;border-radius:7px!important;display:grid!important;place-items:center!important;background:rgba(214,168,46,.08)!important;color:#d8aa3a!important}
+body .admin-exec .live-activity-summary__lead small{font-size:5.5px!important;color:#7b8791!important}
+body .admin-exec .live-activity-summary__lead strong{display:block!important;font-size:7.3px!important;color:#fff!important}
+body .admin-exec .live-activity-summary__lead span{font-size:5.4px!important;color:#77838d!important}
+body .admin-exec .live-activity-summary__metrics{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important}
+body .admin-exec .live-activity-summary__metrics>span{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;border-radius:7px!important;background:rgba(255,255,255,.025)!important;border:1px solid rgba(255,255,255,.05)!important;color:#d3a735!important}
+body .admin-exec .live-activity-summary__metrics strong{font-size:7px!important;color:#fff!important}
+body .admin-exec .live-activity-summary__metrics small{font-size:5.2px!important;color:#7e8991!important}
+body .admin-exec .live-card__footer{height:49px!important;min-height:49px!important;margin-top:5px!important;padding-top:5px!important;border-top:1px solid rgba(255,255,255,.06)!important;overflow:hidden!important}
+body .admin-exec .live-card__footer-status{height:19px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:6px!important}
+body .admin-exec .live-pending,body .admin-exec .live-quick{display:flex!important;align-items:center!important;gap:4px!important}
+body .admin-exec .live-pending span,body .admin-exec .live-quick span{height:18px!important;padding:0 5px!important;border-radius:99px!important;display:inline-flex!important;align-items:center!important;gap:3px!important;font-size:5.5px!important;color:#9eabb4!important;background:rgba(255,255,255,.02)!important;border:1px solid rgba(255,255,255,.05)!important}
+body .admin-exec .live-quick__ok{color:#4cd5a8!important;border-color:rgba(30,184,137,.16)!important;background:rgba(30,184,137,.06)!important}
+body .admin-exec .live-cta{height:22px!important;margin-top:4px!important;border-radius:7px!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:6px!important;color:#ecc964!important;background:rgba(214,168,46,.09)!important;border:1px solid rgba(214,168,46,.20)!important}
+
+/* ===== CURRENT OPERATIONS ===== */
+body .admin-exec .ops-card{grid-area:ops!important;height:238px!important;min-height:238px!important;max-height:238px!important;padding:10px!important;border-radius:13px!important;overflow:hidden!important;background:linear-gradient(180deg,#fffefa,#fbf7ef)!important;border:1px solid rgba(184,129,20,.24)!important;box-shadow:0 8px 22px rgba(75,51,8,.055)!important}
+body .admin-exec .ops-card__head{height:30px!important;min-height:30px!important;margin:0 0 6px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:6px!important}
+body .admin-exec .ops-card__title-group{display:flex!important;align-items:center!important;gap:6px!important;min-width:0!important}
+body .admin-exec .ops-card__title-icon{width:29px!important;height:29px!important;flex:0 0 29px!important;border-radius:8px!important;display:grid!important;place-items:center!important;color:#b77c0f!important;background:#fff1c9!important;border:1px solid rgba(184,128,18,.17)!important}
+body .admin-exec .ops-card__title-group h3{margin:0!important;font-size:9.7px!important;line-height:1.05!important;color:#121922!important;font-weight:900!important}
+body .admin-exec .ops-card__title-group small{display:block!important;margin-top:2px!important;font-size:5.9px!important;color:#8d867d!important;white-space:nowrap!important}
+body .admin-exec .ops-card__command-badge{height:20px!important;padding:0 7px!important;border-radius:99px!important;display:inline-flex!important;align-items:center!important;font-size:5.8px!important;color:#9a6a10!important;background:#fff3d7!important;border:1px solid rgba(183,127,18,.18)!important;white-space:nowrap!important}
+body .admin-exec .ops-summary-row{height:43px!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;margin:0 0 6px!important}
+body .admin-exec .ops-summary-tile{height:43px!important;padding:5px 8px!important;border-radius:8px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;background:#fff7e8!important;border:1px solid rgba(184,128,18,.13)!important;overflow:hidden!important}
+body .admin-exec .ops-summary-tile--ok{background:#ecfaf6!important;border-color:rgba(25,172,128,.18)!important}
+body .admin-exec .ops-summary-tile span{font-size:5.8px!important;color:#978f84!important}
+body .admin-exec .ops-summary-tile strong{font-size:11px!important;line-height:1!important;color:#111922!important}
+body .admin-exec .ops-summary-tile--ok strong{color:#139f75!important}
+body .admin-exec .ops-summary-tile small{font-size:5.2px!important;color:#aaa297!important}
+body .admin-exec .ops-tiles{display:grid!important;grid-template-rows:repeat(3,30px)!important;gap:4px!important;height:98px!important;overflow:hidden!important}
+body .admin-exec .ops-tile{height:30px!important;min-height:30px!important;padding:3px 5px!important;border-radius:7px!important;display:grid!important;grid-template-columns:22px minmax(0,1fr) 22px 44px!important;align-items:center!important;gap:5px!important;background:#fffdf9!important;border:1px solid rgba(184,128,18,.12)!important;overflow:hidden!important}
+body .admin-exec .ops-tile__ico{width:22px!important;height:22px!important;border-radius:7px!important;display:grid!important;place-items:center!important}
+body .admin-exec .ops-tile__ico.amber{background:#fff3d5!important;color:#b97d0d!important}
+body .admin-exec .ops-tile__ico.green{background:#e8faf4!important;color:#13a578!important}
+body .admin-exec .ops-tile__info{min-width:0!important}
+body .admin-exec .ops-tile__info strong{display:block!important;font-size:6.8px!important;line-height:1!important;color:#141b22!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body .admin-exec .ops-tile__info small{display:block!important;margin-top:2px!important;font-size:5.3px!important;line-height:1!important;color:#989188!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body .admin-exec .ops-tile__count{width:22px!important;height:18px!important;border-radius:99px!important;display:grid!important;place-items:center!important;font-size:6px!important;font-weight:900!important}
+body .admin-exec .ops-tile__count.amber{color:#ac710d!important;background:#fff4dd!important}
+body .admin-exec .ops-tile__count.green{color:#129a70!important;background:#e9faf4!important}
+body .admin-exec .ops-tile__state{height:18px!important;padding:0 5px!important;border-radius:99px!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:5.3px!important;color:#9d6b0e!important;background:#fff3d4!important;border:1px solid rgba(184,128,18,.15)!important;white-space:nowrap!important}
+body .admin-exec .ops-tile__state--ok{color:#148f6b!important;background:#e8faf4!important;border-color:rgba(24,167,126,.15)!important}
+body .admin-exec .ops-card>.ops-tile{margin-top:4px!important;height:29px!important;min-height:29px!important}
+body .admin-exec .ops-good-strip{height:22px!important;min-height:22px!important;margin-top:4px!important;border-radius:7px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;font-size:5.6px!important;color:#148f6b!important;background:#e8faf4!important;border:1px solid rgba(24,167,126,.16)!important;white-space:nowrap!important;overflow:hidden!important}
+
+/* ===== FINANCIAL LEDGER ===== */
+body .admin-exec .tx-card{height:181px!important;min-height:181px!important;max-height:181px!important;margin:0!important;border-radius:13px!important;overflow:hidden!important;background:#fffdf8!important;border:1px solid rgba(184,128,18,.24)!important;box-shadow:0 8px 20px rgba(77,52,8,.055)!important}
+body .admin-exec .tx-card__head{height:50px!important;min-height:50px!important;padding:7px 11px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;background:linear-gradient(180deg,#fffefa,#fbf6eb)!important;color:#111820!important;border-bottom:1px solid rgba(184,128,18,.13)!important;box-shadow:none!important}
+body .admin-exec .tx-card__head::before,body .admin-exec .tx-card__head::after{display:none!important;content:none!important}
+body .admin-exec .tx-card__title-group{display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important}
+body .admin-exec .tx-card__title-icon{width:30px!important;height:30px!important;flex:0 0 30px!important;border-radius:8px!important;display:grid!important;place-items:center!important;background:#fff0c8!important;color:#b67b0f!important;border:1px solid rgba(184,128,18,.18)!important}
+body .admin-exec .tx-card__title-group h3{margin:0!important;font-size:9.5px!important;line-height:1.05!important;color:#111820!important;font-weight:900!important}
+body .admin-exec .tx-card__title-group small{display:block!important;margin-top:2px!important;font-size:5.7px!important;line-height:1!important;color:#817b72!important;white-space:nowrap!important}
+body .admin-exec .tx-card__count-badge{height:20px!important;padding:0 7px!important;border-radius:99px!important;display:inline-flex!important;align-items:center!important;font-size:5.7px!important;color:#95660e!important;background:#fff2d2!important;border:1px solid rgba(184,128,18,.16)!important}
+body .admin-exec .tx-card__head-actions{display:flex!important;align-items:center!important;gap:5px!important;margin-right:auto!important;background:transparent!important;border:0!important;box-shadow:none!important}
+body .admin-exec .tx-search-glow,body .admin-exec .tx-card__head input{height:28px!important;min-height:28px!important;min-width:230px!important;padding:0 9px!important;border-radius:7px!important;background:#fff!important;color:#26303a!important;border:1px solid rgba(130,114,83,.20)!important;box-shadow:none!important;font-size:6.5px!important}
+body .admin-exec .tx-card__head button{height:28px!important;min-height:28px!important;padding:0 8px!important;border-radius:7px!important;background:#fff7e5!important;color:#97670f!important;border:1px solid rgba(184,128,18,.18)!important;font-size:6px!important}
+body .admin-exec .tx-ledger-summary{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;height:43px!important;padding:6px 11px!important;background:#fffdf8!important;border-bottom:1px solid rgba(184,128,18,.10)!important}
+body .admin-exec .tx-ledger-summary__item{height:31px!important;min-height:31px!important;padding:4px 7px!important;border-radius:7px!important;background:#fffefa!important;border:1px solid rgba(184,128,18,.11)!important;overflow:hidden!important}
+body .admin-exec .tx-ledger-summary__item span{font-size:5.3px!important;color:#9b9488!important}
+body .admin-exec .tx-ledger-summary__item strong{font-size:10px!important;line-height:1!important;color:#141b22!important}
+body .admin-exec .tx-table-wrap{height:88px!important;max-height:88px!important;padding:0 11px 9px!important;overflow:hidden!important;background:#fffdf8!important}
+body .admin-exec .tx-card table{width:100%!important;border-collapse:separate!important;border-spacing:0!important;table-layout:fixed!important;font-size:5.8px!important;color:#343b41!important}
+body .admin-exec .tx-card thead th{height:19px!important;padding:3px 5px!important;background:#f8efdf!important;color:#7d7468!important;font-size:5.4px!important;font-weight:850!important;border-bottom:1px solid rgba(177,125,23,.12)!important}
+body .admin-exec .tx-card tbody td{height:13px!important;padding:2px 5px!important;background:#fff!important;border-bottom:1px solid rgba(143,120,77,.08)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body .admin-exec .tx-amount{height:17px!important;padding:0 6px!important;border-radius:99px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;background:#fff2ce!important;color:#9d690f!important;font-size:5.5px!important}
+body .admin-exec .tx-status{height:17px!important;padding:0 6px!important;border-radius:99px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:5.4px!important}
+
+/* ===== RESPONSIVE SAFETY ===== */
+@media (max-width:1180px){
+  :root{--r35-sidebar:184px}
+  body .admin-exec .admin-sidebar{width:184px!important;min-width:184px!important}
+  body .admin-exec>div[style*="marginRight"]{margin-right:198px!important;padding-left:10px!important;padding-right:10px!important}
+  body .admin-exec .executive-date-shell{min-width:570px!important;max-width:calc(100% - 250px)!important}
+  body .admin-exec .rev-visual-grid{grid-template-columns:minmax(0,1fr) 245px!important}
+  body .admin-exec .rev-total{width:245px!important;min-width:245px!important;max-width:245px!important;grid-template-columns:105px minmax(0,1fr)!important}
+}
+
+@media (max-width:900px){
+  body .admin-exec .admin-sidebar{position:relative!important;width:100%!important;min-width:0!important;height:auto!important;max-height:none!important}
+  body .admin-exec{display:block!important}
+  body .admin-exec>div[style*="marginRight"]{margin-right:0!important;padding:10px!important}
+  body .admin-exec .admin-sidebar__footer{padding-top:0!important}
+  body .admin-exec .admin-sidebar__footer::before{display:none!important}
+  body .admin-exec .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body .admin-exec .syshealth{height:auto!important;max-height:none!important}
+  body .admin-exec .syshealth__layout{grid-template-columns:1fr!important}
+  body .admin-exec .admin-command-grid{grid-template-columns:1fr!important;grid-template-areas:"revenue" "live" "ops"!important}
+  body .admin-exec .adm-chart-card,body .admin-exec .live-card,body .admin-exec .ops-card,body .admin-exec .tx-card{height:auto!important;max-height:none!important}
+  body .admin-exec .rev-visual-grid{grid-template-columns:1fr!important;height:auto!important;max-height:none!important}
+  body .admin-exec .rev-total{width:100%!important;max-width:none!important}
+  body .admin-exec .executive-date-shell{width:100%!important;max-width:none!important;min-width:0!important}
+}
