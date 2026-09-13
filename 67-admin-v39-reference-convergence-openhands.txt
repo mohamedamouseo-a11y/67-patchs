@@ -1,0 +1,251 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V39
+ELEMENT=REFERENCE CONVERGENCE FULL PAGE
+BASE_RUNTIME=V38
+TARGET_RUNTIME=V39
+STATUS=APPLY_AND_RETURN_FOR_FULL-PAGE_VISUAL_APPROVAL
+==================================================
+
+IMPORTANT
+V38 already solved the major geometry failures:
+- sidebar width 200px
+- 8px main/sidebar seam
+- hero 176px
+- KPI 90px
+- health 94px
+- revenue 276px
+- operations 50/50
+- ledger full width
+- date popover interaction PASS
+
+Do NOT rebuild the Overview again.
+Do NOT reintroduce V34/V35/V36/V37 layouts.
+V39 is a full-page convergence pass on top of the now-correct V38 geometry.
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v39-reference-convergence-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download the patch to /tmp/67-admin-v39-reference-convergence-apply.sh
+3. chmod +x it
+4. Execute it
+5. Require BUILD=PASS
+6. Restart/activate the same proven live service
+7. Confirm local dist, origin and public index hashes match
+8. Run QA at 1448x1086 first, then 1920x1080
+
+REFERENCE IMAGE
+Use the same user-approved 1448x1086 automotive executive dashboard reference used throughout V38 comparison.
+Judge the WHOLE composition, not isolated selectors.
+
+KNOWN V38 FALSE NEGATIVES — DO NOT REPEAT THEM
+The V38 screenshot visibly contains:
+- sidebar promo artwork
+- Super Admin identity block
+- hero greeting/tools
+- hero right slogan copy
+Therefore do not report these missing just because an old selector fails.
+Use the following real/fallback selectors:
+SIDEBAR_PROMO: .v39-sidebar-promo OR .ref-v36-sidebar-promo
+SIDEBAR_ADMIN: .v39-sidebar-admin OR .admin-sidebar__identity.ref-v36-admin
+HERO_GREETING: .v39-hero-greeting OR .v38-admin-mini
+HERO_RIGHT_COPY: .v39-hero-right-copy OR .v38-hero-copy-right
+
+V39 PRIMARY VISUAL CORRECTION
+The V38 System Health band was mirrored horizontally relative to the approved reference.
+The REQUIRED physical left-to-right order at 1448x1086 is:
+1. status block on physical LEFT
+2. four metrics in the CENTER
+3. automotive cinematic scene on physical RIGHT
+
+Measure element centers and report:
+HEALTH_STATUS_CENTER_X=<number>
+HEALTH_METRICS_CENTER_X=<number>
+HEALTH_SCENE_CENTER_X=<number>
+HEALTH_PHYSICAL_ORDER_MATCH=YES only when STATUS_X < METRICS_X < SCENE_X.
+
+FULL REFERENCE FIDELITY TARGET
+At 1448x1086 with date popover CLOSED:
+- right sidebar exactly around 200px
+- main/sidebar gap <=12px
+- dark cinematic hero with left greeting/tools, large Arabic headline and right slogan
+- integrated dark date toolbar at hero bottom
+- 4 equal ivory KPI cards
+- dark System Health band in the exact physical order above
+- full-width Revenue card, chart physical left, dark multicolor donut physical right
+- donut heading and legend readable on dark background
+- dark Live Operations physical left with WHITE readable header
+- light Current Operations physical right with 3 subtly colored summary tiles + table
+- light full-width Financial Ledger below operations
+- ledger toolbar includes search + filter + export
+- complete page maintains the dark/light rhythm of the supplied reference
+
+GEOMETRY REGRESSION CHECKS
+REFERENCE_VIEWPORT=1448x1086
+SIDEBAR_WIDTH_PX approximately 200
+MAIN_TO_SIDEBAR_GAP_PX <=12
+HERO_HEIGHT_PX approximately 176
+KPI_COUNT=4
+KPI_HEIGHT_PX approximately 90
+HEALTH_HEIGHT_PX approximately 94
+REVENUE_HEIGHT_PX approximately 276
+OPERATIONS_TWO_COLUMN=YES
+LIVE_CURRENT_WIDTH_DELTA_PX<=4
+LIVE_CURRENT_HEIGHT_DELTA_PX<=4
+LEDGER_WIDTH_MATCH_MAIN=YES
+PAGE_HORIZONTAL_OVERFLOW=NO
+
+VISIBILITY / READABILITY CHECKS
+SIDEBAR_PROMO_VISIBLE=YES
+SIDEBAR_ADMIN_VISIBLE=YES
+HERO_GREETING_VISIBLE=YES
+HERO_RIGHT_COPY_VISIBLE=YES
+HERO_TITLE_CLIPPED=NO
+KPI_TEXT_CLIPPED=NO
+HEALTH_TEXT_CLIPPED=NO
+HEALTH_PHYSICAL_ORDER_MATCH=YES
+REVENUE_TEXT_CLIPPED=NO
+REVENUE_DONUT_VISIBLE=YES
+REVENUE_DONUT_MULTICOLOR=YES
+REVENUE_DONUT_LEGEND_COUNT=3
+REVENUE_DONUT_DARK_TEXT_LOW_CONTRAST=NO
+LIVE_HEADER_READABLE=YES
+LIVE_TEXT_CLIPPED=NO
+CURRENT_TEXT_CLIPPED=NO
+CURRENT_SUMMARY_TILE_COUNT=3
+CURRENT_TABLE_VISIBLE=YES
+LEDGER_SEARCH_VISIBLE=YES
+LEDGER_FILTER_VISIBLE=YES
+LEDGER_EXPORT_VISIBLE=YES
+LEDGER_TABLE_VISIBLE=YES
+LEDGER_TEXT_CLIPPED=NO
+
+DATE / FUNCTIONAL REGRESSION
+Verify actual click behavior, not selector existence only:
+- click main date display -> popover becomes visible
+- click cancel -> popover closes
+- click 7 days -> datePreset/range changes appropriately
+- click 30 days -> datePreset/range changes appropriately
+Then close popover before all reference screenshots.
+DATE_POPOVER_OPEN_CLOSE=PASS
+DATE_PRESETS_WORK=PASS
+DATE_POPOVER_OPEN_AT_SCREENSHOT_TIME=NO
+TX_SEARCH_REGRESSION=PASS
+SIDEBAR_NAV_REGRESSION=PASS
+
+PROTECTED
+Do not change APIs, backend, authentication, routing, permissions, calculations, source data, live notification logic, transaction search logic or active-tab behavior.
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+
+MANUAL WHOLE-PAGE REVIEW
+Do not mark PASS just because geometry/selectors pass.
+Compare the 1448x1086 screenshot as a complete composition against the supplied reference.
+Specifically judge:
+- section vertical rhythm
+- hero hierarchy
+- System Health physical orientation
+- revenue chart/donut balance
+- dark-left/light-right operations row
+- sidebar visual weight
+- ledger placement and density
+
+Set REFERENCE_FULL_PAGE_FIDELITY=PASS only if the page now clearly reads as the supplied reference rather than a differently composed dashboard.
+If FAIL, report exactly the TOP 3 remaining visual differences in plain language and include their approximate pixel regions.
+
+SCREENSHOTS
+Capture exactly 4:
+1. 67__ADMIN__V39__REFERENCE-CONVERGENCE__01__FULL__1448x1086__<RUNSTAMP>.png
+2. 67__ADMIN__V39__REFERENCE-CONVERGENCE__02__FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V39__REFERENCE-CONVERGENCE__03__HERO-KPI-HEALTH-REVENUE__1448x1086__<RUNSTAMP>.png
+4. 67__ADMIN__V39__REFERENCE-CONVERGENCE__04__OPERATIONS-LEDGER-SIDEBAR__1448x1086__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to the existing QA repo.
+Do NOT source-push /67.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Upload screenshots if available.
+Any Drive/client-side failure after browser QA is NON-BLOCKING and must not invalidate browser verification.
+
+FINAL REPORT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V39
+ELEMENT=REFERENCE CONVERGENCE FULL PAGE
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v39.css
+VISUAL_STRATEGY=REFERENCE_CONVERGENCE_FULL_PAGE
+V38_GEOMETRY_PRESERVED=YES
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+REFERENCE_VIEWPORT=1448x1086
+SIDEBAR_WIDTH_PX=<number>
+MAIN_TO_SIDEBAR_GAP_PX=<number>
+SIDEBAR_PROMO_VISIBLE=<YES/NO>
+SIDEBAR_ADMIN_VISIBLE=<YES/NO>
+HERO_HEIGHT_PX=<number>
+HERO_GREETING_VISIBLE=<YES/NO>
+HERO_RIGHT_COPY_VISIBLE=<YES/NO>
+HERO_TITLE_CLIPPED=<YES/NO>
+KPI_COUNT=<number>
+KPI_HEIGHT_PX=<number>
+KPI_TEXT_CLIPPED=<YES/NO>
+HEALTH_HEIGHT_PX=<number>
+HEALTH_STATUS_CENTER_X=<number>
+HEALTH_METRICS_CENTER_X=<number>
+HEALTH_SCENE_CENTER_X=<number>
+HEALTH_PHYSICAL_ORDER_MATCH=<YES/NO>
+HEALTH_TEXT_CLIPPED=<YES/NO>
+REVENUE_HEIGHT_PX=<number>
+REVENUE_DONUT_VISIBLE=<YES/NO>
+REVENUE_DONUT_MULTICOLOR=<YES/NO>
+REVENUE_DONUT_LEGEND_COUNT=<number>
+REVENUE_DONUT_DARK_TEXT_LOW_CONTRAST=<YES/NO>
+OPERATIONS_TWO_COLUMN=<YES/NO>
+LIVE_CURRENT_WIDTH_DELTA_PX=<number>
+LIVE_CURRENT_HEIGHT_DELTA_PX=<number>
+LIVE_HEADER_READABLE=<YES/NO>
+CURRENT_SUMMARY_TILE_COUNT=<number>
+CURRENT_TABLE_VISIBLE=<YES/NO>
+LEDGER_WIDTH_MATCH_MAIN=<YES/NO>
+LEDGER_SEARCH_VISIBLE=<YES/NO>
+LEDGER_FILTER_VISIBLE=<YES/NO>
+LEDGER_EXPORT_VISIBLE=<YES/NO>
+LEDGER_TABLE_VISIBLE=<YES/NO>
+DATE_POPOVER_OPEN_CLOSE=<PASS/FAIL>
+DATE_PRESETS_WORK=<PASS/FAIL>
+DATE_POPOVER_OPEN_AT_SCREENSHOT_TIME=<YES/NO>
+TX_SEARCH_REGRESSION=<PASS/FAIL>
+SIDEBAR_NAV_REGRESSION=<PASS/FAIL>
+PAGE_HORIZONTAL_OVERFLOW=<YES/NO>
+REFERENCE_FULL_PAGE_FIDELITY=<PASS/FAIL>
+TOP_VISUAL_DIFFERENCE_1=<NONE or exact description>
+TOP_VISUAL_DIFFERENCE_2=<NONE or exact description>
+TOP_VISUAL_DIFFERENCE_3=<NONE or exact description>
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
