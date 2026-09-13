@@ -1,0 +1,262 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.5
+MODULE=ADMIN DASHBOARD
+ELEMENT=BALANCED OPERATIONS FINAL
+BASE_VERSION=V32.4
+TARGET_VERSION=V32.5
+STATUS=APPLY_PATCH_AND_RETURN_FOR_VISUAL_QA
+==================================================
+
+OBJECTIVE
+Final screenshot-driven refinement for:
+1) العمليات المباشرة / Live Operations
+2) العمليات الجارية / Current Operations
+
+DIRECT SCREENSHOT REVIEW OF V32.4
+The visual screenshots prove these Current Operations elements ARE rendered and visible:
+- command badge
+- the three rows inside .ops-tiles
+- status pills
+- conditional payment row
+- health strip
+Therefore previous OPS_ROWS_VISIBLE=NO / OPS_ROW_COUNT=0 / OPS_STATUS_PILLS_VISIBLE=NO were QA-selector false negatives.
+
+REAL REMAINING VISUAL ISSUE
+- Live Operations still has a large empty middle zone and feels too tall.
+- Both cards should be more balanced/compact while keeping all content readable.
+- Do NOT remove any rows or controls.
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v32.5-balanced-operations-final-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v32.5-balanced-operations-final-apply.sh
+3. chmod +x it.
+4. Execute it.
+5. Require BUILD=PASS.
+6. Activate live runtime using the same proven service restart mechanism used for V32.4.
+7. Confirm local dist, origin and public index hashes match.
+8. Browser QA at 1920x1080.
+
+STRICT SCOPE
+Allowed:
+- CSS geometry/typography/spacing only for .live-card and descendants
+- CSS geometry/typography/spacing only for .ops-card and descendants
+
+PROTECTED — MUST NOT CHANGE
+- Hero
+- Date Strip/date logic
+- KPI row
+- System Health
+- Revenue/chart/donut
+- Sidebar
+- transactions/ledger
+- liveNotifications data/logic
+- operation counts/data/logic
+- backend/auth/API/routing/permissions
+
+DO NOT
+- rewrite JSX
+- delete/hide information
+- change text/counts
+- source-push /67 before ChatGPT approval
+
+CRITICAL QA SELECTORS — USE THESE EXACTLY
+Current Operations three core rows:
+  document.querySelectorAll('.ops-card .ops-tiles > .ops-tile')
+Expected count = 3.
+
+Current Operations status pills:
+  document.querySelectorAll('.ops-card .ops-tiles > .ops-tile .ops-tile__state')
+Expected count = 3 and each must have non-zero rect + visible computed style.
+
+Conditional payment row:
+  document.querySelector('.ops-card > .ops-tile.ops-tile--payment')
+If present, test separately and DO NOT include in OPS_ROW_COUNT.
+
+Health strip:
+  document.querySelector('.ops-card .ops-good-strip')
+
+Command badge:
+  document.querySelector('.ops-card .ops-card__command-badge')
+
+LIVE QA
+Use real geometry and computed styles.
+Required:
+- LIVE_CARD_VISIBLE=YES
+- LIVE_CARD_CHILD_OVERFLOW=NO
+- LIVE_TEXT_CLIPPED=NO
+- LIVE_HEADER_VISIBLE=YES
+- LIVE_EVENT_ITEMS_VISIBLE=YES
+- LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=YES or NOT_RENDERED
+- LIVE_ACTIVITY_METRICS_VISIBLE=YES or NOT_RENDERED
+- LIVE_FOOTER_VISIBLE=YES
+- LIVE_FOOTER_WITHIN_CARD=YES
+- LIVE_CTA_VISIBLE=YES
+- LIVE_CTA_WITHIN_CARD=YES
+- LIVE_DEAD_SPACE_EXCESSIVE=NO
+- LIVE_OPERATIONS_PREMIUM_VISUAL=PASS
+
+LIVE DEAD-SPACE RULE
+Measure the vertical distance between the bottom of the last meaningful pre-footer block (.live-activity-summary if rendered, otherwise last .live-item) and the top of .live-card__footer.
+PASS when gap <= 30px.
+Report LIVE_MIDDLE_GAP_PX=<number>.
+Do not use subjective guess alone.
+
+CURRENT OPERATIONS QA
+Required:
+- OPS_CARD_VISIBLE=YES
+- OPS_CARD_CHILD_OVERFLOW=NO
+- OPS_TEXT_CLIPPED=NO
+- OPS_HEADER_VISIBLE=YES
+- OPS_COMMAND_BADGE_VISIBLE=YES
+- OPS_SUMMARY_TILES_VISIBLE=YES
+- OPS_ROWS_VISIBLE=YES
+- OPS_ROW_COUNT=3
+- OPS_STATUS_PILLS_VISIBLE=YES
+- OPS_STATUS_PILL_COUNT=3
+- OPS_PAYMENT_ROW_VISIBLE=YES/NOT_RENDERED
+- OPS_PAYMENT_ROW_WITHIN_CARD=YES/NOT_RENDERED
+- OPS_HEALTH_STRIP_VISIBLE=YES
+- OPS_HEALTH_STRIP_WITHIN_CARD=YES
+- CURRENT_OPERATIONS_PREMIUM_VISUAL=PASS
+
+TEXT CLIPPING RULE
+Do not fail text solely because scrollWidth differs by a fraction/subpixel while overflow is visible and the painted glyphs remain inside the card.
+Only flag real clipping when text is visually/physically cut by its own box or card boundary.
+If any clipping remains, report:
+- exact selector
+- textContent
+- clientWidth/clientHeight
+- scrollWidth/scrollHeight
+- element rect
+- nearest clipping ancestor + rect + overflow style
+Do not return only TEXT_CLIPPED=YES.
+
+HERO REGRESSION RULE
+Do NOT measure hero displacement after scrollIntoView.
+1. Set window.scrollTo(0,0).
+2. Wait for layout to settle.
+3. Record hero rect.
+4. Perform operation-card QA/scrolling.
+5. Restore window.scrollTo(0,0).
+6. Wait.
+7. Record hero rect again.
+HERO_GEOMETRY_SHIFT_PX must compare these two top-of-page measurements only.
+
+VISUAL REVIEW
+At 1920x1080 verify:
+- Live card no longer has a giant empty dark middle zone.
+- Live footer and CTA remain visible and intentional.
+- Current card retains all 3 rows, status pills, payment row and health strip.
+- Typography is readable and not microscopic.
+- Both cards are visually balanced as one executive operations row.
+- Revenue V31.2 remains visually unchanged.
+
+REGRESSIONS
+- REVENUE_REGRESSION=PASS
+- HERO_GEOMETRY_SHIFT_PX=0
+- HERO_IMAGE_FLASH_DETECTED=NO
+- DATE_STRIP_REGRESSION=PASS
+- KPI_REGRESSION=PASS
+- SYSTEM_HEALTH_REGRESSION=PASS
+- SIDEBAR_CHANGED=NO
+- DATA_CHANGED=NO
+- LOGIC_CHANGED=NO
+- BACKEND_CHANGED=NO
+- AUTH_CHANGED=NO
+
+SCREENSHOTS
+Capture exactly 4 screenshots at 1920x1080:
+1. 67__ADMIN__V32-5__BALANCED-OPERATIONS__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V32-5__BALANCED-OPERATIONS__02__LIVE-OPERATIONS__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V32-5__BALANCED-OPERATIONS__03__CURRENT-OPERATIONS__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V32-5__BALANCED-OPERATIONS__04__REVENUE-OPERATIONS-CONTINUITY__1920x1080__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to the existing QA repo.
+Do NOT source-push /67.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Upload attempt is NON-BLOCKING.
+If client-side/Drive tooling fails, report DRIVE_UPLOAD=FAILED_TOOL_UNAVAILABLE and continue to return real browser QA results.
+Never replace an already completed browser QA result with the generic client-side recovery error.
+
+FINAL REPORT FORMAT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.5
+MODULE=ADMIN DASHBOARD
+ELEMENT=BALANCED OPERATIONS FINAL
+BASE_VERSION=V32.4
+TARGET_VERSION=V32.5
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v32.5.css
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+LIVE_CARD_VISIBLE=<YES/NO>
+LIVE_CARD_CHILD_OVERFLOW=<YES/NO>
+LIVE_OVERFLOW_ELEMENT=<NONE or exact selector>
+LIVE_TEXT_CLIPPED=<YES/NO>
+LIVE_HEADER_VISIBLE=<YES/NO>
+LIVE_EVENT_ITEMS_VISIBLE=<YES/NO>
+LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=<YES/NO/NOT_RENDERED>
+LIVE_ACTIVITY_METRICS_VISIBLE=<YES/NO/NOT_RENDERED>
+LIVE_FOOTER_VISIBLE=<YES/NO>
+LIVE_FOOTER_WITHIN_CARD=<YES/NO>
+LIVE_CTA_VISIBLE=<YES/NO>
+LIVE_CTA_WITHIN_CARD=<YES/NO>
+LIVE_MIDDLE_GAP_PX=<number>
+LIVE_DEAD_SPACE_EXCESSIVE=<YES/NO>
+LIVE_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+OPS_CARD_VISIBLE=<YES/NO>
+OPS_CARD_CHILD_OVERFLOW=<YES/NO>
+OPS_OVERFLOW_ELEMENT=<NONE or exact selector>
+OPS_TEXT_CLIPPED=<YES/NO>
+OPS_HEADER_VISIBLE=<YES/NO>
+OPS_COMMAND_BADGE_VISIBLE=<YES/NO>
+OPS_SUMMARY_TILES_VISIBLE=<YES/NO>
+OPS_ROWS_VISIBLE=<YES/NO>
+OPS_ROW_COUNT=<number>
+OPS_STATUS_PILLS_VISIBLE=<YES/NO>
+OPS_STATUS_PILL_COUNT=<number>
+OPS_PAYMENT_ROW_VISIBLE=<YES/NO/NOT_RENDERED>
+OPS_PAYMENT_ROW_WITHIN_CARD=<YES/NO/NOT_RENDERED>
+OPS_HEALTH_STRIP_VISIBLE=<YES/NO>
+OPS_HEALTH_STRIP_WITHIN_CARD=<YES/NO>
+CURRENT_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+REVENUE_REGRESSION=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+KPI_REGRESSION=<PASS/FAIL>
+SYSTEM_HEALTH_REGRESSION=<PASS/FAIL>
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+VIEWPORT=1920x1080
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+PASS CONDITION
+Set STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL only if the Live middle gap is <=30px, no real text clipping/overflow remains, all three Current Operations rows and status pills are correctly detected with the exact selectors above, health/payment structures are visible as applicable, visual checks pass, and protected regressions pass.
