@@ -1,0 +1,151 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V31.1
+MODULE=ADMIN DASHBOARD
+ELEMENT=REVENUE + PERFORMANCE CONTAINMENT FIX
+BASE_VERSION=V31
+TARGET_VERSION=V31.1
+STATUS=APPLY_AND_VERIFY
+==================================================
+
+OBJECTIVE:
+Fix the V31 Revenue & Performance runtime geometry failure without redesigning the section again.
+
+KNOWN V31 FAILURE:
+- REVENUE_DONUT_WITHIN_CARD=NO
+- REVENUE_CARD_CHILD_OVERFLOW=YES
+- BUILD=PASS
+- LIVE_RUNTIME_ACTIVATED=YES
+
+ROOT CAUSE TO ADDRESS:
+The V31 fixed-height revenue card uses a vertical stack whose combined header + stats + visual-grid + margins + padding slightly exceeds the card height. This causes the lower visual area / donut summary to extend beyond the card bounds.
+
+PATCH:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v31.1-revenue-containment-fix-apply.sh
+
+EXECUTION:
+1. cd /67
+2. Fetch the patch above.
+3. chmod +x it.
+4. Execute it.
+5. Confirm BUILD=PASS.
+6. Restart ONLY the live 67 service currently serving the app, using the already-verified service/runtime method from V31. Do not modify nginx routing unless runtime activation actually fails.
+7. Verify public runtime loads AdminDashboard.v31.1.css.
+
+STRICT PROTECTION:
+DO NOT change:
+- revenue data values
+- revenue calculations
+- trendSeries generation
+- SVG chart logic or dataset
+- donut/ring business meaning
+- Hero
+- Date Strip
+- KPI row
+- System Health
+- Sidebar
+- Live Operations
+- Current Operations
+- backend
+- auth
+- permissions
+
+VISUAL QA VIEWPORT:
+1920x1080
+
+REQUIRED BROWSER GEOMETRY CHECKS:
+- Revenue card exists and is visible.
+- Revenue card child elements stay inside the revenue card bounds with tolerance <= 1px.
+- .rev-total is fully within .adm-chart-card.
+- .rev-total__ring is fully within .rev-total.
+- .rev-total__copy is fully within .rev-total.
+- .adex-chart is fully within .adm-chart-card.
+- No primary summary value is clipped.
+- No chart labels are cut off due to the new containment fix.
+- No horizontal overflow is introduced.
+
+PASS FLAGS REQUIRED:
+REVENUE_CARD_CHILD_OVERFLOW=NO
+REVENUE_DONUT_WITHIN_CARD=YES
+REVENUE_DONUT_RING_WITHIN_SUMMARY=YES
+REVENUE_DONUT_COPY_WITHIN_SUMMARY=YES
+REVENUE_CHART_WITHIN_CARD=YES
+REVENUE_PRIMARY_VALUES_CLIPPED=NO
+REVENUE_HORIZONTAL_OVERFLOW=NO
+REVENUE_PREMIUM_VISUAL=PASS
+
+REGRESSION CHECKS REQUIRED:
+HERO_GEOMETRY_SHIFT_PX=0
+HERO_IMAGE_FLASH_DETECTED=NO
+DATE_STRIP_REGRESSION=PASS
+KPI_REGRESSION=PASS
+SYSTEM_HEALTH_REGRESSION=PASS
+SIDEBAR_CHANGED=NO
+REVENUE_DATA_CHANGED=NO
+REVENUE_LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+
+CAPTURE 4 SCREENSHOTS:
+1. 67__ADMIN__V31-1__REVENUE-CONTAINMENT__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V31-1__REVENUE-CONTAINMENT__02__REVENUE-FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V31-1__REVENUE-CONTAINMENT__03__CHART-DETAIL__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V31-1__REVENUE-CONTAINMENT__04__DONUT-DETAIL__1920x1080__<RUNSTAMP>.png
+
+QA PUSH:
+Push screenshots ONLY to the QA/patch repository workflow used in previous versions. Do NOT push source project changes yet.
+
+GOOGLE DRIVE:
+Upload the 4 screenshots to My Drive root if the Drive action is available.
+IMPORTANT: If the Drive client-side action fails or returns a tooling/recovery error, DO NOT invalidate completed browser verification. Report:
+DRIVE_UPLOAD=FAILED_TOOLING
+and continue the final QA report with all verified runtime flags and QA repo commit SHA. Do not claim verification was not performed if browser QA already completed.
+
+FINAL REPORT FORMAT:
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V31.1
+MODULE=ADMIN DASHBOARD
+ELEMENT=REVENUE + PERFORMANCE CONTAINMENT FIX
+BASE_VERSION=V31
+TARGET_VERSION=V31.1
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=YES
+BUILD=PASS
+RUNTIME_CSS=AdminDashboard.v31.1.css
+LIVE_RUNTIME_ACTIVATED=YES
+REVENUE_CARD_CHILD_OVERFLOW=<YES/NO>
+REVENUE_DONUT_WITHIN_CARD=<YES/NO>
+REVENUE_DONUT_RING_WITHIN_SUMMARY=<YES/NO>
+REVENUE_DONUT_COPY_WITHIN_SUMMARY=<YES/NO>
+REVENUE_CHART_WITHIN_CARD=<YES/NO>
+REVENUE_PRIMARY_VALUES_CLIPPED=<YES/NO>
+REVENUE_HORIZONTAL_OVERFLOW=<YES/NO>
+REVENUE_PREMIUM_VISUAL=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<value>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+KPI_REGRESSION=<PASS/FAIL>
+SYSTEM_HEALTH_REGRESSION=<PASS/FAIL>
+SIDEBAR_CHANGED=NO
+REVENUE_DATA_CHANGED=NO
+REVENUE_LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+VIEWPORT=1920x1080
+RUNSTAMP=<value>
+SCREENSHOT_01_FILENAME=<value>
+SCREENSHOT_02_FILENAME=<value>
+SCREENSHOT_03_FILENAME=<value>
+SCREENSHOT_04_FILENAME=<value>
+DRIVE_UPLOAD=<OK/FAILED_TOOLING/PENDING>
+DRIVE_UPLOAD_COUNT=<0/4>
+QA_PUSH=<value>
+QA_COMMIT_SHA=<value>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+DO NOT SOURCE PUSH UNTIL CHATGPT VISUALLY APPROVES V31.1.
