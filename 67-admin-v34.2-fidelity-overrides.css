@@ -1,0 +1,43 @@
+/* SIX SEVEN ADMIN V34.2 — FINAL FIDELITY OVERRIDES */
+@media (min-width:1101px) and (max-width:1600px){
+body .admin-exec .admin-sidebar{width:214px!important;min-width:214px!important}
+body .admin-exec>div[style*="marginRight"]{margin-right:228px!important}
+}
+@media (min-width:1601px){
+body .admin-exec .admin-sidebar{width:232px!important;min-width:232px!important}
+body .admin-exec>div[style*="marginRight"]{margin-right:246px!important}
+}
+body .admin-exec .admin-sidebar{padding:9px!important}
+body .admin-exec .admin-sidebar__footer{margin-top:auto!important;padding-top:164px!important;background:transparent!important;border:0!important;box-shadow:none!important}
+body .admin-exec .admin-sidebar__footer::before{height:150px!important;top:4px!important;padding:14px 10px 66px!important;border-radius:13px!important;background:linear-gradient(180deg,rgba(5,10,15,.18),rgba(5,10,15,.86)),url('../assets/admin-v29.4-hero-highres.jpg') center 61%/cover no-repeat!important;pointer-events:none!important}
+body .admin-exec .ov-header{height:170px!important;min-height:170px!important;max-height:170px!important}
+body .admin-exec .ov-header__motif,body .admin-exec .ov-header__motif.hero-image-pending,body .admin-exec .ov-header__motif.hero-image-ready{opacity:1!important;visibility:visible!important;transition:none!important;animation:none!important;background-image:var(--hero-v295-image)!important;background-size:cover!important;background-position:center 54%!important}
+body .admin-exec .ov-header__copy-left{left:20px!important;top:15px!important;width:420px!important;max-width:420px!important;min-width:420px!important;overflow:visible!important}
+body .admin-exec .ov-header__copy-left h1{width:420px!important;max-width:420px!important;font-size:22px!important;line-height:1.06!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important}
+body .admin-exec .ov-header__copy-left p{width:350px!important;max-width:350px!important;font-size:7.8px!important;white-space:nowrap!important;overflow:visible!important}
+body .admin-exec .ov-header__copy-right{display:block!important;visibility:visible!important;opacity:1!important;right:25px!important;top:27px!important;width:205px!important;z-index:10!important;overflow:visible!important}
+body .admin-exec .ov-header__copy-right>span{display:block!important;font-size:11.5px!important}
+body .admin-exec .ov-header__copy-right>strong{display:block!important;font-size:15.5px!important}
+body .admin-exec .ov-header__copy-right>small{display:flex!important;font-size:6.2px!important;white-space:nowrap!important}
+body .admin-exec .kpi-card{height:92px!important;min-height:92px!important;max-height:none!important;padding:9px 11px 8px!important}
+body .admin-exec .kpi-card__label{font-size:8.4px!important;line-height:1.15!important}
+body .admin-exec .kpi-card__value{font-size:22px!important;line-height:1!important}
+body .admin-exec .kpi-card__note{height:auto!important;min-height:13px!important;font-size:7.1px!important;line-height:1.15!important;overflow:visible!important}
+body .admin-exec .syshealth{height:102px!important;min-height:102px!important;max-height:none!important}
+body .admin-exec .syshealth__layout{padding:7px 9px!important;gap:6px!important}
+body .admin-exec .syshealth__title{font-size:9.5px!important;line-height:1.18!important;overflow:visible!important}
+body .admin-exec .syshealth__title small{font-size:7px!important;line-height:1.15!important}
+body .admin-exec .syshealth__status{font-size:7.2px!important}
+body .admin-exec .syshealth__status-text{font-size:6.5px!important;line-height:1.15!important;overflow:visible!important}
+body .admin-exec .syshealth__metric{height:84px!important;min-height:84px!important;max-height:84px!important;padding:7px!important}
+body .admin-exec .syshealth__metric label{font-size:7.1px!important;white-space:nowrap!important}
+body .admin-exec .syshealth__metric strong{font-size:15px!important}
+body .admin-exec .syshealth__metric small{font-size:6.1px!important;white-space:nowrap!important}
+body .admin-exec .rev-total,body .admin-exec .rev-total__ring,body .admin-exec .rev-total__ring-core{display:flex!important;visibility:visible!important;opacity:1!important}
+body .admin-exec .rev-total{flex-direction:column!important;align-items:center!important;justify-content:center!important}
+body .admin-exec .rev-total__ring{width:92px!important;height:92px!important;min-width:92px!important;min-height:92px!important;flex:0 0 92px!important}
+body .admin-exec .tx-card>.tx-card__head,body .admin-exec .tx-card .tx-card__head{height:60px!important;min-height:60px!important;background:linear-gradient(180deg,#fffefa,#fbf5e9)!important;color:#111820!important;border-bottom:1px solid rgba(184,128,20,.16)!important;box-shadow:none!important}
+body .admin-exec .tx-card__head::before,body .admin-exec .tx-card__head::after{display:none!important;content:none!important}
+body .admin-exec .tx-card__title-group h3{color:#111820!important}
+body .admin-exec .tx-card__title-group small{color:#81796e!important}
+body .admin-exec .tx-card__head-actions{background:transparent!important;border:0!important;box-shadow:none!important}
