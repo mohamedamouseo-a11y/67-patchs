@@ -1,0 +1,237 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.1
+MODULE=ADMIN DASHBOARD
+ELEMENT=OPERATIONS VISIBILITY + CONTAINMENT FIX
+BASE_VERSION=V32
+TARGET_VERSION=V32.1
+STATUS=APPLY_FIX_AND_RETURN_FOR_VISUAL_QA
+==================================================
+
+OBJECTIVE
+Fix only the V32 browser QA blockers in the two operations cards:
+1) Live Operations / العمليات المباشرة
+2) Current Operations / العمليات الجارية
+
+KNOWN V32 FAILURES TO RESOLVE
+- LIVE_TEXT_CLIPPED=YES
+- LIVE_FOOTER_VISIBLE=NO
+- LIVE_OPERATIONS_PREMIUM_VISUAL=FAIL
+- OPS_TEXT_CLIPPED=YES
+- OPS_COMMAND_BADGE_VISIBLE=NO
+- OPS_ROWS_VISIBLE=NO
+- OPS_STATUS_PILLS_VISIBLE=NO
+- OPS_HEALTH_STRIP_VISIBLE=NO
+- CURRENT_OPERATIONS_PREMIUM_VISUAL=FAIL
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v32.1-operations-visibility-containment-fix-apply.sh
+
+EXECUTION
+1. cd /67
+2. Confirm current runtime source import is AdminDashboard.v32.css.
+3. Download the V32.1 apply script to /tmp.
+4. chmod +x it and execute it.
+5. Require BUILD=PASS.
+6. Activate the live runtime using the same proven service restart mechanism used for V31.2/V32.
+7. Confirm local dist, origin and public index hashes match.
+8. Browser QA at 1920x1080.
+
+STRICT SCOPE
+This is a corrective CSS-only visual patch over V32.
+Allowed source change:
+- AdminDashboard.jsx import line only: v32.css -> v32.1.css
+- new AdminDashboard.v32.1.css copied from V32 plus corrective CSS
+
+PROTECTED — MUST NOT CHANGE
+- Hero
+- Date Strip/date logic
+- KPI row
+- System Health
+- Revenue & Performance/chart/donut
+- Sidebar
+- transactions/ledger
+- JSX structure of Live Operations
+- JSX structure of Current Operations
+- liveNotifications/data values/counts
+- click behavior/navigation
+- backend/auth/API/routing/permissions
+
+DO NOT
+- remove or hide content to make QA pass
+- alter event rows or operation rows
+- change any data values
+- source-push /67 before ChatGPT visual approval
+
+LIVE OPERATIONS REQUIRED QA
+Use real DOM geometry. Tolerance: 1px.
+Required:
+- LIVE_CARD_VISIBLE=YES
+- LIVE_CARD_CHILD_OVERFLOW=NO
+- LIVE_OVERFLOW_ELEMENT=NONE
+- LIVE_TEXT_CLIPPED=NO
+- LIVE_HEADER_VISIBLE=YES
+- LIVE_EVENT_ITEMS_VISIBLE=YES
+- LIVE_EVENT_COUNT_PRESERVED=YES
+- LIVE_FOOTER_VISIBLE=YES
+- LIVE_FOOTER_WITHIN_CARD=YES
+- LIVE_CTA_VISIBLE=YES
+- LIVE_CTA_WITHIN_CARD=YES
+- LIVE_OPERATIONS_PREMIUM_VISUAL=PASS
+
+If .live-activity-summary is rendered also require:
+- LIVE_ACTIVITY_SUMMARY_VISIBLE=YES
+- LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=YES
+- LIVE_ACTIVITY_METRICS_VISIBLE=YES
+- LIVE_ACTIVITY_TEXT_CLIPPED=NO
+
+CURRENT OPERATIONS REQUIRED QA
+Required:
+- OPS_CARD_VISIBLE=YES
+- OPS_CARD_CHILD_OVERFLOW=NO
+- OPS_OVERFLOW_ELEMENT=NONE
+- OPS_TEXT_CLIPPED=NO
+- OPS_HEADER_VISIBLE=YES
+- OPS_COMMAND_BADGE_VISIBLE=YES
+- OPS_COMMAND_BADGE_WITHIN_CARD=YES
+- OPS_SUMMARY_TILES_VISIBLE=YES
+- OPS_SUMMARY_TILES_WITHIN_CARD=YES
+- OPS_ROWS_VISIBLE=YES
+- OPS_ROWS_WITHIN_CARD=YES
+- OPS_STATUS_PILLS_VISIBLE=YES
+- OPS_STATUS_PILLS_WITHIN_CARD=YES
+- OPS_HEALTH_STRIP_VISIBLE=YES
+- OPS_HEALTH_STRIP_WITHIN_CARD=YES
+- CURRENT_OPERATIONS_PREMIUM_VISUAL=PASS
+
+TEXT CLIPPING TEST
+Do not classify deliberate wrapping as clipping.
+For all visible text nodes in the two cards verify:
+- no horizontal scroll overflow beyond tolerance
+- no vertical scroll overflow beyond tolerance
+- no text outside card bounds
+- no CSS ellipsis hiding required operational text
+If any failure remains, report exact selector plus clientWidth/clientHeight/scrollWidth/scrollHeight and bounding rect.
+
+GEOMETRY FAILURE REPORTING
+If any target descendant extends outside its card by >1px, report:
+- exact selector/class
+- element left/top/right/bottom
+- parent card left/top/right/bottom
+- overflow delta on each side
+Do not return a generic YES/NO only.
+
+VISUAL QUALITY
+At 1920x1080 verify visually:
+- Live Operations remains the V32 dark executive console, but all content is readable and footer/CTA are present.
+- Current Operations remains the V32 ivory/gold command card, with badge, summary tiles, all operation rows, status pills and green health strip clearly visible.
+- Cards are balanced side-by-side with no giant empty zones.
+- Nothing looks artificially shrunk or illegible.
+- Revenue V31.2 remains visually unchanged above them.
+
+REGRESSION CHECKS
+- REVENUE_REGRESSION=PASS
+- HERO_GEOMETRY_SHIFT_PX=0
+- HERO_IMAGE_FLASH_DETECTED=NO
+- DATE_STRIP_REGRESSION=PASS
+- KPI_REGRESSION=PASS
+- SYSTEM_HEALTH_REGRESSION=PASS
+- SIDEBAR_CHANGED=NO
+- DATA_CHANGED=NO
+- LOGIC_CHANGED=NO
+- BACKEND_CHANGED=NO
+- AUTH_CHANGED=NO
+
+SCREENSHOTS
+Capture exactly 4 screenshots at 1920x1080:
+1. 67__ADMIN__V32-1__OPERATIONS-FIX__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V32-1__OPERATIONS-FIX__02__LIVE-OPERATIONS__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V32-1__OPERATIONS-FIX__03__CURRENT-OPERATIONS__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V32-1__OPERATIONS-FIX__04__REVENUE-OPERATIONS-CONTINUITY__1920x1080__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to the existing QA repo as usual.
+Do NOT source-push /67.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Attempt upload of all four screenshots to My Drive root.
+Google Drive/client-side upload failure is NON-BLOCKING for the real browser/design QA.
+If the upload tool is unavailable set DRIVE_UPLOAD=FAILED_TOOL_UNAVAILABLE and continue to the final report.
+
+FINAL REPORT FORMAT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.1
+MODULE=ADMIN DASHBOARD
+ELEMENT=OPERATIONS VISIBILITY + CONTAINMENT FIX
+BASE_VERSION=V32
+TARGET_VERSION=V32.1
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v32.1.css
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+LIVE_CARD_VISIBLE=<YES/NO>
+LIVE_CARD_CHILD_OVERFLOW=<YES/NO>
+LIVE_OVERFLOW_ELEMENT=<NONE or exact selector>
+LIVE_TEXT_CLIPPED=<YES/NO>
+LIVE_HEADER_VISIBLE=<YES/NO>
+LIVE_EVENT_ITEMS_VISIBLE=<YES/NO>
+LIVE_EVENT_COUNT_PRESERVED=<YES/NO>
+LIVE_ACTIVITY_SUMMARY_VISIBLE=<YES/NO/NOT_RENDERED>
+LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=<YES/NO/NOT_RENDERED>
+LIVE_ACTIVITY_METRICS_VISIBLE=<YES/NO/NOT_RENDERED>
+LIVE_ACTIVITY_TEXT_CLIPPED=<YES/NO/NOT_RENDERED>
+LIVE_FOOTER_VISIBLE=<YES/NO>
+LIVE_FOOTER_WITHIN_CARD=<YES/NO>
+LIVE_CTA_VISIBLE=<YES/NO>
+LIVE_CTA_WITHIN_CARD=<YES/NO>
+LIVE_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+OPS_CARD_VISIBLE=<YES/NO>
+OPS_CARD_CHILD_OVERFLOW=<YES/NO>
+OPS_OVERFLOW_ELEMENT=<NONE or exact selector>
+OPS_TEXT_CLIPPED=<YES/NO>
+OPS_HEADER_VISIBLE=<YES/NO>
+OPS_COMMAND_BADGE_VISIBLE=<YES/NO>
+OPS_COMMAND_BADGE_WITHIN_CARD=<YES/NO>
+OPS_SUMMARY_TILES_VISIBLE=<YES/NO>
+OPS_SUMMARY_TILES_WITHIN_CARD=<YES/NO>
+OPS_ROWS_VISIBLE=<YES/NO>
+OPS_ROWS_WITHIN_CARD=<YES/NO>
+OPS_STATUS_PILLS_VISIBLE=<YES/NO>
+OPS_STATUS_PILLS_WITHIN_CARD=<YES/NO>
+OPS_HEALTH_STRIP_VISIBLE=<YES/NO>
+OPS_HEALTH_STRIP_WITHIN_CARD=<YES/NO>
+CURRENT_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+REVENUE_REGRESSION=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+KPI_REGRESSION=<PASS/FAIL>
+SYSTEM_HEALTH_REGRESSION=<PASS/FAIL>
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+VIEWPORT=1920x1080
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+PASS CONDITION
+Set STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL only when BOTH operations cards pass visibility, containment and text-readability checks, both visual checks pass, and all protected-area regressions pass.
