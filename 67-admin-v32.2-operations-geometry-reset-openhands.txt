@@ -1,0 +1,237 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.2
+MODULE=ADMIN DASHBOARD
+ELEMENT=OPERATIONS GEOMETRY RESET
+BASE_VERSION=V32.1
+TARGET_VERSION=V32.2
+STATUS=APPLY_PATCH_AND_RETURN_FOR_VISUAL_QA
+==================================================
+
+OBJECTIVE
+Fix the remaining V32/V32.1 blockers in the two operational cards only:
+1) العمليات المباشرة / Live Operations
+2) العمليات الجارية / Current Operations
+
+KNOWN V32.1 FAILURES
+- LIVE_OPERATIONS_PREMIUM_VISUAL=FAIL
+- LIVE_TEXT_CLIPPED=YES
+- LIVE_FOOTER_VISIBLE=NO
+- LIVE_CTA overflow/failure
+- CURRENT_OPERATIONS_PREMIUM_VISUAL=FAIL
+- OPS_TEXT_CLIPPED=YES
+- OPS_COMMAND_BADGE_VISIBLE=NO
+- OPS_ROWS_VISIBLE=NO
+- OPS_STATUS_PILLS_VISIBLE=NO
+- OPS_HEALTH_STRIP_VISIBLE=NO
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v32.2-operations-geometry-reset-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v32.2-operations-geometry-reset-apply.sh
+3. chmod +x it.
+4. Execute it.
+5. Require BUILD=PASS.
+6. Activate the live runtime using the same proven service restart mechanism used for V32.1.
+7. Confirm local dist, origin, and public index hashes match.
+8. Perform browser QA at 1920x1080.
+
+IMPORTANT QA CORRECTION
+Do not classify an element as hidden merely because it is below the browser viewport.
+For each target card before measuring:
+- call scrollIntoView({block:'center', inline:'nearest'})
+- wait for layout to settle
+- then measure card and descendants
+
+VISIBLE means:
+- element exists in DOM
+- computed display != none
+- computed visibility != hidden/collapse
+- computed opacity > 0
+- rect.width > 0 and rect.height > 0
+It does NOT require the element rectangle to already intersect the viewport before scrollIntoView.
+
+STRICT SCOPE
+Allowed changes:
+- CSS styling/geometry for .live-card and descendants
+- CSS styling/geometry for .ops-card and descendants
+- card heights/inner layout necessary to physically contain all existing content
+
+PROTECTED — MUST NOT CHANGE
+- Hero
+- Date Strip/date logic
+- KPI row
+- System Health
+- Revenue & Performance/chart/donut
+- Sidebar
+- Financial ledger/transactions
+- liveNotifications data/logic
+- current operations data/logic
+- backend
+- auth
+- API calls
+- routing
+- permissions
+
+DO NOT
+- rewrite JSX
+- remove information
+- hide any real DOM row or status element
+- change counts or text values
+- source-push /67 before ChatGPT approval
+
+LIVE OPERATIONS QA
+After scrolling .live-card into view, verify all real descendants.
+Tolerance: 1px.
+Required:
+- LIVE_CARD_VISIBLE=YES
+- LIVE_CARD_CHILD_OVERFLOW=NO
+- LIVE_TEXT_CLIPPED=NO
+- LIVE_HEADER_VISIBLE=YES
+- LIVE_EVENT_ITEMS_VISIBLE=YES
+- LIVE_EVENT_COUNT_PRESERVED=YES
+- LIVE_FOOTER_VISIBLE=YES
+- LIVE_CTA_VISIBLE=YES
+- LIVE_CTA_WITHIN_CARD=YES
+- LIVE_OPERATIONS_PREMIUM_VISUAL=PASS
+
+If .live-activity-summary exists, also require:
+- LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=YES
+- LIVE_ACTIVITY_METRICS_VISIBLE=YES
+
+CURRENT OPERATIONS QA
+After scrolling .ops-card into view, verify all real descendants.
+Tolerance: 1px.
+Required:
+- OPS_CARD_VISIBLE=YES
+- OPS_CARD_CHILD_OVERFLOW=NO
+- OPS_TEXT_CLIPPED=NO
+- OPS_HEADER_VISIBLE=YES
+- OPS_COMMAND_BADGE_VISIBLE=YES
+- OPS_SUMMARY_TILES_VISIBLE=YES
+- OPS_ROWS_VISIBLE=YES
+- OPS_ROW_COUNT=3
+- OPS_STATUS_PILLS_VISIBLE=YES
+- OPS_HEALTH_STRIP_VISIBLE=YES
+- OPS_HEALTH_STRIP_WITHIN_CARD=YES
+- CURRENT_OPERATIONS_PREMIUM_VISUAL=PASS
+
+If the conditional payment .ops-tile--payment exists, verify it independently:
+- OPS_PAYMENT_ROW_VISIBLE=YES
+- OPS_PAYMENT_ROW_WITHIN_CARD=YES
+Do not count this conditional payment row as one of OPS_ROW_COUNT=3 for .ops-tiles.
+
+TEXT CLIPPING RULE
+Flag clipping only when actual text is cut by its box or the card boundary. Do not flag subpixel scrollWidth differences when overflow is visible and painted text remains inside the card. If clipping exists, report exact selector, clientWidth/clientHeight, scrollWidth/scrollHeight, and rect.
+
+CHILD OVERFLOW RULE
+Check visible descendants against target card rectangle with 1px tolerance. If overflow exists, report exact selector, element rect, card rect, and delta px on all sides.
+
+VISUAL QUALITY
+- Live Operations remains dark executive/premium.
+- Current Operations remains ivory/gold premium.
+- No microscopic unreadable appearance.
+- Footer and CTA are visibly intentional and fully inside.
+- Command badge, three operation rows, status pills and health strip are clearly visible.
+- Both cards remain consistent with approved V31.2 Revenue.
+
+REGRESSIONS
+- REVENUE_REGRESSION=PASS
+- HERO_GEOMETRY_SHIFT_PX=0
+- HERO_IMAGE_FLASH_DETECTED=NO
+- DATE_STRIP_REGRESSION=PASS
+- KPI_REGRESSION=PASS
+- SYSTEM_HEALTH_REGRESSION=PASS
+- SIDEBAR_CHANGED=NO
+- DATA_CHANGED=NO
+- LOGIC_CHANGED=NO
+- BACKEND_CHANGED=NO
+- AUTH_CHANGED=NO
+
+SCREENSHOTS
+Capture exactly 4 at 1920x1080:
+1. 67__ADMIN__V32-2__OPERATIONS-GEOMETRY-RESET__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V32-2__OPERATIONS-GEOMETRY-RESET__02__LIVE-OPERATIONS__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V32-2__OPERATIONS-GEOMETRY-RESET__03__CURRENT-OPERATIONS__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V32-2__OPERATIONS-GEOMETRY-RESET__04__REVENUE-OPERATIONS-CONTINUITY__1920x1080__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to the existing QA repo. Do NOT source-push /67. SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Attempt upload to My Drive root. Google Drive/client-side upload failure is NON-BLOCKING for browser/design QA. If unavailable set DRIVE_UPLOAD=FAILED_TOOL_UNAVAILABLE.
+
+FINAL REPORT FORMAT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.2
+MODULE=ADMIN DASHBOARD
+ELEMENT=OPERATIONS GEOMETRY RESET
+BASE_VERSION=V32.1
+TARGET_VERSION=V32.2
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v32.2.css
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+LIVE_CARD_VISIBLE=<YES/NO>
+LIVE_CARD_CHILD_OVERFLOW=<YES/NO>
+LIVE_OVERFLOW_ELEMENT=<NONE or selector>
+LIVE_TEXT_CLIPPED=<YES/NO>
+LIVE_HEADER_VISIBLE=<YES/NO>
+LIVE_EVENT_ITEMS_VISIBLE=<YES/NO>
+LIVE_EVENT_COUNT_PRESERVED=<YES/NO>
+LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=<YES/NO/NOT_RENDERED>
+LIVE_ACTIVITY_METRICS_VISIBLE=<YES/NO/NOT_RENDERED>
+LIVE_FOOTER_VISIBLE=<YES/NO>
+LIVE_CTA_VISIBLE=<YES/NO>
+LIVE_CTA_WITHIN_CARD=<YES/NO>
+LIVE_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+OPS_CARD_VISIBLE=<YES/NO>
+OPS_CARD_CHILD_OVERFLOW=<YES/NO>
+OPS_OVERFLOW_ELEMENT=<NONE or selector>
+OPS_TEXT_CLIPPED=<YES/NO>
+OPS_HEADER_VISIBLE=<YES/NO>
+OPS_COMMAND_BADGE_VISIBLE=<YES/NO>
+OPS_SUMMARY_TILES_VISIBLE=<YES/NO>
+OPS_ROWS_VISIBLE=<YES/NO>
+OPS_ROW_COUNT=<number>
+OPS_STATUS_PILLS_VISIBLE=<YES/NO>
+OPS_PAYMENT_ROW_VISIBLE=<YES/NO/NOT_RENDERED>
+OPS_PAYMENT_ROW_WITHIN_CARD=<YES/NO/NOT_RENDERED>
+OPS_HEALTH_STRIP_VISIBLE=<YES/NO>
+OPS_HEALTH_STRIP_WITHIN_CARD=<YES/NO>
+CURRENT_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+REVENUE_REGRESSION=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+KPI_REGRESSION=<PASS/FAIL>
+SYSTEM_HEALTH_REGRESSION=<PASS/FAIL>
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+VIEWPORT=1920x1080
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+PASS CONDITION
+Set STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL only when both operation cards pass real DOM visibility, containment and readability checks, all required structural elements are visible, premium visual checks pass, and protected regressions pass.
