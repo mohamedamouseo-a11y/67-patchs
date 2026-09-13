@@ -1,0 +1,238 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.3
+MODULE=ADMIN DASHBOARD
+ELEMENT=OPERATIONS READABLE EXECUTIVE LAYOUT
+BASE_VERSION=V32.2
+TARGET_VERSION=V32.3
+STATUS=APPLY_PATCH_AND_RETURN_FOR_VISUAL_QA
+==================================================
+
+OBJECTIVE
+Replace the over-compressed V32.2 operations geometry with a readable executive layout for:
+1) العمليات المباشرة / Live Operations
+2) العمليات الجارية / Current Operations
+
+WHY V32.3
+V32.2 still produced a diagnostic QA commit marked VISUAL_FAIL_PERSISTS. The V32.2 corrective layer forced micro typography (roughly 5–7px in several descendants) and a 258px hard card height. V32.3 intentionally stops compressing operational information and allows the second command row to grow naturally.
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v32.3-operations-readable-executive-layout-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v32.3-operations-readable-executive-layout-apply.sh
+3. chmod +x it.
+4. Execute it.
+5. Require BUILD=PASS.
+6. Activate live runtime using the same verified restart mechanism used for V32.2.
+7. Confirm local dist, origin and public index hashes match.
+8. Browser QA at 1920x1080.
+
+STRICT SCOPE
+Allowed:
+- CSS geometry/typography/styling of .live-card and descendants
+- CSS geometry/typography/styling of .ops-card and descendants
+- natural row growth required to keep operational data readable
+
+PROTECTED — MUST NOT CHANGE
+- Hero
+- Date Strip and date logic
+- KPI
+- System Health
+- Revenue & Performance/chart/donut
+- Sidebar
+- Transactions/ledger
+- liveNotifications data and logic
+- operations counts/data
+- backend/auth/API/routing/permissions
+
+DO NOT
+- rewrite JSX
+- remove or hide real information
+- alter counts or labels
+- use font-size below 7px for ordinary descriptive/status text
+- use font-size below 8px for primary row labels
+- force the two operations cards back into a 258px/286px hard compression
+- source-push /67 before ChatGPT visual approval
+
+QA METHOD
+Before measuring each card:
+- scrollIntoView({block:'center', inline:'nearest'})
+- wait for layout stability
+- then measure real DOM geometry
+
+VISIBLE definition:
+- exists in DOM
+- display != none
+- visibility != hidden/collapse
+- opacity > 0
+- rect width/height > 0
+Do not fail visibility merely because an element was below the initial viewport before scrollIntoView.
+
+LIVE OPERATIONS REQUIRED
+- LIVE_CARD_VISIBLE=YES
+- LIVE_CARD_CHILD_OVERFLOW=NO
+- LIVE_TEXT_CLIPPED=NO
+- LIVE_HEADER_VISIBLE=YES
+- LIVE_EVENT_ITEMS_VISIBLE=YES
+- LIVE_EVENT_COUNT_PRESERVED=YES
+- LIVE_FOOTER_VISIBLE=YES
+- LIVE_FOOTER_WITHIN_CARD=YES
+- LIVE_CTA_VISIBLE=YES
+- LIVE_CTA_WITHIN_CARD=YES
+- LIVE_MIN_PRIMARY_FONT_PX>=8
+- LIVE_MIN_SECONDARY_FONT_PX>=7
+- LIVE_OPERATIONS_PREMIUM_VISUAL=PASS
+If sparse summary is rendered:
+- LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=YES
+- LIVE_ACTIVITY_METRICS_VISIBLE=YES
+
+CURRENT OPERATIONS REQUIRED
+- OPS_CARD_VISIBLE=YES
+- OPS_CARD_CHILD_OVERFLOW=NO
+- OPS_TEXT_CLIPPED=NO
+- OPS_HEADER_VISIBLE=YES
+- OPS_COMMAND_BADGE_VISIBLE=YES
+- OPS_COMMAND_BADGE_WITHIN_CARD=YES
+- OPS_SUMMARY_TILES_VISIBLE=YES
+- OPS_SUMMARY_TILES_WITHIN_CARD=YES
+- OPS_ROWS_VISIBLE=YES
+- OPS_ROWS_WITHIN_CARD=YES
+- OPS_ROW_COUNT=3
+- OPS_STATUS_PILLS_VISIBLE=YES
+- OPS_STATUS_PILLS_WITHIN_CARD=YES
+- OPS_HEALTH_STRIP_VISIBLE=YES
+- OPS_HEALTH_STRIP_WITHIN_CARD=YES
+- OPS_MIN_PRIMARY_FONT_PX>=8
+- OPS_MIN_SECONDARY_FONT_PX>=7
+- CURRENT_OPERATIONS_PREMIUM_VISUAL=PASS
+If payment row exists:
+- OPS_PAYMENT_ROW_VISIBLE=YES
+- OPS_PAYMENT_ROW_WITHIN_CARD=YES
+
+TEXT CLIPPING RULE
+Flag clipping only when painted text is actually cut by its own box or by the card boundary. Report exact selector + clientWidth/clientHeight + scrollWidth/scrollHeight + rect for every failure.
+
+OVERFLOW RULE
+Tolerance 1px. If any visible descendant exceeds card bounds, report selector, element rect, card rect and overflow deltas.
+
+VISUAL QUALITY
+At normal 1920x1080 browser zoom:
+- Live Operations must look intentionally dark executive, not cramped.
+- Current Operations must look premium ivory/gold, not miniature.
+- Primary operational labels must be comfortably readable.
+- Footer/CTA must look like deliberate controls, not squeezed remnants.
+- Command badge, all 3 rows, status pills and health strip must be visually obvious.
+- The second operations row may be taller than V32.2. Vertical scrolling is acceptable; readability wins over forced one-screen compression.
+- Revenue V31.2 appearance must remain unchanged.
+
+REGRESSIONS
+- REVENUE_REGRESSION=PASS
+- HERO_GEOMETRY_SHIFT_PX=0
+- HERO_IMAGE_FLASH_DETECTED=NO
+- DATE_STRIP_REGRESSION=PASS
+- KPI_REGRESSION=PASS
+- SYSTEM_HEALTH_REGRESSION=PASS
+- SIDEBAR_CHANGED=NO
+- DATA_CHANGED=NO
+- LOGIC_CHANGED=NO
+- BACKEND_CHANGED=NO
+- AUTH_CHANGED=NO
+
+SCREENSHOTS
+Capture exactly 4 at 1920x1080:
+1. 67__ADMIN__V32-3__OPERATIONS-READABLE-EXECUTIVE__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V32-3__OPERATIONS-READABLE-EXECUTIVE__02__LIVE-OPERATIONS__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V32-3__OPERATIONS-READABLE-EXECUTIVE__03__CURRENT-OPERATIONS__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V32-3__OPERATIONS-READABLE-EXECUTIVE__04__REVENUE-OPERATIONS-CONTINUITY__1920x1080__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to the existing QA path/repo used by V32.2.
+Do NOT source-push /67.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Attempt upload to My Drive root. Drive/client-side upload failure is NON-BLOCKING for browser/design QA. If unavailable, report DRIVE_UPLOAD=FAILED_TOOL_UNAVAILABLE and preserve browser QA results.
+
+FINAL REPORT FORMAT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V32.3
+MODULE=ADMIN DASHBOARD
+ELEMENT=OPERATIONS READABLE EXECUTIVE LAYOUT
+BASE_VERSION=V32.2
+TARGET_VERSION=V32.3
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v32.3.css
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+LIVE_CARD_VISIBLE=<YES/NO>
+LIVE_CARD_CHILD_OVERFLOW=<YES/NO>
+LIVE_OVERFLOW_ELEMENT=<NONE or exact selector>
+LIVE_TEXT_CLIPPED=<YES/NO>
+LIVE_HEADER_VISIBLE=<YES/NO>
+LIVE_EVENT_ITEMS_VISIBLE=<YES/NO>
+LIVE_EVENT_COUNT_PRESERVED=<YES/NO>
+LIVE_ACTIVITY_SUMMARY_WITHIN_CARD=<YES/NO/NOT_RENDERED>
+LIVE_ACTIVITY_METRICS_VISIBLE=<YES/NO/NOT_RENDERED>
+LIVE_FOOTER_VISIBLE=<YES/NO>
+LIVE_FOOTER_WITHIN_CARD=<YES/NO>
+LIVE_CTA_VISIBLE=<YES/NO>
+LIVE_CTA_WITHIN_CARD=<YES/NO>
+LIVE_MIN_PRIMARY_FONT_PX=<number>
+LIVE_MIN_SECONDARY_FONT_PX=<number>
+LIVE_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+OPS_CARD_VISIBLE=<YES/NO>
+OPS_CARD_CHILD_OVERFLOW=<YES/NO>
+OPS_OVERFLOW_ELEMENT=<NONE or exact selector>
+OPS_TEXT_CLIPPED=<YES/NO>
+OPS_HEADER_VISIBLE=<YES/NO>
+OPS_COMMAND_BADGE_VISIBLE=<YES/NO>
+OPS_COMMAND_BADGE_WITHIN_CARD=<YES/NO>
+OPS_SUMMARY_TILES_VISIBLE=<YES/NO>
+OPS_SUMMARY_TILES_WITHIN_CARD=<YES/NO>
+OPS_ROWS_VISIBLE=<YES/NO>
+OPS_ROWS_WITHIN_CARD=<YES/NO>
+OPS_ROW_COUNT=<number>
+OPS_STATUS_PILLS_VISIBLE=<YES/NO>
+OPS_STATUS_PILLS_WITHIN_CARD=<YES/NO>
+OPS_PAYMENT_ROW_VISIBLE=<YES/NO/NOT_RENDERED>
+OPS_PAYMENT_ROW_WITHIN_CARD=<YES/NO/NOT_RENDERED>
+OPS_HEALTH_STRIP_VISIBLE=<YES/NO>
+OPS_HEALTH_STRIP_WITHIN_CARD=<YES/NO>
+OPS_MIN_PRIMARY_FONT_PX=<number>
+OPS_MIN_SECONDARY_FONT_PX=<number>
+CURRENT_OPERATIONS_PREMIUM_VISUAL=<PASS/FAIL>
+REVENUE_REGRESSION=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+KPI_REGRESSION=<PASS/FAIL>
+SYSTEM_HEALTH_REGRESSION=<PASS/FAIL>
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+VIEWPORT=1920x1080
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+PASS CONDITION
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL only when both target cards are fully readable and contained, all real structural elements are visibly present, both premium visual checks pass, minimum font requirements pass, and all protected regressions pass.
