@@ -1,0 +1,160 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V31
+TASK=REVENUE + PERFORMANCE PREMIUM REDESIGN
+MODE=FRONTEND VISUAL REDESIGN ONLY — NO DATA/BACKEND/AUTH CHANGES — NO SOURCE PUSH
+
+Use this exact patch:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v31-revenue-performance-premium-redesign-apply.sh
+
+OBJECTIVE
+Upgrade only the existing "الإيرادات والأداء" section on top of V30.4 into a more premium executive analytics presentation while preserving all runtime values, calculations, chart data, period logic, interactions, and neighboring modules.
+
+SCOPE
+- .adm-chart-card
+- .adm-chart-card__head
+- .rev-title-group / .rev-title-icon / .rev-title-copy
+- .rev-period-pill
+- .rev-stats / .rev-stat
+- .rev-visual-grid
+- .adex-chart and its existing inline SVG visual styling
+- .rev-total / .rev-total__ring / .rev-total__copy
+
+DO NOT CHANGE
+- Hero image, hero geometry, hero copy, date toolbar or date strip.
+- KPI row, KPI values, KPI signal logic or CSS signal system.
+- System Health section.
+- Sidebar.
+- Live Operations or Current Operations cards.
+- Revenue calculations, analyticsSales, periodPlatformRevenue, analyticsPaymentCount, trendDelta or trendSeries logic.
+- Any API/backend/auth/routing/permissions/data source.
+- Do not add or remove runtime data.
+- Do not source-push /67.
+
+REQUIRED STEPS
+1. cd /67
+2. Confirm current runtime source imports AdminDashboard.v30.4.css.
+3. Confirm src/pages/AdminDashboard.v30.4.css exists.
+4. Run the exact patch script above.
+5. Require BUILD=PASS.
+6. Activate the V31 runtime using the same verified 67 frontend deployment/restart workflow already used for this dashboard. Do not alter Nginx routing or unrelated services.
+7. Open https://sixty-seven.net/admin/ at 1920x1080 using a cache-busting query.
+8. Verify runtime CSS is AdminDashboard.v31.css.
+9. Verify the Revenue & Performance section is present and all existing runtime values remain populated.
+10. Verify .rev-stats contains exactly 4 summary tiles.
+11. Verify all 4 summary tiles have equal height and no text/value clipping or overflow.
+12. Verify the main inline revenue SVG remains visible, non-zero sized, and fully inside .adex-chart.
+13. Verify the line, area fill, points, labels and floating callout remain visible.
+14. Verify .rev-total and .rev-total__ring are visible and fully contained inside the revenue card.
+15. Verify no child of .adm-chart-card exceeds the card bounds by more than 1px.
+16. Verify the revenue card itself does not overlap neighboring modules.
+17. Verify protected-module regression:
+    - HERO_CHANGED=NO
+    - DATE_STRIP_REGRESSION=PASS
+    - KPI_REGRESSION=PASS
+    - SYSTEM_HEALTH_REGRESSION=PASS
+    - SIDEBAR_CHANGED=NO
+    - LIVE_OPS_CHANGED=NO
+    - CURRENT_OPERATIONS_CHANGED=NO
+18. Verify no change to revenue data/calculation logic by checking the rendered values against the same runtime state before/after patch.
+19. Capture 4 fresh screenshots at 1920x1080:
+    - Full page
+    - Revenue & Performance full section
+    - Chart-focused detail
+    - Donut/summary-focused detail
+20. Upload all 4 screenshots to My Drive root using the existing QA workflow.
+21. Push screenshots only to the QA repo workflow if configured. Do NOT source-push /67.
+
+SCREENSHOT NAMES
+67__ADMIN__V31__REVENUE-PERFORMANCE-PREMIUM__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V31__REVENUE-PERFORMANCE-PREMIUM__02__REVENUE-SECTION__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V31__REVENUE-PERFORMANCE-PREMIUM__03__CHART-DETAIL__1920x1080__<RUNSTAMP>.png
+67__ADMIN__V31__REVENUE-PERFORMANCE-PREMIUM__04__DONUT-SUMMARY__1920x1080__<RUNSTAMP>.png
+
+PASS CONDITIONS
+PATCH_APPLIED=YES
+BUILD=PASS
+RUNTIME_CSS=AdminDashboard.v31.css
+REVENUE_STAT_COUNT=4
+REVENUE_STATS_EQUAL_HEIGHT=YES
+REVENUE_STATS_OVERFLOW=NO
+REVENUE_PRIMARY_VALUES_CLIPPED=NO
+REVENUE_CHART_VISIBLE=YES
+REVENUE_CHART_WIDTH_GT_0=YES
+REVENUE_CHART_HEIGHT_GT_0=YES
+REVENUE_CHART_CALLOUT_VISIBLE=YES
+REVENUE_DONUT_VISIBLE=YES
+REVENUE_DONUT_WITHIN_CARD=YES
+REVENUE_CARD_CHILD_OVERFLOW=NO
+REVENUE_CARD_OVERLAP_NEIGHBORS=NO
+REVENUE_PREMIUM_VISUAL=PASS
+REVENUE_DATA_CHANGED=NO
+REVENUE_LOGIC_CHANGED=NO
+HERO_CHANGED=NO
+DATE_STRIP_REGRESSION=PASS
+KPI_REGRESSION=PASS
+SYSTEM_HEALTH_REGRESSION=PASS
+SIDEBAR_CHANGED=NO
+LIVE_OPS_CHANGED=NO
+CURRENT_OPERATIONS_CHANGED=NO
+DATA_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+FINAL REPORT MUST INCLUDE
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V31
+MODULE=ADMIN DASHBOARD
+ELEMENT=REVENUE + PERFORMANCE PREMIUM REDESIGN
+BASE_VERSION=V30.4
+TARGET_VERSION=V31
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+==================================================
+PATCH_APPLIED=
+BUILD=
+RUNTIME_CSS=
+LIVE_RUNTIME_ACTIVATED=
+REVENUE_STAT_COUNT=
+REVENUE_STATS_EQUAL_HEIGHT=
+REVENUE_STATS_OVERFLOW=
+REVENUE_PRIMARY_VALUES_CLIPPED=
+REVENUE_CHART_VISIBLE=
+REVENUE_CHART_WIDTH=
+REVENUE_CHART_HEIGHT=
+REVENUE_CHART_CALLOUT_VISIBLE=
+REVENUE_DONUT_VISIBLE=
+REVENUE_DONUT_WITHIN_CARD=
+REVENUE_CARD_CHILD_OVERFLOW=
+REVENUE_CARD_OVERLAP_NEIGHBORS=
+REVENUE_PREMIUM_VISUAL=
+REVENUE_DATA_CHANGED=
+REVENUE_LOGIC_CHANGED=
+HERO_CHANGED=
+DATE_STRIP_REGRESSION=
+KPI_REGRESSION=
+SYSTEM_HEALTH_REGRESSION=
+SIDEBAR_CHANGED=
+LIVE_OPS_CHANGED=
+CURRENT_OPERATIONS_CHANGED=
+DATA_CHANGED=
+BACKEND_CHANGED=
+AUTH_CHANGED=
+VISUAL_QA=
+VIEWPORT=1920x1080
+RUNSTAMP=
+SCREENSHOT_01_FILENAME=
+SCREENSHOT_02_FILENAME=
+SCREENSHOT_03_FILENAME=
+SCREENSHOT_04_FILENAME=
+DRIVE_UPLOAD=
+DRIVE_UPLOAD_COUNT=
+DRIVE_FILE_01_LINK=
+DRIVE_FILE_02_LINK=
+DRIVE_FILE_03_LINK=
+DRIVE_FILE_04_LINK=
+QA_PUSH=
+QA_COMMIT_SHA=
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=
+ERROR=
