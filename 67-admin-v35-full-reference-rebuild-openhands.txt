@@ -1,0 +1,257 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V35
+ELEMENT=FULL REFERENCE REBUILD 1TO1
+MODE=ONE_SHOT_REBUILD_NOT_INCREMENTAL_FIX
+STATUS=APPLY_AND_RETURN_FOR_VISUAL_APPROVAL
+==================================================
+
+IMPORTANT
+This is NOT V34.4 and NOT another incremental correction.
+Stop using the V34/V34.1/V34.2/V34.3 override chain as the visual source.
+V35 creates one consolidated visual master stylesheet and performs the small presentational JSX recomposition needed to match the approved reference composition.
+
+REFERENCE INTENT
+Reproduce the approved 1448x1086 luxury Arabic automotive executive dashboard composition as closely as possible while preserving live data and application behavior.
+The target composition is:
+- fixed dark right sidebar, approximately 200px at 1448px viewport
+- cinematic automotive hero across the entire main canvas
+- hero utility/admin tools at top-left
+- large Arabic executive headline on physical left
+- English/Arabic executive tagline on physical right
+- dark date toolbar embedded at bottom of hero
+- 4 equal light KPI cards
+- compact dark System Health strip
+- full-width light Revenue & Performance panel with four stat cells
+- large gold area chart + dark multi-color donut summary on the right
+- two equal operation cards below: Live dark on left, Current light on right
+- full-width light financial ledger at bottom
+- premium ivory/gold/navy palette throughout
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v35-full-reference-rebuild-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v35-full-reference-rebuild-apply.sh
+3. chmod +x it
+4. Execute it
+5. Require BUILD=PASS
+6. Activate live runtime using the proven service restart mechanism
+7. Confirm local dist, origin and public index hashes match
+8. Confirm AdminDashboard.jsx imports ONLY AdminDashboard.v35.css as its version stylesheet
+9. Do not source-push /67
+
+CRITICAL SCOPE RULES
+V35 may alter PRESENTATIONAL JSX and CSS only.
+Preserve all real values, API calls, calculations, date logic, search logic, auth, permissions and routing.
+Do not hardcode KPI/revenue/payment/customer counts.
+Do not replace the functional dashboard with a screenshot or static image.
+Do not hide existing real data to imitate the reference.
+
+MAIN REFERENCE QA VIEWPORT
+1448x1086
+Browser zoom 100%.
+Date popover MUST be CLOSED for the four visual reference screenshots.
+If it is open from a previous interaction, close it before measuring/capturing.
+
+TARGET GEOMETRY AT 1448x1086
+Use these as reference tolerances, not excuses to distort content:
+- sidebar width: 200px ±4
+- main right reserve including gap: about 216px
+- hero height: 176px ±3
+- KPI cards: 4 equal width, 90px ±3 height
+- system health: 94px ±3 height
+- revenue card: full main width, 276px ±4 height
+- operations: 2 equal columns, each 238px ±4 height
+- ledger: full main width, 181px ±5 height
+- horizontal page overflow: 0
+
+HERO REQUIRED
+HERO_VISIBLE=YES
+HERO_HEIGHT_MATCH=YES
+HERO_TITLE_VISIBLE=YES
+HERO_TITLE_CLIPPED=NO
+HERO_RIGHT_COPY_VISIBLE=YES
+HERO_TOOLS_VISIBLE=YES
+HERO_DATE_TOOLBAR_VISIBLE=YES
+HERO_IMAGE_FLASH_DETECTED=NO
+HERO_GEOMETRY_SHIFT_PX=0
+
+SIDEBAR REQUIRED
+SIDEBAR_VISIBLE=YES
+SIDEBAR_WIDTH_MATCH=YES
+SIDEBAR_HORIZONTAL_OVERFLOW=NO
+SIDEBAR_NAV_VISIBLE=YES
+SIDEBAR_NAV_CLICKABLE=YES
+SIDEBAR_PROMO_PANEL_VISIBLE=YES
+SIDEBAR_ADMIN_BLOCK_VISIBLE=YES
+SIDEBAR_LOGOUT_VISIBLE=YES
+
+KPI REQUIRED
+KPI_COUNT=4
+KPI_EQUAL_WIDTH=YES
+KPI_HEIGHT_MATCH=YES
+KPI_TEXT_CLIPPED=NO
+KPI_ICONS_VISIBLE=YES
+KPI_VALUES_VISIBLE=YES
+
+SYSTEM HEALTH REQUIRED
+SYSTEM_HEALTH_VISIBLE=YES
+SYSTEM_HEALTH_HEIGHT_MATCH=YES
+SYSTEM_HEALTH_TEXT_CLIPPED=NO
+SYSTEM_HEALTH_METRIC_COUNT=4
+SYSTEM_HEALTH_VISUAL_VISIBLE=YES
+
+REVENUE REQUIRED
+REVENUE_FULL_WIDTH=YES
+REVENUE_HEIGHT_MATCH=YES
+REVENUE_TEXT_CLIPPED=NO
+REVENUE_STATS_COUNT=4
+REVENUE_CHART_VISIBLE=YES
+REVENUE_DONUT_VISIBLE=YES
+REVENUE_DONUT_MULTICOLOR=YES
+REVENUE_SUMMARY_VISIBLE=YES
+
+OPERATIONS REQUIRED
+OPERATIONS_TWO_COLUMN=YES
+LIVE_OPERATIONS_VISIBLE=YES
+CURRENT_OPERATIONS_VISIBLE=YES
+LIVE_CURRENT_HEIGHT_DELTA_PX<=2
+LIVE_TEXT_CLIPPED=NO
+CURRENT_TEXT_CLIPPED=NO
+LIVE_FOOTER_VISIBLE=YES
+LIVE_CTA_VISIBLE=YES
+OPS_ROWS_VISIBLE=YES
+OPS_ROW_COUNT=3
+OPS_STATUS_PILLS_VISIBLE=YES
+OPS_HEALTH_STRIP_VISIBLE=YES
+
+LEDGER REQUIRED
+TX_LEDGER_VISIBLE=YES
+TX_LEDGER_FULL_WIDTH=YES
+TX_LEDGER_HEADER_LIGHT=YES
+TX_TITLE_VISIBLE=YES
+TX_SUMMARY_COUNT=3
+TX_TABLE_VISIBLE=YES
+TX_SEARCH_VISIBLE=YES
+TX_FILTER_BUTTON_VISIBLE=YES
+TX_EXPORT_BUTTON_VISIBLE=YES
+TX_TEXT_CLIPPED=NO
+
+FUNCTIONAL REGRESSIONS
+DATE_STRIP_REGRESSION=PASS
+DATE_POPOVER_OPEN_CLOSE=PASS
+TX_SEARCH_REGRESSION=PASS
+SIDEBAR_NAV_REGRESSION=PASS
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+
+DATE POPOVER TEST
+After the four main reference screenshots are captured, test date popover open/close separately.
+Do NOT capture the main visual screenshots with the popover open.
+
+SCREENSHOTS
+Capture exactly these 4 visual reference screenshots:
+1. 67__ADMIN__V35__FULL-REFERENCE-REBUILD__01__FULL__1448x1086__<RUNSTAMP>.png
+2. 67__ADMIN__V35__FULL-REFERENCE-REBUILD__02__FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V35__FULL-REFERENCE-REBUILD__03__HERO-KPI-HEALTH-REVENUE__1448x1086__<RUNSTAMP>.png
+4. 67__ADMIN__V35__FULL-REFERENCE-REBUILD__04__OPERATIONS-LEDGER__1448x1086__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to the existing QA repo.
+Do not source-push /67.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Attempt upload after browser QA.
+Drive/client-side upload failure is NON-BLOCKING.
+If unavailable, report DRIVE_UPLOAD=FAILED_TOOL_UNAVAILABLE and still return the completed browser QA result.
+
+VISUAL APPROVAL POLICY
+Do not claim ChatGPT visual approval.
+Return STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL only if the structural/runtime checks pass.
+ChatGPT will compare the 4 screenshots against the approved reference image.
+
+FINAL REPORT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V35
+ELEMENT=FULL REFERENCE REBUILD 1TO1
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v35.css
+VISUAL_STRATEGY=ONE_SHOT_CONSOLIDATED_REBUILD
+V34_OVERRIDE_STACK_USED=NO
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+REFERENCE_VIEWPORT=1448x1086
+SIDEBAR_WIDTH_PX=<number>
+SIDEBAR_WIDTH_MATCH=<YES/NO>
+SIDEBAR_HORIZONTAL_OVERFLOW=<YES/NO>
+SIDEBAR_NAV_REGRESSION=<PASS/FAIL>
+SIDEBAR_PROMO_PANEL_VISIBLE=<YES/NO>
+SIDEBAR_ADMIN_BLOCK_VISIBLE=<YES/NO>
+HERO_HEIGHT_PX=<number>
+HERO_HEIGHT_MATCH=<YES/NO>
+HERO_TITLE_CLIPPED=<YES/NO>
+HERO_RIGHT_COPY_VISIBLE=<YES/NO>
+HERO_TOOLS_VISIBLE=<YES/NO>
+HERO_DATE_TOOLBAR_VISIBLE=<YES/NO>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+KPI_COUNT=<number>
+KPI_EQUAL_WIDTH=<YES/NO>
+KPI_HEIGHT_PX=<number>
+KPI_HEIGHT_MATCH=<YES/NO>
+KPI_TEXT_CLIPPED=<YES/NO>
+SYSTEM_HEALTH_HEIGHT_PX=<number>
+SYSTEM_HEALTH_HEIGHT_MATCH=<YES/NO>
+SYSTEM_HEALTH_TEXT_CLIPPED=<YES/NO>
+SYSTEM_HEALTH_METRIC_COUNT=<number>
+SYSTEM_HEALTH_VISUAL_VISIBLE=<YES/NO>
+REVENUE_FULL_WIDTH=<YES/NO>
+REVENUE_HEIGHT_PX=<number>
+REVENUE_HEIGHT_MATCH=<YES/NO>
+REVENUE_TEXT_CLIPPED=<YES/NO>
+REVENUE_STATS_COUNT=<number>
+REVENUE_CHART_VISIBLE=<YES/NO>
+REVENUE_DONUT_VISIBLE=<YES/NO>
+REVENUE_DONUT_MULTICOLOR=<YES/NO>
+OPERATIONS_TWO_COLUMN=<YES/NO>
+LIVE_CURRENT_HEIGHT_DELTA_PX=<number>
+LIVE_TEXT_CLIPPED=<YES/NO>
+CURRENT_TEXT_CLIPPED=<YES/NO>
+OPS_ROW_COUNT=<number>
+TX_LEDGER_VISIBLE=<YES/NO>
+TX_LEDGER_FULL_WIDTH=<YES/NO>
+TX_LEDGER_HEADER_LIGHT=<YES/NO>
+TX_SUMMARY_COUNT=<number>
+TX_TABLE_VISIBLE=<YES/NO>
+PAGE_HORIZONTAL_OVERFLOW=<YES/NO>
+DATE_POPOVER_OPEN_DURING_MAIN_SCREENSHOTS=NO
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+DATE_POPOVER_OPEN_CLOSE=<PASS/FAIL>
+TX_SEARCH_REGRESSION=<PASS/FAIL>
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
