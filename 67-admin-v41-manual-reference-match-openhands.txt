@@ -1,0 +1,188 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V41
+ELEMENT=MANUAL REFERENCE MATCH
+BASE_RUNTIME=V40
+TARGET_RUNTIME=V41
+STATUS=APPLY_AND_RETURN_FOR_CHATGPT_VISUAL_APPROVAL
+==================================================
+
+IMPORTANT
+V40 passed automated geometry/functional QA, but ChatGPT manually compared the actual V40 1448x1086 screenshot side-by-side with the approved reference and found remaining visible fidelity differences.
+
+Do NOT source-push /67.
+Do NOT rebuild the dashboard structure again.
+Do NOT change data, calculations, API calls, auth, routes, permissions, search behavior or notification logic.
+Preserve the V40 geometry that already passes.
+
+This pass targets only the remaining visible differences found by direct manual comparison:
+1. System Health scene in V40 still reused automotive/city artwork; the reference uses the original night-road light-trail scene.
+2. Revenue chart in V40 is visually too flat/plain compared with the reference; preserve actual values but strengthen fill/line and show a persistent actual-data callout.
+3. Live Operations rows and Current Operations/table typography are too visually weak/small compared with the reference.
+4. Financial Ledger hierarchy is too light/small compared with the reference.
+5. Sidebar lower rail needs the same anchored premium weight as the reference.
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v41-manual-reference-match-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v41-manual-reference-match-apply.sh
+3. chmod +x
+4. Execute
+5. Require BUILD=PASS
+6. Restart/activate the same proven live service
+7. Confirm local dist, origin and public hashes match
+8. Browser QA at 1448x1086 first, then 1920x1080
+
+RUNTIME PRECONDITION
+AdminDashboard.jsx must import AdminDashboard.v40.css before applying.
+After apply it must import AdminDashboard.v41.css exactly once.
+
+REFERENCE FIDELITY CHECKS — 1448x1086
+Keep the full-page V40 geometry:
+- sidebar ≈200px
+- main/sidebar gap <=12px
+- hero ≈176px
+- four KPI cards ≈90px
+- System Health ≈94px
+- Revenue ≈276px
+- operations 50/50
+- Ledger full width
+- no horizontal overflow
+
+NEW V41 VISUAL CHECKS
+SYSTEM HEALTH
+- HEALTH_REFERENCE_SCENE_VISIBLE=YES only if .v38-health__scene computed background-image includes admin-v17-health.jpg and the visible scene is the night-road/light-trail asset, not the hero/car city artwork.
+- HEALTH_PHYSICAL_ORDER_MATCH=YES
+- HEALTH_METRIC_COUNT=4
+- HEALTH_METRIC_SIGNAL_COLORS_DISTINCT=YES
+- HEALTH_TEXT_CLIPPED=NO
+
+REVENUE
+- REVENUE_CHART_VISIBLE=YES
+- REVENUE_AREA_FILL_VISIBLE=YES
+- REVENUE_CALLOUT_VISIBLE=YES for .v41-chart-callout
+- REVENUE_CALLOUT_USES_REAL_SERIES_VALUE=YES
+- REVENUE_DONUT_VISIBLE=YES
+- REVENUE_DONUT_MULTICOLOR=YES
+- REVENUE_TEXT_CLIPPED=NO
+
+OPERATIONS
+- LIVE_OPERATIONS_VISIBLE=YES
+- LIVE_ROW_COUNT>=3
+- LIVE_ROW_TEXT_READABLE=YES
+- LIVE_EVENT_ICONS_VISIBLE=YES
+- LIVE_SUMMARY_VISIBLE=YES
+- CURRENT_OPERATIONS_VISIBLE=YES
+- CURRENT_SUMMARY_TILE_COUNT=3
+- CURRENT_TABLE_VISIBLE=YES
+- CURRENT_TEXT_CLIPPED=NO
+
+LEDGER
+- LEDGER_WIDTH_MATCH_MAIN=YES
+- LEDGER_TITLE_READABLE=YES
+- LEDGER_SEARCH_VISIBLE=YES
+- LEDGER_FILTER_VISIBLE=YES
+- LEDGER_EXPORT_VISIBLE=YES
+- LEDGER_TABLE_VISIBLE=YES
+- LEDGER_TEXT_CLIPPED=NO
+
+FUNCTIONAL REGRESSION
+- DATE_POPOVER_OPEN_CLOSE=PASS
+- DATE_PRESETS_WORK=PASS
+- TX_SEARCH_REGRESSION=PASS
+- SIDEBAR_NAV_REGRESSION=PASS
+- HERO_GEOMETRY_SHIFT_PX=0
+- HERO_IMAGE_FLASH_DETECTED=NO
+
+MANUAL WHOLE-PAGE RULE
+Do not claim final source approval yourself.
+Even if every automated check passes, set:
+STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL
+SOURCE_PROJECT_PUSHED=NO
+
+Capture exactly 4 screenshots:
+1. 67__ADMIN__V41__MANUAL-REFERENCE-MATCH__01__FULL__1448x1086__<RUNSTAMP>.png
+2. 67__ADMIN__V41__MANUAL-REFERENCE-MATCH__02__FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V41__MANUAL-REFERENCE-MATCH__03__HEALTH-REVENUE__1448x1086__<RUNSTAMP>.png
+4. 67__ADMIN__V41__MANUAL-REFERENCE-MATCH__04__OPERATIONS-LEDGER-SIDEBAR__1448x1086__<RUNSTAMP>.png
+
+Push screenshots only to the existing QA repo and upload to Drive when available.
+A Drive/client-side upload failure after browser verification is NON-BLOCKING.
+
+FINAL REPORT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V41
+ELEMENT=MANUAL REFERENCE MATCH
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v41.css
+VISUAL_STRATEGY=MANUAL_REFERENCE_MATCH
+V40_GEOMETRY_PRESERVED=<YES/NO>
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+REFERENCE_VIEWPORT=1448x1086
+SIDEBAR_WIDTH_PX=<number>
+MAIN_TO_SIDEBAR_GAP_PX=<number>
+HERO_HEIGHT_PX=<number>
+KPI_COUNT=<number>
+KPI_HEIGHT_PX=<number>
+HEALTH_HEIGHT_PX=<number>
+HEALTH_REFERENCE_SCENE_VISIBLE=<YES/NO>
+HEALTH_PHYSICAL_ORDER_MATCH=<YES/NO>
+HEALTH_METRIC_COUNT=<number>
+HEALTH_METRIC_SIGNAL_COLORS_DISTINCT=<YES/NO>
+HEALTH_TEXT_CLIPPED=<YES/NO>
+REVENUE_HEIGHT_PX=<number>
+REVENUE_CHART_VISIBLE=<YES/NO>
+REVENUE_AREA_FILL_VISIBLE=<YES/NO>
+REVENUE_CALLOUT_VISIBLE=<YES/NO>
+REVENUE_CALLOUT_USES_REAL_SERIES_VALUE=<YES/NO>
+REVENUE_DONUT_VISIBLE=<YES/NO>
+REVENUE_DONUT_MULTICOLOR=<YES/NO>
+REVENUE_TEXT_CLIPPED=<YES/NO>
+LIVE_OPERATIONS_VISIBLE=<YES/NO>
+LIVE_ROW_COUNT=<number>
+LIVE_ROW_TEXT_READABLE=<YES/NO>
+LIVE_EVENT_ICONS_VISIBLE=<YES/NO>
+LIVE_SUMMARY_VISIBLE=<YES/NO>
+CURRENT_OPERATIONS_VISIBLE=<YES/NO>
+CURRENT_SUMMARY_TILE_COUNT=<number>
+CURRENT_TABLE_VISIBLE=<YES/NO>
+CURRENT_TEXT_CLIPPED=<YES/NO>
+LEDGER_WIDTH_MATCH_MAIN=<YES/NO>
+LEDGER_TITLE_READABLE=<YES/NO>
+LEDGER_SEARCH_VISIBLE=<YES/NO>
+LEDGER_FILTER_VISIBLE=<YES/NO>
+LEDGER_EXPORT_VISIBLE=<YES/NO>
+LEDGER_TABLE_VISIBLE=<YES/NO>
+LEDGER_TEXT_CLIPPED=<YES/NO>
+DATE_POPOVER_OPEN_CLOSE=<PASS/FAIL>
+DATE_PRESETS_WORK=<PASS/FAIL>
+TX_SEARCH_REGRESSION=<PASS/FAIL>
+SIDEBAR_NAV_REGRESSION=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+PAGE_HORIZONTAL_OVERFLOW=<YES/NO>
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
