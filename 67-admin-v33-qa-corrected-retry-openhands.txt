@@ -1,0 +1,330 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V33-QA2
+MODULE=ADMIN DASHBOARD
+ELEMENT=FINANCIAL LEDGER CORRECTED QA RETRY
+RUNTIME_VERSION=V33
+STATUS=QA_ONLY_DO_NOT_REAPPLY_PATCH
+==================================================
+
+PURPOSE
+The V33 patch already applied with BUILD=PASS and the live runtime was activated.
+The first V33 QA produced false-negative structural checks because it appears to have used guessed selectors instead of the real JSX classes.
+
+DO NOT:
+- do not reapply V33 patch
+- do not create V33.1 CSS
+- do not modify JSX/CSS/data/logic
+- do not source-push /67
+
+PRECONDITION
+cd /67
+Require src/pages/AdminDashboard.jsx to import exactly:
+import './AdminDashboard.v33.css';
+If it does not, stop and report RUNTIME_CSS_PRECONDITION=FAIL.
+
+Confirm the live runtime still matches the current local V33 dist using the same origin/public hash verification method already used.
+
+CORRECT REAL JSX SELECTORS
+Use these exact selectors/queries only:
+
+Ledger root:
+.tx-card
+
+Header:
+.tx-card__head
+
+Title group:
+.tx-card__title-group
+
+Title:
+.tx-card__title-group h3
+Expected text includes: السجل المالي — أحدث العمليات
+
+Subtitle:
+.tx-card__title-group small
+Expected text includes: متابعة حركة المدفوعات والحالات المالية الأخيرة
+
+Title icon:
+.tx-card__title-icon
+
+Count badge:
+.tx-card__count-badge
+
+Search input:
+.tx-toolbar input[type="search"]
+
+Toolbar buttons:
+.tx-toolbar button
+Identify Filter button by visible text containing: تصفية
+Identify Export button by visible text containing: تصدير
+Do NOT look for guessed classes such as .tx-filter-button or .tx-export-button.
+
+Summary container:
+.tx-ledger-summary
+
+Summary items — EXACT:
+.tx-ledger-summary > .tx-ledger-summary__item
+Required count: 3
+Do NOT query .tx-ledger-summary__tile because that class does not exist.
+
+Summary item variants present in JSX:
+.tx-ledger-summary__item--total
+.tx-ledger-summary__item--ok
+.tx-ledger-summary__item--pending
+
+Table:
+.tx-table
+
+Table headers:
+.tx-table thead th
+Required count: 7
+
+Rows:
+.tx-table tbody tr
+
+Transaction ID pills/text:
+.tx-id
+
+Amount pills:
+.tx-amount
+
+Status pills:
+.tx-status
+
+VISIBLE DEFINITION
+An element is visible when:
+- element exists
+- computed display != none
+- computed visibility != hidden/collapse
+- computed opacity > 0
+- rect.width > 0
+- rect.height > 0
+Do NOT require current viewport intersection as part of the visibility definition.
+
+SCROLL PROCEDURE
+1. Capture page-top hero baseline rect first.
+2. Scroll .tx-card into view with block:'start' or nearest so the ledger header remains inside the viewport.
+3. Wait for layout to settle.
+4. Run all ledger checks using the DOM visibility definition above.
+5. Capture ledger screenshots.
+6. Restore scrollY=0.
+7. Wait for layout to settle.
+8. Measure hero final rect and calculate geometry shift.
+
+IMPORTANT
+Do not run scrollIntoView individually on title, subtitle, summary items, buttons, or rows. Only scroll the ledger root once. Individual element scrolling can move other ledger elements outside the viewport and create false negatives.
+
+FINANCIAL LEDGER QA — REQUIRED
+TX_CARD_VISIBLE=YES
+TX_CARD_CHILD_OVERFLOW=NO
+TX_TEXT_CLIPPED=NO
+TX_HEADER_VISIBLE=YES
+TX_TITLE_VISIBLE=YES
+TX_SUBTITLE_VISIBLE=YES
+TX_TITLE_ICON_VISIBLE=YES
+TX_COUNT_BADGE_VISIBLE=YES
+TX_SEARCH_VISIBLE=YES
+TX_FILTER_BUTTON_VISIBLE=YES
+TX_EXPORT_BUTTON_VISIBLE=YES
+TX_SUMMARY_VISIBLE=YES
+TX_SUMMARY_TILE_COUNT=3
+TX_TABLE_VISIBLE=YES
+TX_TABLE_HEADER_VISIBLE=YES
+TX_TABLE_COLUMN_COUNT=7
+TX_ROWS_VISIBLE=YES
+TX_ROW_COUNT_MATCH_DATA=YES
+TX_AMOUNT_PILLS_VISIBLE=YES
+TX_STATUS_PILLS_VISIBLE=YES
+
+STRUCTURAL DIAGNOSTICS
+Also report raw DOM counts regardless of PASS/FAIL:
+TX_DOM_TITLE_COUNT=<number>
+TX_DOM_SUBTITLE_COUNT=<number>
+TX_DOM_TITLE_ICON_COUNT=<number>
+TX_DOM_COUNT_BADGE_COUNT=<number>
+TX_DOM_SEARCH_COUNT=<number>
+TX_DOM_TOOLBAR_BUTTON_COUNT=<number>
+TX_DOM_SUMMARY_ITEM_COUNT=<number>
+TX_DOM_TABLE_HEADER_COUNT=<number>
+TX_DOM_ROW_COUNT=<number>
+TX_DOM_AMOUNT_PILL_COUNT=<number>
+TX_DOM_STATUS_PILL_COUNT=<number>
+
+If any required element is reported NO while its DOM count is >0, report:
+- selector
+- computed display
+- computed visibility
+- computed opacity
+- rect left/top/right/bottom/width/height
+Do not simply say missing.
+
+CONTAINMENT
+Measure all visible ledger descendants against .tx-card with 1px tolerance.
+Horizontal scrolling inside .tx-card__scroll is allowed and must NOT be treated as card overflow.
+Do not flag table min-width inside the intentional horizontal-scroll container as root-card overflow.
+
+TEXT CLIPPING
+Only flag actual painted clipping.
+Do not fail text because a table cell intentionally uses ellipsis unless critical primary values are visually cut in the screenshot.
+Critical values that must remain readable:
+- transaction ID
+- amount pill
+- status pill
+- ledger title
+- summary values
+
+SEARCH REGRESSION TEST
+Use the real search input selector:
+.tx-toolbar input[type="search"]
+1. Record initial row count.
+2. Fill TXN-9022.
+3. Require one visible row.
+4. Require its .tx-id text to equal TXN-9022.
+5. Clear search.
+6. Require initial row count restored.
+TX_SEARCH_FILTER_TEST=PASS
+TX_SEARCH_CLEAR_RESTORE=PASS
+
+DATA INTEGRITY
+TX_TRANSACTION_IDS_PRESERVED=YES
+TX_BUYERS_PRESERVED=YES
+TX_SELLERS_PRESERVED=YES
+TX_METHODS_PRESERVED=YES
+TX_TIMES_PRESERVED=YES
+TX_AMOUNTS_PRESERVED=YES
+TX_STATUSES_PRESERVED=YES
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+
+VISUAL REVIEW
+At 1920x1080, judge the actual rendered V33 ledger independently of the selector checks.
+Require:
+- dark executive finance header is clearly visible
+- title/subtitle/icon are readable
+- count badge + search + filter + export are visible and aligned
+- 3 summary tiles are visibly present
+- all 7 table columns are structurally present
+- rows are readable and aligned
+- amount/status pills are clear
+- no giant dead space
+- no ugly overlap/clipping
+- visual style matches V32.5 baseline
+
+Set TX_FINANCIAL_LEDGER_PREMIUM_VISUAL=PASS only from actual screenshot/browser visual inspection, not inferred from selector flags.
+
+PROTECTED REGRESSIONS
+After scroll restore:
+HERO_GEOMETRY_SHIFT_PX=0
+HERO_IMAGE_FLASH_DETECTED=NO
+DATE_STRIP_REGRESSION=PASS
+KPI_REGRESSION=PASS
+SYSTEM_HEALTH_REGRESSION=PASS
+REVENUE_REGRESSION=PASS
+LIVE_OPERATIONS_REGRESSION=PASS
+CURRENT_OPERATIONS_REGRESSION=PASS
+SIDEBAR_CHANGED=NO
+
+SCREENSHOTS
+Capture exactly 4 new screenshots at 1920x1080:
+1. 67__ADMIN__V33-QA2__FINANCIAL-LEDGER__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V33-QA2__FINANCIAL-LEDGER__02__LEDGER-FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V33-QA2__FINANCIAL-LEDGER__03__HEADER-SUMMARY__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V33-QA2__FINANCIAL-LEDGER__04__TABLE-DETAIL__1920x1080__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to:
+qa/v33-qa2-financial-ledger/
+Do NOT source-push /67.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Attempt only after browser QA and QA repo push.
+Drive/client-side failure is NON-BLOCKING.
+If unavailable, report DRIVE_UPLOAD=FAILED_TOOL_UNAVAILABLE and preserve the completed browser QA result.
+Never replace a completed browser QA result with the generic client-side recovery message.
+
+FINAL REPORT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V33-QA2
+RUNTIME_VERSION=V33
+ELEMENT=FINANCIAL LEDGER CORRECTED QA RETRY
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+RUNTIME_CSS_PRECONDITION=<PASS/FAIL>
+LIVE_RUNTIME_ACTIVATED=YES
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+TX_CARD_VISIBLE=<YES/NO>
+TX_CARD_CHILD_OVERFLOW=<YES/NO>
+TX_TEXT_CLIPPED=<YES/NO>
+TX_HEADER_VISIBLE=<YES/NO>
+TX_TITLE_VISIBLE=<YES/NO>
+TX_SUBTITLE_VISIBLE=<YES/NO>
+TX_TITLE_ICON_VISIBLE=<YES/NO>
+TX_COUNT_BADGE_VISIBLE=<YES/NO>
+TX_SEARCH_VISIBLE=<YES/NO>
+TX_FILTER_BUTTON_VISIBLE=<YES/NO>
+TX_EXPORT_BUTTON_VISIBLE=<YES/NO>
+TX_SUMMARY_VISIBLE=<YES/NO>
+TX_SUMMARY_TILE_COUNT=<number>
+TX_TABLE_VISIBLE=<YES/NO>
+TX_TABLE_HEADER_VISIBLE=<YES/NO>
+TX_TABLE_COLUMN_COUNT=<number>
+TX_ROWS_VISIBLE=<YES/NO>
+TX_ROW_COUNT_MATCH_DATA=<YES/NO>
+TX_AMOUNT_PILLS_VISIBLE=<YES/NO>
+TX_STATUS_PILLS_VISIBLE=<YES/NO>
+TX_DOM_TITLE_COUNT=<number>
+TX_DOM_SUBTITLE_COUNT=<number>
+TX_DOM_TITLE_ICON_COUNT=<number>
+TX_DOM_COUNT_BADGE_COUNT=<number>
+TX_DOM_SEARCH_COUNT=<number>
+TX_DOM_TOOLBAR_BUTTON_COUNT=<number>
+TX_DOM_SUMMARY_ITEM_COUNT=<number>
+TX_DOM_TABLE_HEADER_COUNT=<number>
+TX_DOM_ROW_COUNT=<number>
+TX_DOM_AMOUNT_PILL_COUNT=<number>
+TX_DOM_STATUS_PILL_COUNT=<number>
+TX_SEARCH_FILTER_TEST=<PASS/FAIL>
+TX_SEARCH_CLEAR_RESTORE=<PASS/FAIL>
+TX_TRANSACTION_IDS_PRESERVED=<YES/NO>
+TX_BUYERS_PRESERVED=<YES/NO>
+TX_SELLERS_PRESERVED=<YES/NO>
+TX_METHODS_PRESERVED=<YES/NO>
+TX_TIMES_PRESERVED=<YES/NO>
+TX_AMOUNTS_PRESERVED=<YES/NO>
+TX_STATUSES_PRESERVED=<YES/NO>
+TX_FINANCIAL_LEDGER_PREMIUM_VISUAL=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+KPI_REGRESSION=<PASS/FAIL>
+SYSTEM_HEALTH_REGRESSION=<PASS/FAIL>
+REVENUE_REGRESSION=<PASS/FAIL>
+LIVE_OPERATIONS_REGRESSION=<PASS/FAIL>
+CURRENT_OPERATIONS_REGRESSION=<PASS/FAIL>
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+VIEWPORT=1920x1080
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+PASS CONDITION
+Set STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL only when the corrected real-selector checks pass, search/data integrity pass, actual visual inspection passes, and protected regressions pass.
