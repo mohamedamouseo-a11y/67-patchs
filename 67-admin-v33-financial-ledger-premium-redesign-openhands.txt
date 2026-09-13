@@ -1,0 +1,254 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V33
+MODULE=ADMIN DASHBOARD
+ELEMENT=FINANCIAL LEDGER PREMIUM REDESIGN
+BASE_VERSION=V32.5
+TARGET_VERSION=V33
+STATUS=APPLY_PATCH_AND_RETURN_FOR_VISUAL_QA
+==================================================
+
+OBJECTIVE
+Upgrade only the Financial Ledger / Latest Transactions section:
+السجل المالي — أحدث العمليات
+
+Design direction:
+- premium executive finance command center
+- dark navy/black finance header with refined gold accents
+- clear title/subtitle/icon hierarchy
+- stronger search/filter/export controls
+- premium 3-tile ledger summary
+- highly readable ivory/gold transaction table
+- clear amount pills and payment-status pills
+- preserve Arabic RTL
+- no visual noise and no microscopic typography
+
+PATCH
+Fetch and execute exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v33-financial-ledger-premium-redesign-apply.sh
+
+EXECUTION
+1. cd /67
+2. Download patch to /tmp/67-admin-v33-financial-ledger-premium-redesign-apply.sh
+3. chmod +x it.
+4. Execute it.
+5. Require BUILD=PASS.
+6. Activate live runtime using the same proven service restart mechanism used for V32.5.
+7. Confirm local dist, origin and public index hashes match.
+8. Browser QA at 1920x1080.
+
+STRICT SCOPE
+Allowed changes:
+- CSS for .tx-card and descendants only
+- responsive CSS for the financial ledger only
+
+PROTECTED — MUST NOT CHANGE
+- Hero
+- Date Strip/date logic
+- KPI row
+- System Health
+- Revenue & Performance
+- Live Operations
+- Current Operations
+- Sidebar
+- sellers/customers/documents/payment data
+- payments array/order/values
+- search behavior
+- toolbar button behavior
+- backend
+- auth
+- API calls
+- routing
+- permissions
+
+DO NOT
+- rewrite JSX
+- modify payment data
+- remove or reorder rows
+- alter transaction ids, buyers, sellers, payment methods, times, amounts or statuses
+- remove search/filter/export controls
+- source-push /67 before ChatGPT visual approval
+
+BROWSER QA PRECONDITION
+Before testing ledger geometry:
+- capture HERO_BASELINE_RECT at page top
+- then scroll .tx-card into view using scrollIntoView({block:'center'})
+- wait for layout to settle
+- do not calculate hero regression while scrolled
+- restore scroll position to page top before HERO_FINAL_RECT measurement
+
+FINANCIAL LEDGER QA
+After scrolling .tx-card into view, verify:
+- TX_CARD_VISIBLE=YES
+- TX_CARD_CHILD_OVERFLOW=NO
+- TX_TEXT_CLIPPED=NO
+- TX_HEADER_VISIBLE=YES
+- TX_TITLE_VISIBLE=YES
+- TX_SUBTITLE_VISIBLE=YES
+- TX_TITLE_ICON_VISIBLE=YES
+- TX_COUNT_BADGE_VISIBLE=YES
+- TX_SEARCH_VISIBLE=YES
+- TX_FILTER_BUTTON_VISIBLE=YES
+- TX_EXPORT_BUTTON_VISIBLE=YES
+- TX_SUMMARY_VISIBLE=YES
+- TX_SUMMARY_TILE_COUNT=3
+- TX_TABLE_VISIBLE=YES
+- TX_TABLE_HEADER_VISIBLE=YES
+- TX_TABLE_COLUMN_COUNT=7
+- TX_ROWS_VISIBLE=YES
+- TX_ROW_COUNT_MATCH_DATA=YES
+- TX_AMOUNT_PILLS_VISIBLE=YES
+- TX_STATUS_PILLS_VISIBLE=YES
+- TX_FINANCIAL_LEDGER_PREMIUM_VISUAL=PASS
+
+Containment tolerance: 1px.
+If any overflow exists report exact selector, element rect, card rect and px deltas.
+
+TEXT CLIPPING RULE
+Flag only real visual clipping/cut text. Do not fail solely because of subpixel scrollWidth differences if overflow is visible and painted text is fully within the card. If real clipping exists report selector + client/scroll dimensions + rect.
+
+SEARCH REGRESSION TEST
+Preserve search behavior exactly.
+1. Record initial visible transaction row count.
+2. Enter `TXN-9022` into the existing search input.
+3. Verify exactly the matching transaction remains visible.
+4. Verify the visible transaction id is TXN-9022.
+5. Clear the search input.
+6. Verify initial row count is restored.
+Required:
+- TX_SEARCH_FILTER_TEST=PASS
+- TX_SEARCH_CLEAR_RESTORE=PASS
+Do not mutate payment data during this test.
+
+DATA INTEGRITY
+Compare visible table data before/after styling and require:
+- TX_TRANSACTION_IDS_PRESERVED=YES
+- TX_BUYERS_PRESERVED=YES
+- TX_SELLERS_PRESERVED=YES
+- TX_METHODS_PRESERVED=YES
+- TX_TIMES_PRESERVED=YES
+- TX_AMOUNTS_PRESERVED=YES
+- TX_STATUSES_PRESERVED=YES
+
+VISUAL QUALITY
+At 1920x1080 confirm:
+- header feels executive and intentionally dark, not merely inverted
+- gold details are refined, not oversaturated
+- summary tiles have strong hierarchy and readable values
+- table rows are comfortably readable
+- transaction IDs, amount pills and status pills are easy to scan
+- search/filter/export controls feel integrated into the finance header
+- no giant empty areas
+- no cramped labels
+- table remains visually aligned across all 7 columns
+- ledger is consistent with V32.5 executive visual language
+
+REGRESSION CHECKS
+After restoring page top:
+- HERO_GEOMETRY_SHIFT_PX=0
+- HERO_IMAGE_FLASH_DETECTED=NO
+- DATE_STRIP_REGRESSION=PASS
+- KPI_REGRESSION=PASS
+- SYSTEM_HEALTH_REGRESSION=PASS
+- REVENUE_REGRESSION=PASS
+- LIVE_OPERATIONS_REGRESSION=PASS
+- CURRENT_OPERATIONS_REGRESSION=PASS
+- SIDEBAR_CHANGED=NO
+- DATA_CHANGED=NO
+- LOGIC_CHANGED=NO
+- BACKEND_CHANGED=NO
+- AUTH_CHANGED=NO
+
+SCREENSHOTS
+Capture exactly 4 screenshots at 1920x1080:
+1. 67__ADMIN__V33__FINANCIAL-LEDGER__01__FULL-PAGE__1920x1080__<RUNSTAMP>.png
+2. 67__ADMIN__V33__FINANCIAL-LEDGER__02__LEDGER-FULL__1920x1080__<RUNSTAMP>.png
+3. 67__ADMIN__V33__FINANCIAL-LEDGER__03__HEADER-SUMMARY__1920x1080__<RUNSTAMP>.png
+4. 67__ADMIN__V33__FINANCIAL-LEDGER__04__TABLE-DETAIL__1920x1080__<RUNSTAMP>.png
+
+QA REPO
+Push screenshots only to the existing QA repo.
+Do NOT source-push /67.
+SOURCE_PROJECT_PUSHED=NO
+
+GOOGLE DRIVE
+Attempt upload to My Drive root after browser QA.
+Google Drive/client-side upload failure is NON-BLOCKING.
+If unavailable set DRIVE_UPLOAD=FAILED_TOOL_UNAVAILABLE and still return the actual browser QA result.
+
+FINAL REPORT FORMAT
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V33
+MODULE=ADMIN DASHBOARD
+ELEMENT=FINANCIAL LEDGER PREMIUM REDESIGN
+BASE_VERSION=V32.5
+TARGET_VERSION=V33
+STATUS=<AWAITING_CHATGPT_VISUAL_APPROVAL or RUNTIME_VERIFICATION_FAILED>
+==================================================
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v33.css
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+TX_CARD_VISIBLE=<YES/NO>
+TX_CARD_CHILD_OVERFLOW=<YES/NO>
+TX_OVERFLOW_ELEMENT=<NONE or exact selector>
+TX_TEXT_CLIPPED=<YES/NO>
+TX_HEADER_VISIBLE=<YES/NO>
+TX_TITLE_VISIBLE=<YES/NO>
+TX_SUBTITLE_VISIBLE=<YES/NO>
+TX_TITLE_ICON_VISIBLE=<YES/NO>
+TX_COUNT_BADGE_VISIBLE=<YES/NO>
+TX_SEARCH_VISIBLE=<YES/NO>
+TX_FILTER_BUTTON_VISIBLE=<YES/NO>
+TX_EXPORT_BUTTON_VISIBLE=<YES/NO>
+TX_SUMMARY_VISIBLE=<YES/NO>
+TX_SUMMARY_TILE_COUNT=<number>
+TX_TABLE_VISIBLE=<YES/NO>
+TX_TABLE_HEADER_VISIBLE=<YES/NO>
+TX_TABLE_COLUMN_COUNT=<number>
+TX_ROWS_VISIBLE=<YES/NO>
+TX_ROW_COUNT_MATCH_DATA=<YES/NO>
+TX_AMOUNT_PILLS_VISIBLE=<YES/NO>
+TX_STATUS_PILLS_VISIBLE=<YES/NO>
+TX_SEARCH_FILTER_TEST=<PASS/FAIL>
+TX_SEARCH_CLEAR_RESTORE=<PASS/FAIL>
+TX_TRANSACTION_IDS_PRESERVED=<YES/NO>
+TX_BUYERS_PRESERVED=<YES/NO>
+TX_SELLERS_PRESERVED=<YES/NO>
+TX_METHODS_PRESERVED=<YES/NO>
+TX_TIMES_PRESERVED=<YES/NO>
+TX_AMOUNTS_PRESERVED=<YES/NO>
+TX_STATUSES_PRESERVED=<YES/NO>
+TX_FINANCIAL_LEDGER_PREMIUM_VISUAL=<PASS/FAIL>
+HERO_GEOMETRY_SHIFT_PX=<number>
+HERO_IMAGE_FLASH_DETECTED=<YES/NO>
+DATE_STRIP_REGRESSION=<PASS/FAIL>
+KPI_REGRESSION=<PASS/FAIL>
+SYSTEM_HEALTH_REGRESSION=<PASS/FAIL>
+REVENUE_REGRESSION=<PASS/FAIL>
+LIVE_OPERATIONS_REGRESSION=<PASS/FAIL>
+CURRENT_OPERATIONS_REGRESSION=<PASS/FAIL>
+SIDEBAR_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+VISUAL_QA=<DONE/BLOCKED>
+VIEWPORT=1920x1080
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+
+PASS CONDITION
+Set STATUS=AWAITING_CHATGPT_VISUAL_APPROVAL only when ledger containment/readability passes, all 7 columns and transaction rows are visible, data/search behavior is preserved, premium visual check passes, and every protected-area regression passes.
