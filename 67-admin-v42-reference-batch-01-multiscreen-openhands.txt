@@ -1,0 +1,400 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V42
+ELEMENT=REFERENCE BATCH 01 — MULTISCREEN REDESIGN
+LIVE_SITE=https://sixty-seven.net/admin/
+SERVER_PATH=/67
+STATUS=APPLY_PATCH_BUILD_ACTIVATE_AND_CAPTURE_4_SCREENS
+==================================================
+
+MISSION
+
+Apply ONE multiscreen visual redesign batch based strictly on the four real live screenshots already collected in Reference Batch 01.
+
+The screenshots are the STRUCTURE / CONTENT source of truth.
+The approved Overview screen is also the VISUAL LANGUAGE source of truth.
+
+DO NOT invent a new dashboard.
+DO NOT add sections that are not present in the screenshots.
+DO NOT add fake data, cards, KPIs, charts, filters, buttons, tabs or rows.
+DO NOT remove existing sections, columns, rows or actions.
+
+This batch covers exactly 4 screens:
+
+01 — ADMIN OVERVIEW
+67__REFERENCE-BATCH-01__01__ADMIN-OVERVIEW__1448x1086.png
+
+02 — USERS / SELLERS
+67__REFERENCE-BATCH-01__02__USERS-SELLERS__1448x1086.png
+
+03 — DOCUMENTS / VERIFICATION
+67__REFERENCE-BATCH-01__03__DOCUMENTS-VERIFICATION__1448x1086.png
+
+04 — PAYMENTS / TRANSACTIONS
+67__REFERENCE-BATCH-01__04__PAYMENTS-TRANSACTIONS__1448x1086.png
+
+==================================================
+DESIGN AUTHORITY
+==================================================
+
+SCREEN 01 — ADMIN OVERVIEW
+
+The current approved Overview establishes the design language:
+- fixed dark navy right sidebar
+- gold accents
+- ivory / warm-white main canvas
+- subtle gold borders
+- dark navy premium bands where already present
+- rounded premium cards
+- teal / green / blue status accents
+- automotive cinematic imagery
+- compact executive typography
+- restrained shadows
+- RTL Arabic layout
+
+DO NOT redesign Overview in this batch.
+It is the style anchor and must not regress.
+
+SCREEN 02 — USERS / SELLERS
+
+The captured screenshot is the STRUCTURAL REFERENCE.
+Preserve exactly:
+- one Sellers card at the top
+- one Customers card below it
+- same headings
+- same seller table columns
+- same customer table columns
+- same data rows
+- same review/verified summary badges
+- same seller activation actions
+- same right sidebar
+- same RTL order
+
+Only upgrade the visual finish so it clearly belongs to the approved Overview family.
+
+Do NOT add:
+- KPI cards
+- charts
+- search bars
+- new filters
+- new tabs
+- extra summary panels
+- extra actions
+
+SCREEN 03 — DOCUMENTS / VERIFICATION
+
+The captured screenshot is the STRUCTURAL REFERENCE.
+Preserve exactly:
+- one document review card
+- same title
+- same table columns
+- same 3 visible document rows / live runtime rows
+- same file links
+- same status pills
+- same approve/reject actions
+- same large empty lower canvas
+- same right sidebar
+
+The empty lower area is intentional evidence from the reference.
+DO NOT fill it with invented cards or statistics.
+
+SCREEN 04 — PAYMENTS / TRANSACTIONS
+
+The captured screenshot is the STRUCTURAL REFERENCE.
+Preserve exactly:
+- one monitoring / transaction card
+- same title
+- same table headers
+- same live data state
+- if the body is empty, KEEP IT EMPTY
+- same large empty lower canvas
+- same right sidebar
+
+DO NOT create fake transaction rows.
+DO NOT add financial KPIs or charts.
+
+==================================================
+PATCH
+==================================================
+
+Fetch and execute exactly:
+
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v42-reference-batch-01-multiscreen-apply.sh
+
+==================================================
+EXECUTION
+==================================================
+
+1. cd /67
+2. Download the patch to:
+   /tmp/67-admin-v42-reference-batch-01-multiscreen-apply.sh
+3. chmod +x it
+4. Execute it
+5. Require BUILD=PASS
+6. Activate/restart the same proven live service
+7. Confirm local dist / origin / public site are serving the V42 build
+8. Do NOT push /67 source
+9. Perform browser QA on the REAL public site:
+   https://sixty-seven.net/admin/
+
+==================================================
+BROWSER RULES
+==================================================
+
+Use the normal authenticated interactive browser session.
+
+DO NOT:
+- bypass authentication
+- inject cookies/JWT
+- manipulate localStorage/sessionStorage for auth
+- use localhost screenshots as final evidence
+- modify data during QA
+- click destructive/action buttons
+
+VIEWPORT=1448x1086
+BROWSER_ZOOM=100%
+
+Before each screenshot:
+- wait for fonts/images/layout to settle
+- close accidental popovers/dropdowns
+- close date picker
+- keep permanent right sidebar visible
+- natural page start unless the screen itself requires scrolling
+
+==================================================
+QA — SCREEN 01 OVERVIEW
+==================================================
+
+Open Overview.
+
+VERIFY:
+- V41/V40-approved Overview appearance did not regress
+- right sidebar remains premium dark navy/gold
+- hero remains intact
+- KPI row intact
+- System Health intact
+- Revenue intact
+- Operations intact
+- Ledger intact
+- no horizontal overflow
+
+REPORT:
+OVERVIEW_VISUAL_REGRESSION=NO
+OVERVIEW_STRUCTURE_PRESERVED=YES
+
+Capture:
+67__ADMIN__V42__BATCH-01__01__OVERVIEW__1448x1086__<RUNSTAMP>.png
+
+==================================================
+QA — SCREEN 02 USERS / SELLERS
+==================================================
+
+Use normal sidebar navigation to open:
+سجل العملاء والتجار
+
+REFERENCE STRUCTURE MUST REMAIN:
+- exactly 2 main stacked cards
+- Sellers first
+- Customers second
+- no invented section between them
+
+VERIFY:
+USERS_MAIN_PANEL_COUNT=2
+SELLERS_PANEL_VISIBLE=YES
+CUSTOMERS_PANEL_VISIBLE=YES
+SELLERS_TABLE_VISIBLE=YES
+CUSTOMERS_TABLE_VISIBLE=YES
+SELLER_ACTIONS_VISIBLE=YES
+USERS_REFERENCE_STRUCTURE_PRESERVED=YES
+INVENTED_USERS_SECTIONS=NO
+
+VISUAL EXPECTATION:
+- warm ivory panels
+- subtle gold border/shadow
+- pale-gold table headers
+- dark navy readable text
+- existing colored status/action signals preserved
+- same premium visual language as Overview
+
+Capture:
+67__ADMIN__V42__BATCH-01__02__USERS-SELLERS__1448x1086__<RUNSTAMP>.png
+
+==================================================
+QA — SCREEN 03 DOCUMENTS / VERIFICATION
+==================================================
+
+Use normal sidebar navigation to open:
+السجلات والتوثيق
+
+VERIFY:
+DOCUMENT_MAIN_PANEL_COUNT=1
+DOCUMENT_TABLE_VISIBLE=YES
+DOCUMENT_ACTIONS_VISIBLE=YES
+DOCUMENT_FILE_LINKS_VISIBLE=YES
+DOCUMENT_REFERENCE_STRUCTURE_PRESERVED=YES
+DOCUMENT_LOWER_EMPTY_CANVAS_PRESERVED=YES
+INVENTED_DOCUMENT_SECTIONS=NO
+
+Do NOT approve or reject anything during QA.
+
+Visual expectation:
+- same single-card structure as reference
+- upgraded only with Overview ivory/gold premium finish
+- same rows/columns/actions
+- lower blank canvas remains blank
+
+Capture:
+67__ADMIN__V42__BATCH-01__03__DOCUMENTS-VERIFICATION__1448x1086__<RUNSTAMP>.png
+
+==================================================
+QA — SCREEN 04 PAYMENTS / TRANSACTIONS
+==================================================
+
+Use normal sidebar navigation to open:
+مراقبة العمليات والصفقات
+
+VERIFY:
+TRANSACTION_MAIN_PANEL_COUNT=1
+TRANSACTION_TABLE_VISIBLE=YES
+TRANSACTION_HEADER_COLUMNS_PRESERVED=YES
+TRANSACTION_REFERENCE_STRUCTURE_PRESERVED=YES
+TRANSACTION_LOWER_EMPTY_CANVAS_PRESERVED=YES
+INVENTED_TRANSACTION_SECTIONS=NO
+FAKE_TRANSACTION_ROWS_ADDED=NO
+
+If runtime transaction body is empty:
+leave it empty.
+Do not create sample rows.
+
+Capture:
+67__ADMIN__V42__BATCH-01__04__PAYMENTS-TRANSACTIONS__1448x1086__<RUNSTAMP>.png
+
+==================================================
+REFERENCE FIDELITY RULE
+==================================================
+
+This is NOT a generic design QA.
+Judge the screens against the supplied Reference Batch 01 screenshots.
+
+The required relationship is:
+
+SCREEN 01
+= visual style authority
+
+SCREENS 02–04
+= exact structural/content authority
++ visually upgraded using ONLY Screen 01's established design language
+
+Do not mark PASS if the patch invents new content just because it looks attractive.
+
+PASS requires BOTH:
+1. structural fidelity to each captured screen
+2. visual-family fidelity to the approved Overview
+
+==================================================
+PROTECTED
+==================================================
+
+Do not change:
+- API behavior
+- backend
+- authentication
+- routing
+- permissions
+- source data
+- calculations
+- seller approval logic
+- document approval/rejection logic
+- transaction data logic
+- active-tab behavior
+
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+
+==================================================
+SCREENSHOT OUTPUT
+==================================================
+
+Capture EXACTLY 4 PNG screenshots at 1448x1086.
+
+Upload all 4 to Google Drive root if available.
+Push screenshots only to the existing QA repository.
+
+DO NOT SOURCE PUSH /67.
+SOURCE_PROJECT_PUSHED=NO
+
+==================================================
+FINAL REPORT
+==================================================
+
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V42
+ELEMENT=REFERENCE BATCH 01 MULTISCREEN
+LIVE_SITE=https://sixty-seven.net/admin/
+
+PATCH_APPLIED=<YES/NO>
+BUILD=<PASS/FAIL>
+RUNTIME_CSS=AdminDashboard.v42.css
+VISUAL_STRATEGY=REFERENCE_BATCH_01_MULTISCREEN
+LIVE_RUNTIME_ACTIVATED=<YES/NO>
+ORIGIN_MATCH_LOCAL_DIST=<YES/NO>
+PUBLIC_MATCH_LOCAL_DIST=<YES/NO>
+
+REFERENCE_VIEWPORT=1448x1086
+SCREENSHOT_COUNT=4
+
+OVERVIEW_VISUAL_REGRESSION=<YES/NO>
+OVERVIEW_STRUCTURE_PRESERVED=<YES/NO>
+
+USERS_MAIN_PANEL_COUNT=<number>
+SELLERS_PANEL_VISIBLE=<YES/NO>
+CUSTOMERS_PANEL_VISIBLE=<YES/NO>
+SELLERS_TABLE_VISIBLE=<YES/NO>
+CUSTOMERS_TABLE_VISIBLE=<YES/NO>
+SELLER_ACTIONS_VISIBLE=<YES/NO>
+USERS_REFERENCE_STRUCTURE_PRESERVED=<YES/NO>
+INVENTED_USERS_SECTIONS=<YES/NO>
+
+DOCUMENT_MAIN_PANEL_COUNT=<number>
+DOCUMENT_TABLE_VISIBLE=<YES/NO>
+DOCUMENT_ACTIONS_VISIBLE=<YES/NO>
+DOCUMENT_FILE_LINKS_VISIBLE=<YES/NO>
+DOCUMENT_REFERENCE_STRUCTURE_PRESERVED=<YES/NO>
+DOCUMENT_LOWER_EMPTY_CANVAS_PRESERVED=<YES/NO>
+INVENTED_DOCUMENT_SECTIONS=<YES/NO>
+
+TRANSACTION_MAIN_PANEL_COUNT=<number>
+TRANSACTION_TABLE_VISIBLE=<YES/NO>
+TRANSACTION_HEADER_COLUMNS_PRESERVED=<YES/NO>
+TRANSACTION_REFERENCE_STRUCTURE_PRESERVED=<YES/NO>
+TRANSACTION_LOWER_EMPTY_CANVAS_PRESERVED=<YES/NO>
+INVENTED_TRANSACTION_SECTIONS=<YES/NO>
+FAKE_TRANSACTION_ROWS_ADDED=<YES/NO>
+
+PAGE_HORIZONTAL_OVERFLOW=<YES/NO>
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+
+VISUAL_QA=<DONE/BLOCKED>
+REFERENCE_BATCH_01_FIDELITY=<PASS/FAIL>
+TOP_VISUAL_DIFFERENCE_1=<NONE or exact description>
+TOP_VISUAL_DIFFERENCE_2=<NONE or exact description>
+TOP_VISUAL_DIFFERENCE_3=<NONE or exact description>
+
+RUNSTAMP=<stamp>
+SCREENSHOT_01_FILENAME=<name>
+SCREENSHOT_02_FILENAME=<name>
+SCREENSHOT_03_FILENAME=<name>
+SCREENSHOT_04_FILENAME=<name>
+
+DRIVE_UPLOAD=<OK/FAILED_TOOL_UNAVAILABLE/PENDING>
+QA_PUSH=<result>
+QA_COMMIT_SHA=<sha>
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+==================================================
