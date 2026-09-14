@@ -1,0 +1,353 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V44
+MODE=THREE_SCREEN_REFERENCE_FINAL_LOCK
+LIVE_SITE=https://sixty-seven.net/admin/
+SERVER_PROJECT_PATH=/67
+SOURCE_REPO=mohamedamouseo-a11y/developer-hub-67
+PATCH_REPO=mohamedamouseo-a11y/67-patchs
+==================================================
+
+MISSION
+
+V43 was manually reviewed by ChatGPT against the approved visual references.
+DO NOT rebuild these screens from scratch.
+V43 is already structurally close.
+
+Apply ONE final comprehensive reference-lock pass for exactly these 3 screens:
+
+1. إشعارات الحركة المباشرة
+2. GitHub Module
+3. إعدادات حسابي وأرباحي
+
+The purpose of V44 is to close the remaining visible reference differences while preserving all real state, data and behavior.
+
+==================================================
+CHATGPT MANUAL V43 FINDINGS — AUTHORITATIVE
+==================================================
+
+NOTIFICATIONS:
+- Overall direction is correct.
+- Hero is correctly absent.
+- Current live data showed only 2 rows at capture time. THIS IS NOT A DESIGN FAILURE.
+- NEVER add fake rows just to make the screenshot show 4 events.
+- Remaining visual refinement:
+  - reference rows are taller and more premium
+  - clear-log button should be larger/darker with gold treatment
+  - title needs the small reference subtitle below it
+  - preserve generous lower empty ivory canvas
+  - keep green status dots + gold clock cues
+
+GITHUB:
+- V43 is already close to the approved reference.
+- Preserve its current real GitHub status exactly.
+- Preserve hero + 3 metrics + guardrails + 2-column layout.
+- Remaining visual refinement:
+  - slightly improve reference vertical proportions
+  - lower 2-column cards should occupy enough height that Push Trace does not visually crowd the 1448x1086 reference viewport
+- DO NOT change GitHubModule logic or status values.
+
+SETTINGS:
+- V43 hero and main white panel are correct.
+- Material remaining mismatch: approved reference has clear explanatory blocks at PHYSICAL LEFT of the Logo, Profile, Identity and Bank cards.
+- V43 currently has mostly icon-only empty space there.
+- V44 must add these exact visual descriptor blocks without changing the existing inputs/actions:
+  - تخصيص مظهر المنصة / يمكنك تغيير نمط الشعار في أي وقت
+  - صورتك الشخصية / تظهر الصورة في ملفك الشخصي ومعاملاتك
+  - حساب محمي وآمن / بياناتك الشخصية مشفرة ومحفوظة
+  - بيانات الحساب البنكي / لاستلام أرباح العمولات بنسبة 1%
+- Keep the real profile image URL/value. Do not substitute a fake person/image.
+- If the external avatar image fails to load in the QA browser, report REMOTE_AVATAR_LOAD=FAIL_NONBLOCKING. Do not change the saved URL just for the screenshot.
+
+==================================================
+STRICT RULES
+==================================================
+
+DO NOT:
+- edit Overview
+- edit Users/Sellers
+- edit Documents
+- edit Transactions
+- edit Community
+- change backend
+- change auth
+- change APIs
+- change localStorage keys
+- change GitHub logic
+- change token handling
+- connect/disconnect GitHub
+- change bank/profile persistence
+- create fake notifications
+- create fake GitHub state
+- create fake profile data
+- save Settings during QA
+- clear notification log
+- source push
+- force push
+
+SOURCE_PROJECT_PUSHED=NO is mandatory.
+
+==================================================
+STEP 1 — BASELINE GUARD
+==================================================
+
+cd /67
+
+Require:
+- src/pages/AdminDashboard.jsx
+- src/pages/AdminDashboard.v43.css
+- AdminDashboard.jsx imports AdminDashboard.v43.css OR V44 is already active
+
+If V43 is not available and V44 is not already active:
+STOP with:
+FAILED_STEP=BASELINE_GUARD
+ERROR=EXPECTED_V43_BASE_NOT_FOUND
+
+==================================================
+STEP 2 — APPLY EXACT V44 PATCH
+==================================================
+
+Fetch and execute exactly:
+
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v44-three-screen-reference-final-lock-apply.sh
+
+Example:
+
+curl -fsSL https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v44-three-screen-reference-final-lock-apply.sh -o /tmp/67-v44.sh
+chmod +x /tmp/67-v44.sh
+/tmp/67-v44.sh
+
+Require:
+PATCH_APPLIED=YES
+BUILD=PASS
+RUNTIME_CSS=AdminDashboard.v44.css
+VISUAL_STRATEGY=THREE_SCREEN_REFERENCE_FINAL_LOCK
+FAKE_ROWS_ADDED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+If patch/build fails, stop. Do not improvise a different design patch.
+
+==================================================
+STEP 3 — ACTIVATE LIVE RUNTIME
+==================================================
+
+Activate the successful V44 build using the SAME established static frontend activation procedure already used for V43/V42.
+
+Do not change nginx config.
+Do not restart/change backend services unless the established frontend activation itself strictly requires an already-used safe step.
+Do not change environment variables.
+
+Verify:
+ORIGIN_MATCH_LOCAL_DIST=YES
+PUBLIC_MATCH_LOCAL_DIST=YES
+
+Public URL:
+https://sixty-seven.net/admin/
+
+==================================================
+STEP 4 — AUTHENTICATED VISUAL QA
+==================================================
+
+Use the existing authorized authenticated interactive browser session.
+
+VIEWPORT=1448x1086
+BROWSER_ZOOM=100%
+
+Before every screenshot:
+- wait for the page
+- wait for fonts
+- wait for hero imagery
+- wait for normal image requests to settle
+- no modal/dropdown/tooltip
+- page at natural top
+- keep permanent right sidebar visible
+
+Do not alter live data to improve screenshots.
+
+==================================================
+SCREEN 01 — LIVE NOTIFICATIONS
+==================================================
+
+Open:
+إشعارات الحركة المباشرة
+
+DO NOT click مسح السجل.
+
+Manual visual checks:
+- no hero
+- warm ivory canvas
+- title top-right
+- subtitle directly under title: مراقبة فورية لجميع الأحداث في المنصة
+- dark navy/gold clear-log button at physical left
+- every EXISTING live event row is tall, rounded and premium
+- green status dot physical right
+- gold clock cue physical left
+- event copy readable
+- time readable
+- large lower empty canvas retained
+- no fake event rows
+- no horizontal overflow
+
+IMPORTANT:
+NOTIFICATION_ROW_COUNT is DATA-DRIVEN.
+Do not fail V44 because fewer than 4 rows exist in current live data.
+Do not add rows.
+
+Capture:
+67__ADMIN__V44__01__LIVE-NOTIFICATIONS__1448x1086__<RUNSTAMP>.png
+
+==================================================
+SCREEN 02 — GITHUB MODULE
+==================================================
+
+Open:
+GitHub Module
+
+DO NOT type a token or execute any GitHub action.
+
+Manual visual checks:
+- automotive hero fully visible
+- dark navy/gold module below
+- 3 metrics in one row
+- real statuses unchanged
+- guardrails visible
+- lower 2 columns balanced and taller
+- Push Trace must not crowd the primary reference composition at 1448x1086
+- sidebar unchanged
+- no horizontal overflow
+
+Capture:
+67__ADMIN__V44__02__GITHUB-MODULE__1448x1086__<RUNSTAMP>.png
+
+==================================================
+SCREEN 03 — SETTINGS
+==================================================
+
+Open:
+إعدادات حسابي وأرباحي
+
+DO NOT change any field and DO NOT save.
+
+Manual visual checks:
+- automotive hero visible
+- main ivory/white settings surface visible
+- title clear
+- Logo card has physical-left descriptor:
+  تخصيص مظهر المنصة
+  يمكنك تغيير نمط الشعار في أي وقت
+- Profile card has physical-left descriptor:
+  صورتك الشخصية
+  تظهر الصورة في ملفك الشخصي ومعاملاتك
+- Identity card has physical-left descriptor:
+  حساب محمي وآمن
+  بياناتك الشخصية مشفرة ومحفوظة
+- Bank section has physical-left descriptor:
+  بيانات الحساب البنكي
+  لاستلام أرباح العمولات بنسبة 1%
+- real logo buttons preserved
+- real profile URL preserved
+- protected Superadmin text preserved
+- real bank inputs preserved
+- gold save button visible
+- no clipped text
+- no horizontal overflow
+
+If the remote avatar itself does not render after waiting, record:
+REMOTE_AVATAR_LOAD=FAIL_NONBLOCKING
+Do NOT modify the stored/profile URL.
+Otherwise:
+REMOTE_AVATAR_LOAD=PASS
+
+Capture:
+67__ADMIN__V44__03__SETTINGS__1448x1086__<RUNSTAMP>.png
+
+==================================================
+MANUAL REVIEW STANDARD
+==================================================
+
+Do not use selector-only PASS.
+Actually inspect all 3 screenshots.
+
+This is a REFERENCE FIDELITY task, not a feature test.
+Do not invent a new visual language.
+Do not create V45 or any extra patch.
+
+If a visible mismatch exists, report it accurately in TOP_VISUAL_DIFFERENCE fields.
+
+==================================================
+QA OUTPUT
+==================================================
+
+Push screenshots only to the QA/patch repo.
+Do not push /67 source.
+
+Drive upload is optional and non-blocking.
+
+==================================================
+FINAL REPORT
+==================================================
+
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V44
+PATCH_APPLIED=YES/NO
+BUILD=PASS/FAIL
+RUNTIME_CSS=AdminDashboard.v44.css
+VISUAL_STRATEGY=THREE_SCREEN_REFERENCE_FINAL_LOCK
+LIVE_RUNTIME_ACTIVATED=YES/NO
+ORIGIN_MATCH_LOCAL_DIST=YES/NO
+PUBLIC_MATCH_LOCAL_DIST=YES/NO
+REFERENCE_VIEWPORT=1448x1086
+
+NOTIFICATIONS_REFERENCE_MATCH=PASS/FAIL
+NOTIFICATION_ROW_COUNT=<real current count>
+FAKE_NOTIFICATION_ROWS_ADDED=NO
+NOTIFICATIONS_HERO_ABSENT=YES/NO
+NOTIFICATIONS_SUBTITLE_VISIBLE=YES/NO
+NOTIFICATIONS_GREEN_STATUS_DOTS=YES/NO
+NOTIFICATIONS_GOLD_CLOCK_CUES=YES/NO
+NOTIFICATIONS_CLEAR_BUTTON_REFERENCE_STYLE=YES/NO
+NOTIFICATIONS_LOWER_EMPTY_CANVAS_PRESERVED=YES/NO
+
+GITHUB_REFERENCE_MATCH=PASS/FAIL
+GITHUB_HERO_VISIBLE=YES/NO
+GITHUB_THREE_METRICS_ONE_ROW=YES/NO
+GITHUB_SECURITY_BASELINE_VISIBLE=YES/NO
+GITHUB_TWO_COLUMN_LOWER_LAYOUT=YES/NO
+GITHUB_PRIMARY_COMPOSITION_NOT_CROWDED=YES/NO
+GITHUB_REAL_STATE_PRESERVED=YES/NO
+
+SETTINGS_REFERENCE_MATCH=PASS/FAIL
+SETTINGS_HERO_VISIBLE=YES/NO
+SETTINGS_LOGO_DESCRIPTOR_VISIBLE=YES/NO
+SETTINGS_PROFILE_DESCRIPTOR_VISIBLE=YES/NO
+SETTINGS_IDENTITY_DESCRIPTOR_VISIBLE=YES/NO
+SETTINGS_BANK_DESCRIPTOR_VISIBLE=YES/NO
+SETTINGS_REAL_FIELDS_PRESERVED=YES/NO
+SETTINGS_SAVE_BUTTON_VISIBLE=YES/NO
+REMOTE_AVATAR_LOAD=PASS/FAIL_NONBLOCKING
+
+PAGE_HORIZONTAL_OVERFLOW=NO/YES
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+TOP_VISUAL_DIFFERENCE_1=<NONE or exact visible difference>
+TOP_VISUAL_DIFFERENCE_2=<NONE or exact visible difference>
+TOP_VISUAL_DIFFERENCE_3=<NONE or exact visible difference>
+
+RUNSTAMP=<timestamp>
+SCREENSHOT_01_FILENAME=<filename>
+SCREENSHOT_02_FILENAME=<filename>
+SCREENSHOT_03_FILENAME=<filename>
+DRIVE_UPLOAD=OK/FAILED_TOOL_UNAVAILABLE/NOT_ATTEMPTED
+QA_PUSH=OK/FAIL
+QA_COMMIT_SHA=<sha/NONE>
+FAILED_STEP=NONE/<exact step>
+ERROR=NONE/<exact error>
+==================================================
