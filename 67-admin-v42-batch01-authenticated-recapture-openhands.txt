@@ -1,0 +1,207 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V42-R1
+MODE=AUTHENTICATED_VISUAL_QA_RECAPTURE_ONLY
+LIVE_SITE=https://sixty-seven.net/admin/
+TARGET_RUNTIME=AdminDashboard.v42.css
+==================================================
+
+MISSION
+Re-capture the four V42 Batch-01 admin screens from the REAL authenticated dashboard.
+The previous capture is INVALID because all 4 screenshots were the same login page.
+
+THIS TASK MUST NOT CHANGE CODE OR DATA.
+DO NOT APPLY ANY PATCH.
+DO NOT BUILD.
+DO NOT DEPLOY.
+DO NOT PUSH /67 SOURCE.
+
+==================================================
+ABSOLUTE FIRST STEP — AUTHENTICATION GATE
+==================================================
+
+1. Open exactly:
+   https://sixty-seven.net/admin/
+
+2. Use the normal authorized login flow.
+
+3. If an authenticated browser session already exists, use it.
+
+4. If the login form appears, use ONLY the authorized credentials already available in the current OpenHands/browser context.
+   - Do not print credentials in logs.
+   - Do not guess credentials.
+   - Do not bypass authentication.
+   - Do not inject cookies/JWT/localStorage.
+
+5. After submitting login, WAIT until the real admin dashboard is visible.
+
+6. BEFORE ANY SCREENSHOT, verify ALL of the following:
+   - login heading "تسجيل دخول المشرف" is NOT visible
+   - password field is NOT visible
+   - right admin sidebar IS visible
+   - SIX SEVEN logo/sidebar branding IS visible
+   - at least one admin navigation button is visible
+   - current page contains dashboard/module content, not the login page
+
+If any authentication verification fails:
+STOP IMMEDIATELY.
+DO NOT create fake/duplicate screenshots.
+Return:
+AUTHENTICATION_GATE=FAIL
+SCREENSHOT_COUNT=0
+FAILED_STEP=AUTHENTICATION_GATE
+SOURCE_CHANGED=NO
+DATA_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+==================================================
+VIEWPORT
+==================================================
+
+Set exact viewport:
+WIDTH=1448
+HEIGHT=1086
+ZOOM=100%
+
+Do not use responsive emulation.
+Do not resize after authentication.
+
+Before each screenshot:
+- wait for fonts/images to finish
+- wait for transitions to settle
+- close accidental modals/dropdowns/popovers
+- ensure login page is not visible
+- ensure right sidebar is visible
+- ensure screenshot is unique to the requested module
+
+==================================================
+SCREEN 01 — OVERVIEW
+==================================================
+
+Navigate using the visible sidebar to:
+لوحة الأداء والاستقرار
+
+Confirm BEFORE capture:
+- overview hero/KPI/dashboard content visible
+- NOT login page
+
+Capture:
+67__ADMIN__V42-R1__BATCH-01__01__OVERVIEW__1448x1086__<RUNSTAMP>.png
+
+==================================================
+SCREEN 02 — USERS / SELLERS
+==================================================
+
+Navigate using the sidebar to:
+سجل العملاء والتجار
+
+Confirm BEFORE capture:
+- seller panel/table visible
+- customer panel/table visible
+- NOT login page
+
+Do NOT click seller activation or edit actions.
+
+Capture:
+67__ADMIN__V42-R1__BATCH-01__02__USERS-SELLERS__1448x1086__<RUNSTAMP>.png
+
+==================================================
+SCREEN 03 — DOCUMENTS / VERIFICATION
+==================================================
+
+Navigate using the sidebar to:
+السجلات والتوثيق
+
+Confirm BEFORE capture:
+- documents/verification table or panel visible
+- document rows/links/actions visible when present
+- NOT login page
+
+Do NOT approve/reject/delete/upload anything.
+
+Capture:
+67__ADMIN__V42-R1__BATCH-01__03__DOCUMENTS-VERIFICATION__1448x1086__<RUNSTAMP>.png
+
+==================================================
+SCREEN 04 — PAYMENTS / TRANSACTIONS
+==================================================
+
+Navigate using the sidebar to:
+مراقبة العمليات والصفقات
+
+Confirm BEFORE capture:
+- transaction monitoring panel/table visible
+- NOT login page
+
+Do NOT trigger any transaction action.
+
+Capture:
+67__ADMIN__V42-R1__BATCH-01__04__PAYMENTS-TRANSACTIONS__1448x1086__<RUNSTAMP>.png
+
+==================================================
+DUPLICATE-SCREENSHOT GUARD
+==================================================
+
+After all four captures:
+1. Compute SHA-256 for each PNG.
+2. All 4 hashes MUST NOT be identical.
+3. Also compare page text/title for each capture.
+
+If all 4 hashes are identical OR all 4 captures show the same page:
+VISUAL_QA=FAIL
+FAILED_STEP=DUPLICATE_SCREENSHOT_GUARD
+Do not claim success.
+
+==================================================
+RUNTIME CHECK
+==================================================
+
+Without modifying source, verify the authenticated page is running V42:
+- AdminDashboard.v42.css is loaded in runtime OR equivalent built asset hash is confirmed.
+
+Report:
+RUNTIME_CSS=AdminDashboard.v42.css
+
+==================================================
+UPLOAD
+==================================================
+
+Upload the 4 screenshots to Google Drive root if available.
+Push screenshots ONLY to the QA repo.
+DO NOT push /67 source.
+
+==================================================
+FINAL REPORT
+==================================================
+
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V42-R1
+MODE=AUTHENTICATED_VISUAL_QA_RECAPTURE_ONLY
+LIVE_SITE=https://sixty-seven.net/admin/
+RUNTIME_CSS=AdminDashboard.v42.css
+AUTHENTICATION_GATE=PASS/FAIL
+LOGIN_PAGE_VISIBLE_AT_CAPTURE=NO/YES
+VIEWPORT=1448x1086
+SCREENSHOT_COUNT=<0 or 4>
+SCREEN_01_PAGE=OVERVIEW
+SCREEN_02_PAGE=USERS_SELLERS
+SCREEN_03_PAGE=DOCUMENTS_VERIFICATION
+SCREEN_04_PAGE=PAYMENTS_TRANSACTIONS
+SCREEN_01_HASH=<sha256>
+SCREEN_02_HASH=<sha256>
+SCREEN_03_HASH=<sha256>
+SCREEN_04_HASH=<sha256>
+ALL_SCREENSHOT_HASHES_IDENTICAL=NO/YES
+OVERVIEW_CAPTURE=PASS/FAIL
+USERS_CAPTURE=PASS/FAIL
+DOCUMENTS_CAPTURE=PASS/FAIL
+TRANSACTIONS_CAPTURE=PASS/FAIL
+DRIVE_UPLOAD=OK/FAILED_TOOL_UNAVAILABLE
+QA_PUSH=OK/FAIL
+SOURCE_CHANGED=NO
+DATA_CHANGED=NO
+BUILD_RUN=NO
+DEPLOY_RUN=NO
+SOURCE_PROJECT_PUSHED=NO
+FAILED_STEP=NONE/<exact blocker>
+ERROR=NONE/<exact error>
