@@ -1,0 +1,58 @@
+name: V42 exact source extract
+
+on:
+  push:
+    paths:
+      - '.github/workflows/v42-extract-source.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract exact live source and verify hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          ZIP='qa/v42-source-export/67__V42__EXACT-LIVE-SOURCE__20260914-170840.zip'
+          EXPECT_JSX='03b745fc7bf8d950c760475d0743c70b5f40ec015f6d7a4ee268f00dbbe2fba4'
+          EXPECT_CSS='0646d04db8b5428bbdd1e3742fb84b87a183d9c32e569bcb212d517e00744f55'
+          rm -rf /tmp/v42-exact
+          mkdir -p /tmp/v42-exact qa/v42-source-export/extracted
+          unzip -j "$ZIP" -d /tmp/v42-exact
+          test -f /tmp/v42-exact/67__V42__SOURCE__AdminDashboard.jsx
+          test -f /tmp/v42-exact/67__V42__SOURCE__AdminDashboard.v42.css
+          ACTUAL_JSX="$(sha256sum /tmp/v42-exact/67__V42__SOURCE__AdminDashboard.jsx | awk '{print $1}')"
+          ACTUAL_CSS="$(sha256sum /tmp/v42-exact/67__V42__SOURCE__AdminDashboard.v42.css | awk '{print $1}')"
+          test "$ACTUAL_JSX" = "$EXPECT_JSX"
+          test "$ACTUAL_CSS" = "$EXPECT_CSS"
+          cp /tmp/v42-exact/67__V42__SOURCE__AdminDashboard.jsx qa/v42-source-export/extracted/AdminDashboard.jsx
+          cp /tmp/v42-exact/67__V42__SOURCE__AdminDashboard.v42.css qa/v42-source-export/extracted/AdminDashboard.v42.css
+          printf '%s  %s\n%s  %s\n' \
+            "$ACTUAL_JSX" 'AdminDashboard.jsx' \
+            "$ACTUAL_CSS" 'AdminDashboard.v42.css' \
+            > qa/v42-source-export/extracted/SHA256SUMS.txt
+
+      - name: Commit verified extracted source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add qa/v42-source-export/extracted/AdminDashboard.jsx \
+                  qa/v42-source-export/extracted/AdminDashboard.v42.css \
+                  qa/v42-source-export/extracted/SHA256SUMS.txt
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'qa: extract verified V42 live source'
+          git push
