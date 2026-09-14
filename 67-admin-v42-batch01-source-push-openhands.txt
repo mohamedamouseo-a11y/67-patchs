@@ -1,0 +1,189 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V42
+ACTION=SOURCE_PUSH_AFTER_CHATGPT_VISUAL_APPROVAL
+STATUS=APPROVED_FOR_SOURCE_PUSH
+==================================================
+
+LIVE_SITE=https://sixty-seven.net/admin/
+PROJECT_ROOT=/67
+SOURCE_REPOSITORY=mohamedamouseo-a11y/developer-hub-67
+TARGET_BRANCH=main
+
+CHATGPT_VISUAL_APPROVAL=PASS
+REFERENCE_BATCH=01
+APPROVED_SCREENS=4
+
+APPROVED VISUAL STATE
+- Overview
+- Users / Sellers
+- Documents / Verification
+- Payments / Transactions
+
+IMPORTANT
+The authenticated V42-R1 recapture was manually reviewed against the original Batch 01 references.
+The four screens are approved as the Batch 01 visual baseline.
+Live-data row/count differences are NOT design regressions.
+
+THIS TASK IS SOURCE PUSH ONLY.
+DO NOT redesign anything.
+DO NOT create V43.
+DO NOT change runtime visuals.
+DO NOT change data or logic.
+DO NOT touch backend/auth/database.
+DO NOT push QA screenshots into the source repository.
+DO NOT force-push.
+
+==================================================
+STEP 1 — VERIFY CURRENT WORKTREE
+==================================================
+
+cd /67
+
+Require:
+- src/pages/AdminDashboard.jsx exists
+- src/pages/AdminDashboard.v42.css exists
+- AdminDashboard.jsx imports AdminDashboard.v42.css exactly once
+- no later AdminDashboard.v43+ stylesheet is active
+
+Print:
+CURRENT_BRANCH=$(git branch --show-current)
+CURRENT_HEAD=$(git rev-parse HEAD)
+
+Require CURRENT_BRANCH=main.
+If not main, STOP and report the exact branch.
+
+Verify origin points to:
+mohamedamouseo-a11y/developer-hub-67
+
+Do not change origin if it does not match; STOP instead.
+
+==================================================
+STEP 2 — PROTECTED CHANGE SCOPE
+==================================================
+
+The intended source commit is limited to the final approved V42 source implementation.
+
+Primary intended files:
+1. src/pages/AdminDashboard.jsx
+2. src/pages/AdminDashboard.v42.css
+
+Do NOT add:
+- QA screenshots
+- Google Drive files
+- /tmp files
+- credentials
+- build output/dist
+- node_modules
+- V33/V34/V35/V36/V37/V38/V39/V40/V41 patch artifacts unless already tracked and genuinely required by the current source import graph
+
+Before staging, run:
+git status --short
+
+git diff -- src/pages/AdminDashboard.jsx src/pages/AdminDashboard.v42.css
+
+Verify no backend/API/auth/data source files were modified for this Batch 01 UI work.
+
+If unrelated tracked modifications exist, DO NOT include them in the commit.
+
+==================================================
+STEP 3 — FINAL BUILD
+==================================================
+
+Run:
+npm run build
+
+Require BUILD=PASS.
+
+If build fails:
+- DO NOT commit
+- DO NOT push
+- report exact error
+
+==================================================
+STEP 4 — STAGE ONLY APPROVED SOURCE FILES
+==================================================
+
+git add src/pages/AdminDashboard.jsx src/pages/AdminDashboard.v42.css
+
+Then print:
+git diff --cached --name-only
+
+Expected staged source scope:
+src/pages/AdminDashboard.jsx
+src/pages/AdminDashboard.v42.css
+
+If additional files are staged, unstage them before continuing.
+
+==================================================
+STEP 5 — COMMIT
+==================================================
+
+Commit message exactly:
+
+feat(admin): apply V42 reference batch 01 multiscreen redesign
+
+Create the commit only after the staged-file check passes.
+
+Record:
+SOURCE_COMMIT_SHA=$(git rev-parse HEAD)
+
+==================================================
+STEP 6 — SAFE PUSH
+==================================================
+
+Run:
+git fetch origin main
+
+Verify the push is fast-forward compatible.
+Do NOT rebase automatically if there is a conflict.
+Do NOT reset --hard.
+Do NOT force-push.
+
+If origin/main moved and the push is not fast-forward:
+STOP and report SOURCE_PUSH_BLOCKED_REMOTE_MOVED.
+
+Otherwise push:
+git push origin main
+
+==================================================
+STEP 7 — VERIFY REMOTE SOURCE
+==================================================
+
+After push, verify origin/main resolves to the new commit:
+
+git rev-parse origin/main
+
+Confirm:
+- AdminDashboard.jsx on source main imports './AdminDashboard.v42.css'
+- AdminDashboard.v42.css exists on source main
+- source commit is visible remotely
+
+Do NOT modify live runtime after source push unless required only to verify current live state remains unchanged.
+
+==================================================
+FINAL REPORT
+==================================================
+
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V42
+ACTION=SOURCE_PUSH_AFTER_CHATGPT_VISUAL_APPROVAL
+CHATGPT_VISUAL_APPROVAL=PASS
+REFERENCE_BATCH_01_FIDELITY=PASS
+BUILD=<PASS/FAIL>
+CURRENT_BRANCH=<branch>
+STAGED_FILES=<comma-separated files>
+SOURCE_COMMIT_SHA=<sha or NONE>
+SOURCE_PUSH=<OK/BLOCKED/FAIL>
+REMOTE_MAIN_SHA=<sha or UNKNOWN>
+REMOTE_V42_IMPORT_VERIFIED=<YES/NO>
+REMOTE_V42_CSS_VERIFIED=<YES/NO>
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+QA_SCREENSHOTS_PUSHED_TO_SOURCE=NO
+FORCE_PUSH_USED=NO
+FAILED_STEP=<NONE or exact step>
+ERROR=<NONE or exact error>
+==================================================
