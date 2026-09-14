@@ -1,0 +1,642 @@
+/* SIX SEVEN ADMIN V38 — EXACT REFERENCE LOCK MASTER
+   Target: user-approved 1448x1086 reference image.
+   This stylesheet is standalone for the V38 Overview DOM.
+*/
+:root{
+  --v38-side:200px;
+  --v38-gap:8px;
+  --v38-bg:#f7f2e8;
+  --v38-paper:#fffdf8;
+  --v38-paper2:#fbf5e9;
+  --v38-ink:#07111a;
+  --v38-ink2:#0b1721;
+  --v38-gold:#d7a126;
+  --v38-gold2:#f0c65d;
+  --v38-green:#22b985;
+  --v38-cyan:#2fc5bf;
+  --v38-blue:#2d86d8;
+  --v38-red:#d71f28;
+  --v38-line:rgba(169,116,20,.22);
+  --v38-shadow:0 6px 18px rgba(75,51,8,.065);
+}
+html,body,#root{background:var(--v38-bg)!important}
+body .admin-exec,body .admin-exec *{box-sizing:border-box}
+body .admin-exec{background:linear-gradient(180deg,#fff 0%,#fbf9f4 48%,#f7f2e8 100%)!important;color:var(--v38-ink)!important}
+body .admin-exec canvas{display:none!important}
+
+/* EXACT PAGE LOCK: reference sidebar begins at x≈1249 on 1448px viewport. */
+body .admin-exec>div[style*="marginRight"]{
+  margin-right:200px!important;
+  padding:0 8px 14px 14px!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  overflow:visible!important;
+}
+body .admin-exec .v38-dashboard{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  position:relative!important;
+  overflow:visible!important;
+}
+body .admin-exec .v38-dashboard>*{min-width:0!important;max-width:100%!important}
+
+/* SIDEBAR — exact 200px fixed rail */
+body .admin-exec .admin-sidebar{
+  width:200px!important;min-width:200px!important;max-width:200px!important;
+  right:0!important;left:auto!important;top:0!important;bottom:0!important;height:100dvh!important;
+  padding:9px 8px 9px!important;gap:3px!important;overflow-y:auto!important;overflow-x:hidden!important;
+  background:radial-gradient(circle at 50% 2%,rgba(222,174,45,.10),transparent 22%),linear-gradient(180deg,#061018 0%,#07111a 55%,#03080d 100%)!important;
+  border-left:1px solid rgba(214,166,46,.29)!important;box-shadow:-8px 0 24px rgba(0,0,0,.15)!important;z-index:100!important;
+}
+body .admin-exec .admin-sidebar__brand{min-height:118px!important;max-height:118px!important;padding:5px 8px 7px!important;border:1px solid rgba(214,166,46,.25)!important;border-radius:13px!important;background:linear-gradient(180deg,rgba(218,171,48,.08),rgba(255,255,255,.01))!important}
+body .admin-exec .admin-sidebar__official-logo{width:124px!important;max-height:65px!important;object-fit:contain!important;margin:0 auto!important}
+body .admin-exec .admin-sidebar__brand-text h2{margin:0!important;font-size:12.5px!important;line-height:1.15!important;color:#efcf69!important}
+body .admin-exec .admin-sidebar__brand-text span{font-size:7px!important;color:#8f958f!important}
+body .admin-exec .back-btn{top:10px!important;left:9px!important;width:26px!important;height:26px!important;padding:0!important;border-radius:8px!important;color:#dfb953!important;background:rgba(255,255,255,.025)!important;border-color:rgba(215,167,47,.26)!important}
+body .admin-exec .admin-sidebar__group-label{margin:7px 8px 2px!important;font-size:7px!important;letter-spacing:.8px!important;color:#a77a18!important}
+body .admin-exec .admin-sidebar-button{min-height:37px!important;padding:6px 8px!important;border-radius:9px!important;font-size:9.1px!important;line-height:1.1!important;color:#eee9df!important;background:rgba(255,255,255,.012)!important;border:1px solid rgba(214,166,46,.15)!important;white-space:nowrap!important;overflow:hidden!important}
+body .admin-exec .admin-sidebar-button .sb-ico{width:15px!important;height:15px!important;min-width:15px!important;color:#b88a29!important}
+body .admin-exec .admin-sidebar-button.active{background:linear-gradient(90deg,rgba(199,144,25,.39),rgba(214,165,43,.09))!important;border-color:rgba(230,187,77,.58)!important;color:#fff3c5!important;box-shadow:inset 3px 0 0 #e4b94e,0 0 14px rgba(207,153,31,.20)!important}
+body .admin-exec .ref-v36-sidebar-promo{height:178px!important;min-height:178px!important;max-height:178px!important;margin:8px 0 6px!important;padding:20px 12px 88px!important;border-radius:13px!important;overflow:hidden!important;border:1px solid rgba(215,167,47,.25)!important;background:linear-gradient(180deg,rgba(5,10,15,.12),rgba(5,10,15,.90)),url('../assets/admin-v29.4-hero-highres.jpg') center 63%/cover no-repeat!important;color:#efd476!important}
+body .admin-exec .ref-v36-sidebar-promo strong{display:block!important;font-size:10.5px!important;line-height:1.25!important}.admin-exec .ref-v36-sidebar-promo span{display:block!important;margin-top:3px!important;font-size:7px!important;line-height:1.35!important;color:#d9c58d!important}
+body .admin-exec .admin-sidebar__footer{margin-top:auto!important;padding:0!important;border:0!important;background:transparent!important;flex-shrink:0!important}
+body .admin-exec .admin-sidebar__footer::before{display:none!important;content:none!important}
+body .admin-exec .admin-sidebar__identity.ref-v36-admin{min-height:55px!important;margin:0 0 4px!important;padding:7px 8px!important;border-radius:10px!important;background:#0b151f!important;border:1px solid rgba(215,167,47,.19)!important}
+body .admin-exec .admin-sidebar__identity-avatar{width:32px!important;height:32px!important;font-size:9px!important;background:linear-gradient(145deg,#ffe7a0,#bd8520)!important;color:#111!important}
+body .admin-exec .admin-sidebar__identity-info strong{font-size:8.7px!important;color:#fff!important}.admin-exec .admin-sidebar__identity-info small{font-size:6.4px!important;color:#8f989f!important}
+body .admin-exec .admin-sidebar-button--logout{min-height:38px!important;background:#0b1117!important;color:#ddd!important}
+
+/* HERO — y≈0..175 */
+body .admin-exec .v38-hero{
+  position:relative!important;width:100%!important;height:176px!important;min-height:176px!important;max-height:176px!important;
+  border-radius:15px!important;overflow:hidden!important;isolation:isolate!important;
+  background:#06090d var(--v38-hero) center 53%/cover no-repeat!important;
+  border:1px solid rgba(214,166,46,.31)!important;box-shadow:0 13px 30px rgba(0,0,0,.17)!important;color:#fff!important;
+}
+body .admin-exec .v38-hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(1,4,7,.78) 0%,rgba(1,4,7,.18) 27%,rgba(0,0,0,.03) 50%,rgba(1,4,7,.18) 73%,rgba(1,4,7,.74) 100%),linear-gradient(180deg,rgba(0,0,0,.04),transparent 61%,rgba(0,0,0,.34))}
+body .admin-exec .v38-hero>*{position:relative;z-index:3}
+body .admin-exec .v38-hero-tools{position:absolute!important;left:17px!important;top:13px!important;display:flex!important;align-items:center!important;gap:7px!important;direction:ltr!important}
+body .admin-exec .v38-admin-mini{display:flex!important;align-items:center!important;gap:6px!important;direction:rtl!important;color:#f0d171!important}.admin-exec .v38-admin-mini__avatar{width:27px!important;height:27px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:rgba(8,15,22,.87)!important;border:1px solid rgba(222,177,61,.42)!important}.admin-exec .v38-admin-mini b{display:block!important;font-size:7.4px!important;line-height:1.05!important}.admin-exec .v38-admin-mini small{display:block!important;font-size:6.2px!important;color:#fff0bf!important}
+body .admin-exec .v38-tool-dot{width:26px!important;height:26px!important;border-radius:50%!important;display:grid!important;place-items:center!important;color:#d9cba8!important;background:rgba(4,9,13,.73)!important;border:1px solid rgba(255,255,255,.10)!important}
+body .admin-exec .v38-hero-copy-left{position:absolute!important;left:22px!important;top:56px!important;width:430px!important;text-align:left!important;direction:rtl!important}.admin-exec .v38-hero-copy-left h1{margin:0 0 4px!important;font-size:24px!important;line-height:1.1!important;font-weight:900!important;color:#fff0c4!important;text-shadow:0 3px 14px rgba(0,0,0,.74)!important}.admin-exec .v38-hero-copy-left h1 span{color:#f2d26d!important}.admin-exec .v38-hero-copy-left p{margin:0!important;font-size:8px!important;color:#ece8dc!important;line-height:1.4!important}
+body .admin-exec .v38-hero-copy-right{position:absolute!important;right:30px!important;top:52px!important;width:210px!important;text-align:right!important;direction:rtl!important}.admin-exec .v38-hero-copy-right span{display:block!important;font-size:11px!important;font-weight:900!important;color:#fff3cb!important}.admin-exec .v38-hero-copy-right strong{display:block!important;margin:2px 0 4px!important;font-size:16px!important;color:#f0d069!important}.admin-exec .v38-hero-copy-right small{font-size:5.8px!important;letter-spacing:1.5px!important;color:#d8c9a5!important;white-space:nowrap!important}
+body .admin-exec .v38-datebar{position:absolute!important;left:17px!important;bottom:9px!important;width:760px!important;height:36px!important;display:flex!important;align-items:center!important;gap:4px!important;padding:3px!important;border-radius:9px!important;background:rgba(3,8,13,.91)!important;border:1px solid rgba(221,177,62,.29)!important;box-shadow:0 7px 17px rgba(0,0,0,.25)!important;direction:ltr!important}
+body .admin-exec .v38-date-display{height:28px!important;flex:1 1 320px!important;min-width:260px!important;padding:0 8px!important;display:flex!important;align-items:center!important;gap:6px!important;border-radius:7px!important;background:rgba(255,255,255,.018)!important;border:1px solid rgba(215,167,47,.22)!important;color:#ddd0aa!important}.admin-exec .v38-date-display span{display:flex!important;flex-direction:column!important;align-items:flex-start!important;line-height:1.05!important}.admin-exec .v38-date-display small{font-size:5.5px!important;color:#877f70!important}.admin-exec .v38-date-display strong{font-size:7.6px!important;color:#f4efe1!important}
+body .admin-exec .v38-date-presets{display:flex!important;align-items:center!important;gap:3px!important;height:28px!important}.admin-exec .v38-date-presets button{height:28px!important;min-width:65px!important;padding:0 9px!important;border-radius:7px!important;font-size:6.8px!important;color:#d8d0c1!important;background:rgba(255,255,255,.025)!important;border:1px solid rgba(255,255,255,.07)!important}.admin-exec .v38-date-presets button.active{background:rgba(207,153,34,.22)!important;color:#f4d374!important;border-color:rgba(223,181,70,.43)!important}
+body .admin-exec .v38-date-actions{display:flex!important;gap:3px!important}.admin-exec .v38-date-actions button{width:28px!important;height:28px!important;padding:0!important;display:grid!important;place-items:center!important;border-radius:7px!important;color:#d5bd70!important;background:rgba(255,255,255,.025)!important;border:1px solid rgba(255,255,255,.07)!important}
+body .admin-exec .v38-hero-redline{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:3px!important;z-index:5!important;background:linear-gradient(90deg,transparent,#981117 13%,#d71f28 44%,#d71f28 72%,#7e1115 90%,transparent)!important;box-shadow:0 0 11px rgba(215,31,40,.30)!important}
+
+/* Date popover overlays the page and MUST NOT change overview geometry. */
+body .admin-exec .v38-date-popover{position:absolute!important;z-index:250!important;top:145px!important;left:28px!important;width:520px!important;min-height:210px!important;padding:14px!important;border-radius:13px!important;background:linear-gradient(180deg,#08111a,#050b11)!important;border:1px solid rgba(217,170,49,.34)!important;box-shadow:0 24px 55px rgba(0,0,0,.38)!important;color:#fff!important;direction:rtl!important}
+body .admin-exec .v38-date-popover__head{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:14px!important;margin-bottom:12px!important}.admin-exec .v38-date-popover__head strong{display:block!important;font-size:13px!important;color:#fff0c5!important}.admin-exec .v38-date-popover__head small{display:block!important;margin-top:3px!important;font-size:8px!important;color:#8f989f!important}.admin-exec .v38-date-popover__badge{padding:5px 9px!important;border-radius:999px!important;font-size:7px!important;color:#e6c66b!important;background:rgba(218,169,45,.10)!important;border:1px solid rgba(218,169,45,.23)!important}
+body .admin-exec .v38-date-popover__fields{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important}.admin-exec .v38-date-field{display:flex!important;flex-direction:column!important;gap:5px!important;padding:10px!important;border-radius:10px!important;background:#0b151f!important;border:1px solid rgba(218,169,45,.16)!important}.admin-exec .v38-date-field span{font-size:7px!important;color:#d9b85d!important}.admin-exec .v38-date-field input{height:34px!important;border-radius:7px!important;border:1px solid rgba(218,169,45,.20)!important;background:#08111a!important;color:#fff!important;padding:0 8px!important}
+body .admin-exec .v38-date-popover__foot{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin-top:12px!important}.admin-exec .v38-date-popover__foot>span{font-size:7px!important;color:#8f989f!important}.admin-exec .v38-date-popover__buttons{display:flex!important;gap:6px!important}.admin-exec .v38-date-popover__buttons button{height:31px!important;padding:0 13px!important;border-radius:7px!important;font-size:8px!important}.admin-exec .v38-date-close{background:#111a23!important;color:#ddd!important;border:1px solid rgba(255,255,255,.08)!important}.admin-exec .v38-date-apply{background:linear-gradient(180deg,#f0c75d,#c9911d)!important;color:#17120a!important;border:0!important;font-weight:900!important}
+
+/* KPI ROW — y≈180..281 */
+body .admin-exec .v38-kpis{width:100%!important;height:90px!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;direction:rtl!important}
+body .admin-exec .v38-kpi{position:relative!important;height:90px!important;min-height:90px!important;max-height:90px!important;padding:9px 12px 9px!important;border-radius:11px!important;overflow:hidden!important;background:linear-gradient(180deg,#fffefa,#fbf6eb)!important;border:1px solid rgba(195,137,19,.23)!important;box-shadow:0 5px 15px rgba(87,57,9,.045)!important}.admin-exec .v38-kpi::after{content:"";position:absolute;left:14px;bottom:10px;width:100px;height:21px;opacity:.72;background-repeat:no-repeat;background-size:100% 100%;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24'%3E%3Cpath d='M0 18 C10 18 10 6 22 8 S38 22 50 14 S64 3 76 10 S88 17 100 9' fill='none' stroke='%2329bda5' stroke-width='1.5'/%3E%3C/svg%3E")}.admin-exec .v38-kpi--seller::after{filter:hue-rotate(250deg)}.admin-exec .v38-kpi--user::after{filter:hue-rotate(160deg)}
+body .admin-exec .v38-kpi__top{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:8px!important}.admin-exec .v38-kpi__top>span:first-child{font-size:8px!important;color:#766e63!important;font-weight:700!important}.admin-exec .v38-kpi__ico{width:31px!important;height:31px!important;border-radius:8px!important;display:grid!important;place-items:center!important;color:#b77d12!important;background:#fff7df!important;border:1px solid rgba(190,132,18,.20)!important}
+body .admin-exec .v38-kpi__value{margin-top:-5px!important;font-size:22px!important;line-height:1!important;font-weight:950!important;color:#08111a!important}.admin-exec .v38-kpi__value small{font-size:6px!important;font-weight:800!important;color:#746b5f!important}
+body .admin-exec .v38-kpi__foot{display:flex!important;align-items:center!important;gap:4px!important;margin-top:7px!important;font-size:6.3px!important;color:#7c756b!important}.admin-exec .v38-kpi__foot b{color:#18a978!important;font-size:7.3px!important}
+
+/* SYSTEM HEALTH — y≈283..377 */
+body .admin-exec .v38-health{width:100%!important;height:94px!important;min-height:94px!important;max-height:94px!important;display:grid!important;grid-template-columns:190px minmax(0,1fr) 292px!important;gap:7px!important;padding:8px 10px!important;border-radius:11px!important;overflow:hidden!important;background:linear-gradient(90deg,#071019,#0b1823 72%,#071019)!important;border:1px solid rgba(214,166,46,.19)!important;box-shadow:0 7px 18px rgba(0,0,0,.13)!important;color:#fff!important;direction:ltr!important}
+body .admin-exec .v38-health__status{min-width:0!important;display:flex!important;flex-direction:column!important;justify-content:center!important;padding:0 8px!important;direction:rtl!important}.admin-exec .v38-health__status h3{margin:0 0 3px!important;font-size:9px!important;color:#f0eee8!important}.admin-exec .v38-health__stable{display:inline-flex!important;align-items:center!important;gap:5px!important;align-self:flex-start!important;padding:4px 8px!important;border-radius:7px!important;background:rgba(21,177,122,.13)!important;color:#6be0b3!important;font-size:6.8px!important;font-weight:800!important}.admin-exec .v38-health__status p{margin:4px 0 0!important;font-size:6.4px!important;line-height:1.3!important;color:#98a1a8!important}.admin-exec .v38-dot{width:6px!important;height:6px!important;border-radius:50%!important;background:#25d392!important;box-shadow:0 0 7px rgba(37,211,146,.65)!important}
+body .admin-exec .v38-health__metrics{min-width:0!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;align-items:stretch!important}.admin-exec .v38-health-metric{min-width:0!important;height:76px!important;padding:8px 10px!important;border-radius:8px!important;background:linear-gradient(180deg,#102231,#0d1c28)!important;border:1px solid rgba(255,255,255,.055)!important;overflow:hidden!important}.admin-exec .v38-health-metric__head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:5px!important}.admin-exec .v38-health-metric__head span{font-size:6px!important;color:#85939e!important;white-space:nowrap!important}.admin-exec .v38-health-metric__ico{width:22px!important;height:22px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:rgba(46,196,188,.10)!important;color:#5edbd4!important}.admin-exec .v38-health-metric strong{display:block!important;margin-top:3px!important;font-size:16px!important;line-height:1!important;color:#fff!important}.admin-exec .v38-health-metric small{display:block!important;margin-top:5px!important;font-size:5.4px!important;color:#6f7d87!important;white-space:nowrap!important}
+body .admin-exec .v38-health__scene{height:76px!important;border-radius:9px!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;padding:10px 12px!important;text-align:right!important;direction:rtl!important;background:linear-gradient(90deg,rgba(3,8,12,.05),rgba(3,8,12,.76)),url('../assets/admin-v29.4-hero-highres.jpg') 70% 56%/cover no-repeat!important;border:1px solid rgba(215,167,47,.10)!important}.admin-exec .v38-health__scene h4{margin:0!important;font-size:10px!important;line-height:1.25!important;color:#f0d16d!important}.admin-exec .v38-health__scene small{display:block!important;margin-top:3px!important;font-size:4.8px!important;letter-spacing:1.2px!important;color:#d9cdb0!important}
+
+/* REVENUE — exact full width, y≈385..659 */
+body .admin-exec .v38-revenue{width:100%!important;height:276px!important;min-height:276px!important;max-height:276px!important;padding:8px 10px 10px!important;border-radius:12px!important;overflow:hidden!important;background:linear-gradient(180deg,#fffefa,#fffaf1)!important;border:1px solid rgba(186,129,18,.23)!important;box-shadow:var(--v38-shadow)!important;direction:rtl!important}
+body .admin-exec .v38-section-head{height:32px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important}.admin-exec .v38-section-title{display:flex!important;align-items:center!important;gap:7px!important}.admin-exec .v38-section-title__ico{width:29px!important;height:29px!important;border-radius:8px!important;display:grid!important;place-items:center!important;color:#b67b10!important;background:#fff4d4!important;border:1px solid rgba(184,126,16,.20)!important}.admin-exec .v38-section-title h3{margin:0!important;font-size:10px!important;line-height:1!important;color:#101820!important}.admin-exec .v38-section-title small{display:block!important;margin-top:3px!important;font-size:5.8px!important;color:#8a8175!important}.admin-exec .v38-period{padding:4px 8px!important;border-radius:999px!important;font-size:6px!important;color:#9c6d14!important;background:#fff7e3!important;border:1px solid rgba(184,126,16,.18)!important}
+body .admin-exec .v38-rev-stats{height:43px!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;margin:4px 0 6px!important}.admin-exec .v38-rev-stat{padding:6px 9px!important;border-radius:8px!important;background:#fffdf9!important;border:1px solid rgba(152,117,53,.13)!important;overflow:hidden!important}.admin-exec .v38-rev-stat span{display:block!important;font-size:5.7px!important;color:#8c8377!important}.admin-exec .v38-rev-stat strong{display:block!important;margin-top:3px!important;font-size:10.4px!important;color:#151c22!important}.admin-exec .v38-rev-stat--green strong{color:#0da875!important}
+body .admin-exec .v38-rev-visual{height:173px!important;display:grid!important;grid-template-columns:minmax(0,1fr) 278px!important;gap:9px!important;direction:ltr!important;overflow:hidden!important}.admin-exec .v38-chart{position:relative!important;height:173px!important;min-width:0!important;padding:21px 6px 0!important;border-radius:9px!important;overflow:hidden!important;background:#fff!important;border:1px solid rgba(150,116,52,.10)!important}.admin-exec .v38-chart-toolbar{position:absolute!important;right:8px!important;top:6px!important;display:flex!important;gap:5px!important;direction:rtl!important}.admin-exec .v38-chart-toolbar span{padding:3px 7px!important;border-radius:6px!important;font-size:5.7px!important;color:#82796e!important;background:#fffaf0!important;border:1px solid rgba(156,118,48,.12)!important}
+body .admin-exec .v38-donut{height:173px!important;padding:10px 11px!important;display:grid!important;grid-template-columns:112px minmax(0,1fr)!important;align-items:center!important;gap:7px!important;border-radius:10px!important;overflow:hidden!important;background:linear-gradient(180deg,#0d1b27,#08131d)!important;border:1px solid rgba(218,169,48,.19)!important;color:#fff!important;direction:ltr!important}.admin-exec .v38-donut-ring{position:relative!important;width:104px!important;height:104px!important;border-radius:50%!important;display:grid!important;place-items:center!important;flex:none!important}.admin-exec .v38-donut-ring::before{content:"";position:absolute;inset:10px;border-radius:50%;background:#0a1621!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.045)!important}.admin-exec .v38-donut-core{position:relative!important;z-index:2!important;width:76px!important;height:76px!important;border-radius:50%!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important}.admin-exec .v38-donut-core strong{font-size:13px!important;line-height:1!important}.admin-exec .v38-donut-core small{font-size:6px!important;color:#ccc2b2!important}.admin-exec .v38-donut-copy{min-width:0!important;direction:rtl!important;text-align:right!important}.admin-exec .v38-donut-copy h4{margin:0 0 8px!important;font-size:9px!important;color:#f5e7bc!important}.admin-exec .v38-donut-legend{display:flex!important;flex-direction:column!important;gap:6px!important}.admin-exec .v38-donut-legend span{display:flex!important;align-items:center!important;gap:5px!important;font-size:6.3px!important;color:#d5d0c7!important;white-space:nowrap!important}.admin-exec .v38-donut-legend i{width:7px!important;height:7px!important;border-radius:50%!important;display:inline-block!important}.admin-exec .v38-donut-legend i.g{background:#dfa72c!important}.admin-exec .v38-donut-legend i.c{background:#31c8c1!important}.admin-exec .v38-donut-legend i.b{background:#2d87d8!important}.admin-exec .v38-donut-foot{display:flex!important;align-items:center!important;gap:5px!important;margin-top:9px!important}.admin-exec .v38-donut-foot b{padding:3px 6px!important;border-radius:999px!important;background:rgba(24,181,128,.14)!important;color:#55dbac!important;font-size:6.4px!important}.admin-exec .v38-donut-foot span{font-size:5.3px!important;color:#7f8a91!important}
+
+/* OPERATIONS — y≈676..919, exact 50/50 */
+body .admin-exec .v38-ops-grid{width:100%!important;height:238px!important;min-height:238px!important;max-height:238px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;direction:ltr!important;overflow:hidden!important}.admin-exec .v38-live,.admin-exec .v38-current{height:238px!important;min-height:238px!important;max-height:238px!important;border-radius:12px!important;overflow:hidden!important}
+body .admin-exec .v38-live{padding:9px 10px!important;background:linear-gradient(180deg,#0c1823,#07121b)!important;border:1px solid rgba(218,169,48,.18)!important;color:#fff!important;direction:rtl!important}.admin-exec .v38-current{padding:9px 10px!important;background:linear-gradient(180deg,#fffefa,#fbf6eb)!important;border:1px solid rgba(185,129,19,.21)!important;color:#111820!important;direction:rtl!important}
+body .admin-exec .v38-ops-head{height:35px!important;display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:8px!important;border-bottom:1px solid rgba(255,255,255,.06)!important}.admin-exec .v38-current .v38-ops-head{border-bottom-color:rgba(149,112,45,.12)!important}.admin-exec .v38-ops-head h3{margin:0!important;font-size:9.5px!important;line-height:1!important}.admin-exec .v38-ops-head small{display:block!important;margin-top:3px!important;font-size:5.6px!important;color:#8c979f!important}.admin-exec .v38-ops-head button{height:24px!important;padding:0 8px!important;border-radius:7px!important;font-size:5.8px!important;color:#dfc678!important;background:rgba(216,167,45,.08)!important;border:1px solid rgba(216,167,45,.18)!important}
+body .admin-exec .v38-live-list{display:flex!important;flex-direction:column!important;gap:4px!important;margin-top:6px!important}.admin-exec .v38-live-row{height:31px!important;min-height:31px!important;padding:5px 7px!important;display:grid!important;grid-template-columns:22px minmax(0,1fr) 70px!important;align-items:center!important;gap:6px!important;border-radius:7px!important;background:rgba(255,255,255,.025)!important;border:1px solid rgba(255,255,255,.055)!important;overflow:hidden!important}.admin-exec .v38-live-row__ico{width:21px!important;height:21px!important;border-radius:7px!important;display:grid!important;place-items:center!important;color:#4bd9b2!important;background:rgba(32,183,135,.10)!important}.admin-exec .v38-live-row__text{min-width:0!important;font-size:6.5px!important;color:#eef1f3!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.admin-exec .v38-live-row__time{font-size:5.3px!important;color:#7f8b94!important;text-align:left!important;white-space:nowrap!important}
+body .admin-exec .v38-live-summary{height:39px!important;margin-top:6px!important;display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:5px!important}.admin-exec .v38-live-summary>div{padding:5px!important;border-radius:7px!important;background:rgba(255,255,255,.028)!important;border:1px solid rgba(255,255,255,.055)!important;text-align:center!important}.admin-exec .v38-live-summary strong{display:block!important;font-size:9px!important;color:#f1cc65!important}.admin-exec .v38-live-summary span{display:block!important;margin-top:2px!important;font-size:5px!important;color:#7f8b94!important}
+body .admin-exec .v38-current-summary{height:40px!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:5px!important;margin:6px 0!important}.admin-exec .v38-current-summary>div{padding:5px!important;border-radius:7px!important;text-align:center!important;background:#fffaf0!important;border:1px solid rgba(150,112,43,.12)!important}.admin-exec .v38-current-summary strong{display:block!important;font-size:10px!important}.admin-exec .v38-current-summary span{display:block!important;margin-top:2px!important;font-size:5.3px!important;color:#887f73!important}
+body .admin-exec .v38-current-table{width:100%!important;border-collapse:separate!important;border-spacing:0!important;border:1px solid rgba(149,112,43,.11)!important;border-radius:7px!important;overflow:hidden!important;background:#fff!important}.admin-exec .v38-current-table th{height:21px!important;padding:3px 5px!important;background:#f9efdd!important;font-size:5.2px!important;color:#786f63!important;white-space:nowrap!important}.admin-exec .v38-current-table td{height:25px!important;padding:3px 5px!important;border-top:1px solid rgba(149,112,43,.08)!important;font-size:5.5px!important;color:#2c3339!important;white-space:nowrap!important}.admin-exec .v38-mini-status{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:42px!important;height:17px!important;padding:0 6px!important;border-radius:999px!important;background:#e9f8f2!important;color:#169b6e!important;font-size:5px!important;font-weight:800!important}.admin-exec .v38-mini-status.pending{background:#fff2d7!important;color:#b77a12!important}
+
+/* LEDGER — full width begins around y≈929 */
+body .admin-exec .v38-ledger{width:100%!important;min-width:100%!important;height:170px!important;min-height:170px!important;max-height:170px!important;padding:8px 10px 9px!important;border-radius:12px!important;overflow:hidden!important;background:#fffdf8!important;border:1px solid rgba(184,128,20,.22)!important;box-shadow:var(--v38-shadow)!important;direction:rtl!important}.admin-exec .v38-ledger-head{height:38px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important}.admin-exec .v38-ledger-title{display:flex!important;align-items:center!important;gap:7px!important}.admin-exec .v38-ledger-title__ico{width:28px!important;height:28px!important;border-radius:8px!important;display:grid!important;place-items:center!important;background:#fff4d5!important;color:#b67c11!important;border:1px solid rgba(184,128,20,.20)!important}.admin-exec .v38-ledger-title h3{margin:0!important;font-size:9.5px!important;color:#121920!important}.admin-exec .v38-ledger-title small{display:block!important;margin-top:2px!important;font-size:5.4px!important;color:#8b8275!important}
+body .admin-exec .v38-ledger-tools{display:flex!important;align-items:center!important;gap:5px!important}.admin-exec .v38-ledger-search{width:220px!important;height:28px!important;padding:0 9px!important;border-radius:7px!important;border:1px solid rgba(149,112,43,.14)!important;background:#fff!important;color:#222!important;font-size:6.5px!important}.admin-exec .v38-ledger-tools button{height:28px!important;padding:0 9px!important;display:inline-flex!important;align-items:center!important;gap:4px!important;border-radius:7px!important;font-size:6px!important;background:#fff8e7!important;color:#9b6a11!important;border:1px solid rgba(184,128,20,.18)!important}
+body .admin-exec .v38-ledger-table-wrap{height:112px!important;overflow:hidden!important;border-radius:7px!important;border:1px solid rgba(149,112,43,.11)!important}.admin-exec .v38-ledger-table{width:100%!important;border-collapse:separate!important;border-spacing:0!important;background:#fff!important}.admin-exec .v38-ledger-table th{height:22px!important;padding:4px 5px!important;font-size:5.2px!important;color:#756c60!important;background:#f8edd9!important;white-space:nowrap!important}.admin-exec .v38-ledger-table td{height:22px!important;padding:4px 5px!important;font-size:5.4px!important;color:#283038!important;border-top:1px solid rgba(149,112,43,.07)!important;white-space:nowrap!important}.admin-exec .v38-ledger-table .v38-tx-id{padding:2px 5px!important;border-radius:5px!important;background:#f5f0e7!important;border:1px solid rgba(149,112,43,.10)!important;font-size:5px!important}.admin-exec .v38-ledger-table .v38-amount{display:inline-flex!important;padding:2px 6px!important;border-radius:999px!important;background:#fff4d6!important;color:#9e6b0e!important;font-size:5.1px!important}
+
+@media(max-width:1200px){
+ body .admin-exec .admin-sidebar{width:190px!important;min-width:190px!important;max-width:190px!important}
+ body .admin-exec>div[style*="marginRight"]{margin-right:190px!important;padding-right:6px!important}
+ body .admin-exec .v38-health{grid-template-columns:165px minmax(0,1fr) 250px!important}
+ body .admin-exec .v38-rev-visual{grid-template-columns:minmax(0,1fr) 240px!important}
+ body .admin-exec .v38-donut{grid-template-columns:96px minmax(0,1fr)!important}
+ body .admin-exec .v38-donut-ring{width:90px!important;height:90px!important}
+}
+
+/* ============================================================
+   SIX SEVEN ADMIN V39 — REFERENCE CONVERGENCE
+   Final full-page alignment pass against the approved 1448x1086 reference.
+   V38 geometry is preserved; high-impact composition differences are corrected.
+   ============================================================ */
+
+/* Keep the exact 8px main/sidebar seam from V38. */
+body .admin-exec>div[style*="marginRight"]{margin-right:200px!important;padding-right:8px!important}
+
+/* Reference hero hierarchy — slightly stronger and lower, matching the supplied master image. */
+body .admin-exec .v38-hero-copy-left{top:61px!important;width:455px!important}
+body .admin-exec .v38-hero-copy-left h1{font-size:26px!important;line-height:1.08!important;letter-spacing:-.25px!important}
+body .admin-exec .v38-hero-copy-left p{font-size:8.3px!important;color:#f0eadb!important}
+body .admin-exec .v38-hero-copy-right{top:49px!important;right:29px!important}
+body .admin-exec .v38-hero-copy-right span{font-size:11.5px!important}
+body .admin-exec .v38-hero-copy-right strong{font-size:16.5px!important}
+body .admin-exec .v38-admin-mini b{font-size:8.1px!important}
+body .admin-exec .v38-admin-mini small{font-size:6.6px!important}
+
+/* SYSTEM HEALTH — V38 was physically mirrored vs reference.
+   Exact physical order in reference: STATUS LEFT / 4 METRICS CENTER / SCENE RIGHT. */
+body .admin-exec .v38-health{
+  direction:ltr!important;
+  grid-template-columns:180px minmax(0,1fr) 300px!important;
+  align-items:stretch!important;
+}
+body .admin-exec .v38-health__status{
+  grid-column:1!important;grid-row:1!important;
+  direction:rtl!important;text-align:right!important;
+  border-left:0!important;border-right:0!important;
+}
+body .admin-exec .v38-health__metrics{
+  grid-column:2!important;grid-row:1!important;
+  direction:ltr!important;
+}
+body .admin-exec .v38-health-metric{direction:rtl!important;text-align:right!important}
+body .admin-exec .v38-health__scene{
+  grid-column:3!important;grid-row:1!important;
+  direction:rtl!important;text-align:right!important;
+  background-position:center 58%!important;
+}
+body .admin-exec .v38-health__scene h4{color:#f2d36f!important;font-size:11.5px!important;line-height:1.18!important}
+body .admin-exec .v38-health__scene small{color:#d8ccb0!important;letter-spacing:1.15px!important}
+
+/* REVENUE — reinforce dark donut typography and visual weight to reference. */
+body .admin-exec .v38-donut{background:linear-gradient(180deg,#0b1722,#07111a)!important;border-color:rgba(217,166,44,.25)!important}
+body .admin-exec .v38-donut-copy h4{color:#fff4d2!important;font-weight:900!important}
+body .admin-exec .v38-donut-legend span{color:#e9e2d4!important}
+body .admin-exec .v38-donut-foot span{color:#aaa28f!important}
+body .admin-exec .v38-donut-core strong{color:#fff!important}
+body .admin-exec .v38-chart{background:#fffefb!important}
+
+/* LIVE OPERATIONS — reference uses strong white hierarchy on the dark card. */
+body .admin-exec .v38-live .v38-ops-head h3{color:#fff7df!important;font-weight:900!important}
+body .admin-exec .v38-live .v38-ops-head small{color:#9aa3a8!important}
+body .admin-exec .v38-live .v38-ops-head button{color:#f0cf6b!important;border-color:rgba(218,169,45,.32)!important;background:rgba(218,169,45,.06)!important}
+body .admin-exec .v38-live-summary strong{color:#fff!important}
+body .admin-exec .v38-live-summary span{color:#8d989e!important}
+
+/* CURRENT OPERATIONS — match the three reference status summary tiles. */
+body .admin-exec .v38-current-summary>div:nth-child(1){background:#eef7ff!important;border-color:#d6e8f6!important}
+body .admin-exec .v38-current-summary>div:nth-child(2){background:#fff8e7!important;border-color:#f0dfb5!important}
+body .admin-exec .v38-current-summary>div:nth-child(3){background:#effaf6!important;border-color:#cfeadf!important}
+body .admin-exec .v38-current-summary>div:nth-child(1) strong{color:#2c80c9!important}
+body .admin-exec .v38-current-summary>div:nth-child(2) strong{color:#bb7b11!important}
+body .admin-exec .v38-current-summary>div:nth-child(3) strong{color:#139b72!important}
+
+/* Ledger stays full width; slightly denser rows so the complete block reads like the reference. */
+body .admin-exec .v38-ledger{width:100%!important;max-width:none!important}
+body .admin-exec .v38-ledger-table th{height:24px!important}
+body .admin-exec .v38-ledger-table td{height:25px!important;padding-top:4px!important;padding-bottom:4px!important}
+
+/* Sidebar elements are already visually present in V38; give them V39 aliases and preserve visibility. */
+body .admin-exec .v39-sidebar-promo{display:block!important;visibility:visible!important;opacity:1!important}
+body .admin-exec .v39-sidebar-admin{display:flex!important;visibility:visible!important;opacity:1!important}
+body .admin-exec .v39-hero-greeting{display:flex!important;visibility:visible!important;opacity:1!important}
+body .admin-exec .v39-hero-right-copy{display:block!important;visibility:visible!important;opacity:1!important}
+
+@media(max-width:1500px){
+ body .admin-exec .v38-health{grid-template-columns:178px minmax(0,1fr) 292px!important}
+ body .admin-exec .v38-hero-copy-left{width:440px!important}
+}
+
+/* ============================================================
+   SIX SEVEN ADMIN V40 — REFERENCE FINAL LOCK
+   Manual side-by-side pass against the supplied 1448x1086 master.
+   Preserve V39 geometry. Correct remaining whole-page composition differences.
+   ============================================================ */
+
+/* SIDEBAR: reference packs promo + admin/footer together in lower rail.
+   V39 left a large dead band between promo and identity. */
+body .admin-exec .admin-sidebar{
+  display:flex!important;
+  flex-direction:column!important;
+}
+body .admin-exec .ref-v36-sidebar-promo,
+body .admin-exec .v39-sidebar-promo{
+  margin-top:auto!important;
+  margin-bottom:6px!important;
+  flex:0 0 178px!important;
+}
+body .admin-exec .admin-sidebar__footer{
+  margin-top:0!important;
+  flex:0 0 auto!important;
+}
+body .admin-exec .admin-sidebar__identity.ref-v36-admin,
+body .admin-exec .v39-sidebar-admin{
+  margin-top:0!important;
+}
+
+/* HERO: match the master hierarchy more closely; V39 title was slightly oversized. */
+body .admin-exec .v38-hero-copy-left{
+  top:58px!important;
+  width:445px!important;
+}
+body .admin-exec .v38-hero-copy-left h1{
+  font-size:24.5px!important;
+  line-height:1.08!important;
+  letter-spacing:-.15px!important;
+}
+body .admin-exec .v38-hero-copy-left p{
+  font-size:8px!important;
+  line-height:1.35!important;
+}
+body .admin-exec .v38-hero-copy-right{
+  top:50px!important;
+}
+
+/* SYSTEM HEALTH: keep the approved V39 physical order and tighten metric rhythm. */
+body .admin-exec .v38-health__metrics{gap:6px!important}
+body .admin-exec .v38-health-metric{padding:9px 11px!important}
+body .admin-exec .v38-health-metric strong{font-size:16px!important;line-height:1!important}
+body .admin-exec .v38-health-metric small{font-size:6.6px!important}
+
+/* REVENUE: reference uses a slightly stronger card/plot separation. */
+body .admin-exec .v38-chart{
+  border-right:1px solid rgba(176,126,25,.13)!important;
+}
+body .admin-exec .v38-donut{
+  box-shadow:inset 0 0 0 1px rgba(224,179,67,.08)!important;
+}
+body .admin-exec .v38-donut-copy h4{font-size:10.5px!important}
+body .admin-exec .v38-donut-legend span{font-size:7px!important;line-height:1.45!important}
+
+/* OPERATIONS: readable reference density, without changing rows/data. */
+body .admin-exec .v38-live-list>div{
+  min-height:33px!important;
+  border-color:rgba(255,255,255,.075)!important;
+}
+body .admin-exec .v38-live-list>div>*{opacity:1!important}
+body .admin-exec .v38-live-summary>div{background:rgba(255,255,255,.025)!important}
+body .admin-exec .v40-current-summary>div{
+  min-height:54px!important;
+  box-shadow:0 2px 7px rgba(72,51,13,.025)!important;
+}
+body .admin-exec .v40-current-summary>div strong{font-size:14px!important;line-height:1!important}
+body .admin-exec .v40-current-summary>div span{font-size:6.8px!important}
+body .admin-exec .v38-current-table th,
+body .admin-exec .v38-current-table td{font-size:7px!important}
+
+/* LEDGER: keep full width but raise text legibility to the reference. */
+body .admin-exec .v38-ledger-table th{font-size:7px!important}
+body .admin-exec .v38-ledger-table td{font-size:7.1px!important}
+body .admin-exec .v38-ledger-search{font-size:7.2px!important}
+body .admin-exec .v38-ledger-filter,
+body .admin-exec .v38-ledger-export{font-size:7.2px!important}
+
+@media(max-width:1500px){
+  body .admin-exec .v38-hero-copy-left{width:430px!important}
+  body .admin-exec .ref-v36-sidebar-promo,
+  body .admin-exec .v39-sidebar-promo{flex-basis:172px!important;height:172px!important;min-height:172px!important;max-height:172px!important}
+}
+
+/* ============================================================
+   SIX SEVEN ADMIN V41 — MANUAL REFERENCE MATCH
+   Derived from direct side-by-side review of V40 against the approved 1448x1086 reference.
+   Preserve V40 geometry and application logic. Fix the remaining visible design mismatches.
+   ============================================================ */
+
+/* 1) SYSTEM HEALTH — use the original road/light-trail scene asset that matches the reference,
+      instead of recycling the hero/car artwork. */
+body .admin-exec .v38-health__scene,
+body .admin-exec .v39-health-scene{
+  background:
+    linear-gradient(90deg,rgba(5,13,20,.04) 0%,rgba(5,13,20,.28) 48%,rgba(5,13,20,.88) 100%),
+    url('../assets/admin-v17-health.jpg') center 52%/cover no-repeat!important;
+  box-shadow:inset 18px 0 30px rgba(4,10,16,.20)!important;
+}
+body .admin-exec .v38-health__scene h4{
+  font-size:12px!important;
+  line-height:1.15!important;
+  color:#f2d46f!important;
+  text-shadow:0 2px 10px rgba(0,0,0,.75)!important;
+}
+body .admin-exec .v38-health__scene small{font-size:5.8px!important;color:#e4d9ba!important;letter-spacing:1.25px!important}
+
+/* Match the reference's four distinct health metric signals. */
+body .admin-exec .v38-health-metric:nth-child(1) .v38-health-metric__ico{color:#33d0c9!important;background:rgba(51,208,201,.10)!important}
+body .admin-exec .v38-health-metric:nth-child(2) .v38-health-metric__ico{color:#e6ad29!important;background:rgba(230,173,41,.11)!important}
+body .admin-exec .v38-health-metric:nth-child(3) .v38-health-metric__ico{color:#42c9dd!important;background:rgba(66,201,221,.10)!important}
+body .admin-exec .v38-health-metric:nth-child(4) .v38-health-metric__ico{color:#43d7c0!important;background:rgba(67,215,192,.10)!important}
+body .admin-exec .v38-health-metric strong{font-size:17px!important}
+body .admin-exec .v38-health-metric__head span{font-size:6.8px!important;color:#aeb7bb!important}
+
+/* 2) REVENUE — V40 structure is correct, but the approved reference has a stronger analytical plot,
+      persistent point callout, warmer area fill and heavier chart hierarchy. No data is modified. */
+body .admin-exec .v38-chart{position:relative!important;background:linear-gradient(180deg,#fffefb,#fffdf7)!important}
+body .admin-exec .v38-chart::after{content:"";position:absolute;inset:42px 16px 28px 38px;pointer-events:none;background:linear-gradient(180deg,rgba(213,157,28,.035),transparent 74%);border-radius:8px!important}
+body .admin-exec .v41-chart-callout{
+  position:absolute!important;
+  z-index:7!important;
+  left:55%!important;
+  top:42px!important;
+  transform:translateX(-50%)!important;
+  min-width:118px!important;
+  padding:7px 11px!important;
+  border-radius:8px!important;
+  background:#071019!important;
+  border:1px solid rgba(226,180,64,.30)!important;
+  box-shadow:0 7px 16px rgba(0,0,0,.25)!important;
+  text-align:center!important;
+  direction:rtl!important;
+  pointer-events:none!important;
+}
+body .admin-exec .v41-chart-callout span{display:block!important;font-size:6.5px!important;line-height:1.1!important;color:#b8b0a0!important}
+body .admin-exec .v41-chart-callout strong{display:block!important;margin-top:2px!important;font-size:10px!important;line-height:1!important;color:#fff2cb!important}
+body .admin-exec .v38-chart-toolbar{z-index:8!important}
+body .admin-exec .v38-donut-copy h4{font-size:11px!important}
+body .admin-exec .v38-donut-legend{gap:5px!important}
+body .admin-exec .v38-donut-legend span{font-size:7.2px!important}
+body .admin-exec .v38-donut-core strong{font-size:15px!important}
+
+/* 3) OPERATIONS — the reference is denser but more legible, with clear row separation and colored events. */
+body .admin-exec .v38-live .v38-ops-head h3,
+body .admin-exec .v38-current .v38-ops-head h3{font-size:11px!important;line-height:1.15!important}
+body .admin-exec .v38-live .v38-ops-head small,
+body .admin-exec .v38-current .v38-ops-head small{font-size:6.6px!important;line-height:1.25!important}
+body .admin-exec .v38-live-row{
+  min-height:36px!important;
+  grid-template-columns:30px minmax(0,1fr) 72px!important;
+  gap:8px!important;
+  padding:5px 9px!important;
+  border:1px solid rgba(255,255,255,.075)!important;
+  border-radius:7px!important;
+  background:linear-gradient(90deg,rgba(255,255,255,.015),rgba(255,255,255,.025))!important;
+}
+body .admin-exec .v38-live-row__text{font-size:7.5px!important;line-height:1.3!important;color:#f4f2ec!important;font-weight:650!important}
+body .admin-exec .v38-live-row__time{font-size:6.3px!important;color:#88949b!important;white-space:nowrap!important}
+body .admin-exec .v38-live-row__ico{width:24px!important;height:24px!important;border-radius:7px!important;color:#32d2b9!important;background:rgba(50,210,185,.09)!important;border:1px solid rgba(50,210,185,.16)!important}
+body .admin-exec .v38-live-row:nth-child(even) .v38-live-row__ico{color:#3f9ee8!important;background:rgba(63,158,232,.09)!important;border-color:rgba(63,158,232,.16)!important}
+body .admin-exec .v38-live-summary>div{min-height:44px!important}
+body .admin-exec .v38-live-summary strong{font-size:12px!important}
+body .admin-exec .v38-live-summary span{font-size:6.4px!important}
+
+body .admin-exec .v40-current-summary>div{min-height:58px!important}
+body .admin-exec .v40-current-summary>div strong{font-size:15px!important}
+body .admin-exec .v40-current-summary>div span{font-size:7px!important;color:#77736a!important}
+body .admin-exec .v38-current-table th{font-size:6.8px!important;font-weight:800!important;color:#6e675c!important}
+body .admin-exec .v38-current-table td{font-size:7.2px!important;color:#25231f!important}
+body .admin-exec .v38-mini-status{font-size:6.5px!important;padding:3px 8px!important}
+
+/* 4) LEDGER — reference text/table hierarchy is stronger than V40. */
+body .admin-exec .v38-ledger-title h3{font-size:11.2px!important;line-height:1.15!important}
+body .admin-exec .v38-ledger-title small{font-size:6.6px!important}
+body .admin-exec .v38-ledger-search{height:31px!important;font-size:7.5px!important}
+body .admin-exec .v38-ledger-filter,
+body .admin-exec .v38-ledger-export{height:31px!important;font-size:7.5px!important}
+body .admin-exec .v38-ledger-table th{font-size:7.1px!important;font-weight:800!important}
+body .admin-exec .v38-ledger-table td{font-size:7.25px!important;height:24px!important}
+
+/* 5) SIDEBAR — reference lower rail is compact and visually anchored. */
+body .admin-exec .ref-v36-sidebar-promo,
+body .admin-exec .v39-sidebar-promo{border-color:rgba(224,181,71,.32)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)!important}
+body .admin-exec .admin-sidebar__identity.ref-v36-admin,
+body .admin-exec .v39-sidebar-admin{border-color:rgba(224,181,71,.26)!important;background:linear-gradient(180deg,#0b1721,#08121b)!important}
+
+@media(max-width:1500px){
+  body .admin-exec .v41-chart-callout{left:54%!important;top:39px!important}
+  body .admin-exec .v38-live-row{min-height:34px!important}
+}
+
+/* ============================================================
+   SIX SEVEN ADMIN V42 — REFERENCE BATCH 01 MULTISCREEN
+   Visual source of truth:
+   01 ADMIN OVERVIEW = style language anchor
+   02 USERS/SELLERS   = structure/content anchor
+   03 DOCUMENTS       = structure/content anchor
+   04 TRANSACTIONS    = structure/content anchor
+
+   RULE: preserve every section, table, row, column, action and empty area.
+   No invented widgets, KPIs, charts, rows or data.
+   ============================================================ */
+
+/* Shared light-canvas language inherited from the approved Overview. */
+body .admin-exec .ref-batch-users,
+body .admin-exec .ref-batch-documents,
+body .admin-exec .ref-batch-transactions{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  direction:rtl!important;
+  color:#101820!important;
+}
+
+body .admin-exec .ref-batch-panel{
+  background:linear-gradient(180deg,#fffefb 0%,#fffaf0 100%)!important;
+  border:1px solid rgba(195,139,25,.24)!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 22px rgba(72,49,9,.055)!important;
+  overflow:hidden!important;
+}
+
+/* USERS + SELLERS — keep exactly the two stacked reference cards. */
+body .admin-exec .ref-batch-users{
+  gap:30px!important;
+}
+body .admin-exec .ref-batch-users>.ref-batch-panel{
+  padding:24px!important;
+}
+body .admin-exec .ref-batch-sellers>div:first-child,
+body .admin-exec .ref-batch-customers>h3{
+  margin-top:-24px!important;
+  margin-left:-24px!important;
+  margin-right:-24px!important;
+  margin-bottom:18px!important;
+  padding:16px 24px!important;
+  min-height:64px!important;
+  border-bottom:1px solid rgba(190,137,28,.18)!important;
+  background:linear-gradient(90deg,#fffaf0 0%,#fffefb 54%,#fbf0d8 100%)!important;
+}
+body .admin-exec .ref-batch-users h3{
+  color:#111820!important;
+  font-size:19px!important;
+  font-weight:900!important;
+  letter-spacing:-.2px!important;
+}
+body .admin-exec .ref-batch-users h3 svg{
+  color:#d3a126!important;
+  stroke:#d3a126!important;
+}
+body .admin-exec .ref-batch-sellers>div:first-child>div:last-child{
+  gap:8px!important;
+}
+body .admin-exec .ref-batch-sellers>div:first-child>div:last-child span{
+  min-height:28px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  border:1px solid rgba(28,103,76,.10)!important;
+  box-shadow:0 2px 6px rgba(35,51,45,.03)!important;
+  font-size:11px!important;
+  padding:5px 12px!important;
+  border-radius:999px!important;
+}
+
+/* Tables: same content/order as reference, premium Overview styling only. */
+body .admin-exec .ref-batch-panel table{
+  width:100%!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  text-align:right!important;
+  background:#fffefb!important;
+  border:1px solid rgba(186,135,33,.12)!important;
+  border-radius:11px!important;
+  overflow:hidden!important;
+}
+body .admin-exec .ref-batch-panel thead tr{
+  background:linear-gradient(180deg,#fbf1dd,#f8ecd4)!important;
+  border-bottom:1px solid rgba(177,128,29,.18)!important;
+}
+body .admin-exec .ref-batch-panel th{
+  color:#6d624f!important;
+  background:transparent!important;
+  font-size:11px!important;
+  line-height:1.2!important;
+  font-weight:850!important;
+  padding:12px 12px!important;
+  border-bottom:1px solid rgba(177,128,29,.16)!important;
+  white-space:nowrap!important;
+}
+body .admin-exec .ref-batch-panel td{
+  color:#28323b!important;
+  font-size:11.5px!important;
+  line-height:1.35!important;
+  padding:13px 12px!important;
+  border-bottom:1px solid #eee7da!important;
+  background:rgba(255,255,255,.40)!important;
+  vertical-align:middle!important;
+}
+body .admin-exec .ref-batch-panel tbody tr:nth-child(even) td{
+  background:rgba(250,246,237,.56)!important;
+}
+body .admin-exec .ref-batch-panel tbody tr:last-child td{
+  border-bottom:0!important;
+}
+body .admin-exec .ref-batch-panel tbody tr{
+  transition:background .18s ease, transform .18s ease!important;
+}
+body .admin-exec .ref-batch-panel tbody tr:hover td{
+  background:#fff8e9!important;
+}
+body .admin-exec .ref-batch-panel td strong{
+  color:#1b2630!important;
+}
+body .admin-exec .ref-batch-panel a{
+  color:#3277a9!important;
+  font-weight:700!important;
+  text-underline-offset:3px!important;
+}
+
+/* Seller actions stay exactly where they are; only adopt the gold action language. */
+body .admin-exec .ref-batch-sellers button{
+  background:linear-gradient(180deg,#f1d36c,#d8a621)!important;
+  color:#17130a!important;
+  border:1px solid rgba(169,118,16,.22)!important;
+  border-radius:8px!important;
+  min-height:30px!important;
+  padding:6px 13px!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  box-shadow:0 3px 8px rgba(138,93,13,.10)!important;
+}
+body .admin-exec .ref-batch-sellers button:hover{
+  filter:brightness(1.025)!important;
+  transform:translateY(-1px)!important;
+}
+
+/* DOCUMENTS — single reference card only. Do not add summary widgets. */
+body .admin-exec .ref-batch-documents{
+  min-height:318px!important;
+  padding:24px!important;
+}
+body .admin-exec .ref-batch-documents>h3{
+  margin:-24px -24px 18px!important;
+  padding:17px 24px!important;
+  min-height:66px!important;
+  border-bottom:1px solid rgba(190,137,28,.18)!important;
+  background:linear-gradient(90deg,#fffaf0,#fffefb 55%,#fbf0d8)!important;
+  color:#111820!important;
+  font-size:19px!important;
+  font-weight:900!important;
+}
+body .admin-exec .ref-batch-documents>h3 svg{
+  color:#d3a126!important;
+  stroke:#d3a126!important;
+}
+body .admin-exec .ref-batch-documents button{
+  min-height:30px!important;
+  border-radius:8px!important;
+  font-size:10.5px!important;
+  font-weight:850!important;
+  box-shadow:0 3px 8px rgba(34,54,48,.08)!important;
+}
+body .admin-exec .ref-batch-documents button:first-child{
+  background:#35a965!important;
+}
+body .admin-exec .ref-batch-documents button:last-child{
+  background:#e45b58!important;
+}
+
+/* TRANSACTIONS — preserve the intentionally empty body from the captured reference. */
+body .admin-exec .ref-batch-transactions{
+  min-height:148px!important;
+  padding:24px!important;
+}
+body .admin-exec .ref-batch-transactions>div:first-child{
+  margin:-24px -24px 16px!important;
+  padding:17px 24px 14px!important;
+  min-height:62px!important;
+  border-bottom:1px solid rgba(190,137,28,.18)!important;
+  background:linear-gradient(90deg,#fffaf0,#fffefb 55%,#fbf0d8)!important;
+}
+body .admin-exec .ref-batch-transactions h3{
+  color:#111820!important;
+  font-size:19px!important;
+  font-weight:900!important;
+}
+body .admin-exec .ref-batch-transactions h3 svg{
+  color:#d3a126!important;
+  stroke:#d3a126!important;
+}
+body .admin-exec .ref-batch-transactions table{
+  min-height:44px!important;
+}
+
+/* Keep the same page-scale and right rail as the Overview reference. */
+body .admin-exec .ref-batch-users,
+body .admin-exec .ref-batch-documents,
+body .admin-exec .ref-batch-transactions{
+  animation-duration:.25s!important;
+}
+
+@media(max-width:1500px){
+  body .admin-exec .ref-batch-users>.ref-batch-panel,
+  body .admin-exec .ref-batch-documents,
+  body .admin-exec .ref-batch-transactions{padding:22px!important}
+  body .admin-exec .ref-batch-sellers>div:first-child,
+  body .admin-exec .ref-batch-customers>h3{margin-top:-22px!important;margin-left:-22px!important;margin-right:-22px!important;padding-left:22px!important;padding-right:22px!important}
+  body .admin-exec .ref-batch-panel th{font-size:10.5px!important;padding:11px 10px!important}
+  body .admin-exec .ref-batch-panel td{font-size:11px!important;padding:12px 10px!important}
+}
