@@ -1,0 +1,240 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V42-SOURCE-EXPORT
+MODE=EXACT_LIVE_SOURCE_EXPORT_ONLY
+LIVE_SITE=https://sixty-seven.net/admin/
+SERVER_PROJECT_PATH=/67
+==================================================
+
+PURPOSE
+-------
+The approved V42 runtime is already live and visually approved.
+The server-side Git token cannot push to the source repository.
+DO NOT try to fix Git credentials and DO NOT push source.
+
+Your ONLY task is to export the exact approved live V42 source files from /67 so ChatGPT can push those exact files through its authorized GitHub connection.
+
+==================================================
+STRICT RULES
+==================================================
+
+DO NOT:
+- edit any source file
+- edit CSS
+- edit JSX
+- apply any patch
+- run sed/perl/python replacement against source files
+- build
+- deploy
+- restart services
+- change runtime
+- change database/data
+- change auth
+- create/delete/update application records
+- commit to developer-hub-67
+- clone developer-hub-67
+- push developer-hub-67
+- modify /tmp/67-token
+- print or expose any token/credential
+
+SOURCE_CHANGED=NO must remain true.
+
+==================================================
+STEP 1 — VERIFY EXACT LIVE V42 FILES
+==================================================
+
+cd /67
+
+Verify these exact files exist:
+
+/67/src/pages/AdminDashboard.jsx
+/67/src/pages/AdminDashboard.v42.css
+
+Verify AdminDashboard.jsx imports exactly:
+
+import './AdminDashboard.v42.css';
+
+There must be exactly ONE AdminDashboard.v42.css import.
+
+Also verify the V42 stylesheet is non-empty.
+
+If any verification fails, STOP and report the exact blocker.
+
+==================================================
+STEP 2 — COMPUTE SOURCE HASHES BEFORE COPY
+==================================================
+
+Compute SHA256 for the two ORIGINAL files in /67:
+
+sha256sum /67/src/pages/AdminDashboard.jsx
+sha256sum /67/src/pages/AdminDashboard.v42.css
+
+Store/report them as:
+
+LIVE_JSX_SHA256=<hash>
+LIVE_CSS_SHA256=<hash>
+
+Do not modify either file.
+
+==================================================
+STEP 3 — CREATE READ-ONLY EXPORT COPIES
+==================================================
+
+Create a temporary export directory OUTSIDE /67, for example:
+
+/tmp/67-v42-source-export-<RUNSTAMP>/
+
+Copy, byte-for-byte, ONLY:
+
+/67/src/pages/AdminDashboard.jsx
+/67/src/pages/AdminDashboard.v42.css
+
+Use filenames:
+
+67__V42__SOURCE__AdminDashboard.jsx
+67__V42__SOURCE__AdminDashboard.v42.css
+
+Then compute SHA256 on the COPIED files.
+
+The copied hashes MUST exactly equal the original hashes.
+
+Return:
+
+COPY_JSX_SHA256=<hash>
+COPY_CSS_SHA256=<hash>
+JSX_HASH_MATCH=YES/NO
+CSS_HASH_MATCH=YES/NO
+
+If either hash does not match, STOP. Do not upload mismatched files.
+
+==================================================
+STEP 4 — CREATE ZIP ARCHIVE
+==================================================
+
+Create:
+
+67__V42__EXACT-LIVE-SOURCE__<RUNSTAMP>.zip
+
+The ZIP must contain ONLY:
+
+67__V42__SOURCE__AdminDashboard.jsx
+67__V42__SOURCE__AdminDashboard.v42.css
+
+No .env files.
+No tokens.
+No node_modules.
+No build output.
+No screenshots.
+No credentials.
+
+Compute:
+
+ZIP_SHA256=<hash>
+
+==================================================
+STEP 5 — UPLOAD EXPORT ARTIFACTS
+==================================================
+
+Upload the ZIP to Google Drive root if the available Drive tool works.
+
+Also push the ZIP and/or the two exported source files ONLY to the existing QA/artifact repository if that existing QA workflow is available.
+
+This is an artifact export, NOT a source push.
+
+DO NOT push anything to:
+
+mohamedamouseo-a11y/developer-hub-67
+
+DO NOT change the source repository.
+
+Preferred outputs:
+
+DRIVE_ZIP_NAME=67__V42__EXACT-LIVE-SOURCE__<RUNSTAMP>.zip
+DRIVE_ZIP_ID=<id>
+DRIVE_ZIP_LINK=<link>
+
+If individual files are also uploaded, report their IDs/links too.
+
+==================================================
+STEP 6 — FINAL INTEGRITY RECHECK
+==================================================
+
+After the copy/upload steps, recompute SHA256 AGAIN on the ORIGINAL /67 files:
+
+sha256sum /67/src/pages/AdminDashboard.jsx
+sha256sum /67/src/pages/AdminDashboard.v42.css
+
+Confirm they are unchanged from STEP 2.
+
+Return:
+
+POST_EXPORT_JSX_SHA256=<hash>
+POST_EXPORT_CSS_SHA256=<hash>
+ORIGINAL_FILES_UNCHANGED=YES/NO
+
+==================================================
+FINAL REPORT FORMAT
+==================================================
+
+Return exactly this report structure:
+
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V42-SOURCE-EXPORT
+MODE=EXACT_LIVE_SOURCE_EXPORT_ONLY
+SERVER_PROJECT_PATH=/67
+RUNTIME_SOURCE_IMPORT=AdminDashboard.v42.css
+
+LIVE_JSX_PATH=/67/src/pages/AdminDashboard.jsx
+LIVE_CSS_PATH=/67/src/pages/AdminDashboard.v42.css
+LIVE_JSX_SHA256=<hash>
+LIVE_CSS_SHA256=<hash>
+
+EXPORTED_JSX_NAME=67__V42__SOURCE__AdminDashboard.jsx
+EXPORTED_CSS_NAME=67__V42__SOURCE__AdminDashboard.v42.css
+COPY_JSX_SHA256=<hash>
+COPY_CSS_SHA256=<hash>
+JSX_HASH_MATCH=YES/NO
+CSS_HASH_MATCH=YES/NO
+
+ZIP_NAME=67__V42__EXACT-LIVE-SOURCE__<RUNSTAMP>.zip
+ZIP_SHA256=<hash>
+ZIP_CONTENT_COUNT=2
+
+DRIVE_UPLOAD=OK/FAILED_TOOL_UNAVAILABLE
+DRIVE_ZIP_ID=<id/NONE>
+DRIVE_ZIP_LINK=<link/NONE>
+
+QA_ARTIFACT_PUSH=OK/SKIPPED/FAIL
+QA_ARTIFACT_COMMIT_SHA=<sha/NONE>
+
+POST_EXPORT_JSX_SHA256=<hash>
+POST_EXPORT_CSS_SHA256=<hash>
+ORIGINAL_FILES_UNCHANGED=YES/NO
+
+SOURCE_CHANGED=NO
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+BUILD_RUN=NO
+DEPLOY_RUN=NO
+SERVICE_RESTARTED=NO
+SOURCE_PROJECT_PUSHED=NO
+TOKEN_MODIFIED=NO
+
+FAILED_STEP=NONE/<exact blocker>
+ERROR=NONE/<exact error>
+==================================================
+
+SUCCESS CONDITION
+-----------------
+Success means:
+- exact live JSX exported
+- exact live V42 CSS exported
+- hashes match byte-for-byte
+- original /67 files remain unchanged
+- export artifact is accessible to ChatGPT
+- developer-hub-67 remains untouched
+
+Do not attempt any other work.
