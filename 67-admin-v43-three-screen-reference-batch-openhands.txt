@@ -1,0 +1,373 @@
+==================================================
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V43
+MODE=THREE_SCREEN_REFERENCE_BATCH
+LIVE_SITE=https://sixty-seven.net/admin/
+SERVER_PROJECT_PATH=/67
+SOURCE_REPO=mohamedamouseo-a11y/developer-hub-67
+PATCH_REPO=mohamedamouseo-a11y/67-patchs
+==================================================
+
+MISSION
+
+Apply the approved V43 visual patch for exactly these THREE admin screens:
+
+1. إشعارات الحركة المباشرة / Live Notifications
+2. GitHub Module
+3. إعدادات حسابي وأرباحي / Superadmin Settings
+
+The user has already approved the visual direction from the supplied reference images.
+DO NOT invent a different design language.
+DO NOT rebuild unrelated screens.
+DO NOT touch Overview, Users/Sellers, Documents, Transactions, Community, backend, auth, data, APIs, or business logic.
+
+VISUAL AUTHORITY
+
+Use the existing Six Seven visual system already established by the approved dashboard:
+
+- dark navy / near-black sidebar
+- gold borders and highlights
+- ivory / warm-white content where the reference is light
+- premium automotive visual identity
+- same right sidebar
+- same real text/content/data/actions
+- same real functionality
+- no fake values
+- no fake rows
+- no fake statuses
+- no invented cards or sections
+
+The three target references are:
+
+A) LIVE NOTIFICATIONS REFERENCE
+- no large hero at the top
+- warm white/ivory full main canvas
+- strong title at the top-right with bell icon
+- dark navy + gold "مسح السجل" button at physical left
+- four large ivory event rows
+- each event row visually has:
+  - green live status dot at physical right
+  - event text aligned right
+  - time aligned left
+  - gold clock cue at physical left
+- generous clean empty canvas below the events
+- preserve the current real notifications and times
+
+B) GITHUB MODULE REFERENCE
+- executive automotive hero across the top of main content
+- hero uses the existing Six Seven city/car image already in the project
+- hero left copy: قيادة اليوم .. لمستقبل أكثر تميزًا
+- hero right copy: سرعة أكبر / فرص أوسع
+- below hero: dark premium GitHub workspace
+- 3 status cards in one row
+- Production Guardrails security card below
+- lower area is a balanced 2-column layout for Deployment Repository and GitHub Identity
+- gold headings/icons
+- cyan/navy edges
+- red security pills remain red where status is not OK
+- existing GitHub logic, status values, token handling, review-before-execute and buttons MUST remain untouched
+
+C) SETTINGS REFERENCE
+- same executive automotive hero across top
+- warm white/ivory settings content
+- large settings title
+- Logo switcher card
+- Profile photo card
+- Protected Superadmin identity card
+- Banking details section with the same real inputs
+- gold primary action button
+- keep the current server-managed identity/security wording and current submit behavior
+
+==================================================
+STRICT RULES
+==================================================
+
+DO NOT:
+- change backend
+- change auth
+- change API paths
+- change data structures
+- change localStorage keys
+- change GitHub connection logic
+- change token handling
+- change form submit logic
+- change bank/profile persistence logic
+- change sidebar navigation behavior
+- add fake data
+- add fake GitHub state
+- add fake notifications
+- edit Overview design
+- edit Users/Sellers design
+- edit Documents design
+- edit Transactions design
+- edit Community design
+- push source project
+- force push anything
+
+SOURCE_PROJECT_PUSHED must remain NO.
+
+==================================================
+STEP 1 — VERIFY CURRENT BASE
+==================================================
+
+cd /67
+
+Require:
+- src/pages/AdminDashboard.jsx exists
+- src/pages/AdminDashboard.v42.css exists
+- AdminDashboard.jsx currently imports AdminDashboard.v42.css OR this V43 patch has already been applied
+
+If the project is not on the approved V42 base and V43 is not already active:
+STOP.
+Return:
+FAILED_STEP=BASELINE_GUARD
+ERROR=EXPECTED_V42_BASE_NOT_FOUND
+
+==================================================
+STEP 2 — APPLY EXACT PATCH
+==================================================
+
+Fetch and run exactly:
+
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v43-three-screen-reference-batch-apply.sh
+
+Example:
+
+curl -fsSL https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v43-three-screen-reference-batch-apply.sh -o /tmp/67-v43.sh
+chmod +x /tmp/67-v43.sh
+/tmp/67-v43.sh
+
+Require output:
+
+PATCH_APPLIED=YES
+RUNTIME_CSS=AdminDashboard.v43.css
+VISUAL_STRATEGY=THREE_SCREEN_REFERENCE_BATCH
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+==================================================
+STEP 3 — BUILD
+==================================================
+
+Run:
+
+npm run build
+
+Require:
+BUILD=PASS
+
+Do not modify source to silence build errors.
+If build fails, stop and report exact error.
+
+==================================================
+STEP 4 — ACTIVATE LIVE RUNTIME
+==================================================
+
+Activate the new frontend build using the SAME established deployment/static activation procedure already used for V42 on this server.
+
+Do NOT change nginx config.
+Do NOT change backend services.
+Do NOT change auth config.
+Do NOT change environment variables.
+Do NOT change database data.
+
+After activation verify publicly:
+
+https://sixty-seven.net/admin/
+
+The served runtime must correspond to the new build containing AdminDashboard.v43.css.
+
+==================================================
+STEP 5 — AUTHENTICATED VISUAL QA
+==================================================
+
+Use the existing authenticated interactive browser session on:
+
+https://sixty-seven.net/admin/
+
+VIEWPORT=1448x1086
+BROWSER_ZOOM=100%
+
+If a login page is visible, use only the normal authorized authenticated session/login flow already available in the environment.
+Do not bypass auth.
+
+Before each screenshot:
+- wait for fonts/images
+- wait for animations to settle
+- ensure no accidental tooltip/dropdown/modal
+- keep right sidebar visible
+- do not click any destructive/action button
+
+==================================================
+SCREEN 01 — LIVE NOTIFICATIONS
+==================================================
+
+Navigate via right sidebar:
+إشعارات الحركة المباشرة
+
+DO NOT click "مسح السجل".
+
+Verify visually:
+- NO hero above notifications
+- light ivory main canvas
+- title aligned top-right
+- clear-log button dark navy/gold at physical left
+- current notification rows preserved
+- each row has green live dot
+- each row has gold clock cue
+- event text readable and right aligned
+- time readable at physical left
+- large clean lower canvas remains
+- sidebar stays unchanged and aligned
+- no horizontal overflow
+
+Capture:
+67__ADMIN__V43__01__LIVE-NOTIFICATIONS__1448x1086__<RUNSTAMP>.png
+
+==================================================
+SCREEN 02 — GITHUB MODULE
+==================================================
+
+Navigate via right sidebar:
+GitHub Module
+
+DO NOT:
+- enter a token
+- connect/disconnect GitHub
+- change repository
+- change branch
+- preview/execute/push/pull/sync/cleanup
+
+Verify visually:
+- executive automotive hero present across top
+- hero is not clipped
+- dark premium GitHub module directly below
+- 3 status cards visible in one row at 1448 width
+- Production Guardrails security area visible
+- status colors preserved according to real state
+- lower two-column area balanced
+- GitHub Identity / token input remains real and untouched
+- existing live status text remains real
+- no horizontal overflow
+- sidebar aligned
+
+Capture:
+67__ADMIN__V43__02__GITHUB-MODULE__1448x1086__<RUNSTAMP>.png
+
+==================================================
+SCREEN 03 — SETTINGS
+==================================================
+
+Navigate via right sidebar:
+إعدادات حسابي وأرباحي
+
+DO NOT:
+- change logo option
+- change photo URL
+- edit bank fields
+- save form
+
+Verify visually:
+- executive automotive hero present across top
+- light/ivory premium settings panel below
+- settings title readable
+- logo switcher card visible
+- profile photo card visible
+- protected Superadmin identity card visible
+- banking section visibly grouped
+- existing real values/placeholders preserved
+- save button gold and readable
+- no clipped text
+- no horizontal overflow
+- sidebar aligned
+
+Capture:
+67__ADMIN__V43__03__SETTINGS__1448x1086__<RUNSTAMP>.png
+
+==================================================
+MANUAL REFERENCE REVIEW
+==================================================
+
+Do NOT mark PASS based only on selectors.
+You MUST manually inspect the screenshots.
+
+For each screen, report the three biggest visual differences from the supplied approved reference direction.
+If none are material, say NONE.
+
+Do not invent failures when the screenshot visually satisfies the reference.
+Do not claim fidelity PASS if a material visual mismatch is clearly visible.
+
+==================================================
+OUTPUT / QA REPO
+==================================================
+
+Push SCREENSHOTS ONLY to the existing QA/patch repository.
+Do NOT push /67 source project.
+
+Google Drive upload is optional/non-blocking.
+If Drive tooling is unavailable, continue and report it.
+
+==================================================
+FINAL REPORT
+==================================================
+
+Return exactly this structure with real values:
+
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V43
+PATCH_APPLIED=YES/NO
+BUILD=PASS/FAIL
+RUNTIME_CSS=AdminDashboard.v43.css
+VISUAL_STRATEGY=THREE_SCREEN_REFERENCE_BATCH
+LIVE_RUNTIME_ACTIVATED=YES/NO
+ORIGIN_MATCH_LOCAL_DIST=YES/NO
+PUBLIC_MATCH_LOCAL_DIST=YES/NO
+REFERENCE_VIEWPORT=1448x1086
+
+NOTIFICATIONS_REFERENCE_MATCH=PASS/FAIL
+NOTIFICATIONS_HERO_ABSENT=YES/NO
+NOTIFICATIONS_ROWS_VISIBLE=YES/NO
+NOTIFICATIONS_GREEN_STATUS_DOTS=YES/NO
+NOTIFICATIONS_GOLD_CLOCK_CUES=YES/NO
+NOTIFICATIONS_CLEAR_BUTTON_REFERENCE_STYLE=YES/NO
+NOTIFICATIONS_LOWER_EMPTY_CANVAS_PRESERVED=YES/NO
+
+GITHUB_REFERENCE_MATCH=PASS/FAIL
+GITHUB_HERO_VISIBLE=YES/NO
+GITHUB_THREE_METRICS_ONE_ROW=YES/NO
+GITHUB_SECURITY_BASELINE_VISIBLE=YES/NO
+GITHUB_TWO_COLUMN_LOWER_LAYOUT=YES/NO
+GITHUB_REAL_STATE_PRESERVED=YES/NO
+
+SETTINGS_REFERENCE_MATCH=PASS/FAIL
+SETTINGS_HERO_VISIBLE=YES/NO
+SETTINGS_LOGO_CARD_VISIBLE=YES/NO
+SETTINGS_PROFILE_CARD_VISIBLE=YES/NO
+SETTINGS_IDENTITY_CARD_VISIBLE=YES/NO
+SETTINGS_BANK_SECTION_VISIBLE=YES/NO
+SETTINGS_SAVE_BUTTON_VISIBLE=YES/NO
+
+PAGE_HORIZONTAL_OVERFLOW=NO/YES
+DATA_CHANGED=NO
+LOGIC_CHANGED=NO
+BACKEND_CHANGED=NO
+AUTH_CHANGED=NO
+SOURCE_PROJECT_PUSHED=NO
+
+TOP_VISUAL_DIFFERENCE_1=<text/NONE>
+TOP_VISUAL_DIFFERENCE_2=<text/NONE>
+TOP_VISUAL_DIFFERENCE_3=<text/NONE>
+
+RUNSTAMP=<timestamp>
+SCREENSHOT_01_FILENAME=<filename>
+SCREENSHOT_02_FILENAME=<filename>
+SCREENSHOT_03_FILENAME=<filename>
+DRIVE_UPLOAD=OK/FAILED_TOOL_UNAVAILABLE/NOT_ATTEMPTED
+QA_PUSH=OK/FAIL
+QA_COMMIT_SHA=<sha/NONE>
+FAILED_STEP=NONE/<exact step>
+ERROR=NONE/<exact error>
+==================================================
