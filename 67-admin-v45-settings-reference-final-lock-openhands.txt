@@ -1,0 +1,59 @@
+PROJECT=67 ADMIN DASHBOARD
+VERSION=V45
+MODE=SETTINGS_ONLY_FINAL_VISUAL_LOCK
+LIVE_SITE=https://sixty-seven.net/admin/
+SERVER_PROJECT_PATH=/67
+
+V44 QA STATUS:
+Notifications=APPROVED
+GitHub=APPROVED
+Settings=FINAL_LAYOUT_FIX_REQUIRED
+
+DO NOT change Notifications or GitHub design.
+DO NOT change data, logic, backend, auth, database, infrastructure, or source repo.
+SOURCE_PROJECT_PUSHED=NO.
+
+Apply exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v45-settings-reference-final-lock-apply.sh
+
+Require PATCH_APPLIED=YES and BUILD=PASS.
+Activate the frontend build using the same established V44 runtime procedure.
+
+Open the real production admin UI with the existing authorized Superadmin session:
+https://sixty-seven.net/admin/
+
+Viewport=1448x1086
+Zoom=100%
+Navigate only to: إعدادات حسابي وأرباحي
+Do not edit fields and do not save.
+
+Manual check:
+- hero clean
+- no text/input overlap
+- logo descriptor left, real controls right
+- profile descriptor left, profile controls center/right
+- identity descriptor left, security text right without collision
+- bank descriptor left, banking inputs right
+- gold Save button visible in the 1448x1086 screenshot
+- no horizontal overflow
+- sidebar unchanged
+
+Capture ONE screenshot:
+67__ADMIN__V45__SETTINGS__1448x1086__<RUNSTAMP>.png
+
+Push screenshot only to mohamedamouseo-a11y/67-patchs QA artifacts.
+Do not push /67 source.
+
+Return only:
+VERSION=V45
+PATCH_APPLIED=YES/NO
+BUILD=PASS/FAIL
+LIVE_RUNTIME_ACTIVATED=YES/NO
+SETTINGS_CAPTURE=PASS/FAIL
+SETTINGS_NO_OVERLAP=YES/NO
+SETTINGS_SAVE_BUTTON_VISIBLE=YES/NO
+PAGE_HORIZONTAL_OVERFLOW=NO/YES
+QA_PUSH=OK/FAIL
+QA_COMMIT_SHA=<sha/NONE>
+SOURCE_PROJECT_PUSHED=NO
+ERROR=NONE/<error>
