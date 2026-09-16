@@ -1,0 +1,30 @@
+PROJECT=67
+TASK=Diagnose admin login 504 only.
+
+Live: https://sixty-seven.net/admin/
+Symptom: login form shows "Request failed (504)".
+
+Rules:
+- server only
+- NO direct fix
+- NO push
+- preserve V45/V46
+- no DB/data/auth changes
+
+Do:
+1) Check sixty-seven.service + nginx status/logs.
+2) Identify the login API endpoint used by the admin UI.
+3) Test that endpoint locally and through nginx.
+4) Find exact 504 upstream/timeout cause and failing process/port/path.
+5) Verify env/config needed by auth service without printing secrets.
+6) Do NOT repair yet.
+
+Return only:
+LOGIN_ENDPOINT=<path>
+UPSTREAM=<host:port/path>
+LOCAL_API=PASS/FAIL
+NGINX_API=PASS/FAIL
+ROOT_CAUSE=<cause>
+SERVICE=<name>
+PORT=<port/NONE>
+ERROR=NONE/<error>
