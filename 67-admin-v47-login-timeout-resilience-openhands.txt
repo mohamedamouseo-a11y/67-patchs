@@ -1,0 +1,21 @@
+PROJECT=67
+TASK=Apply V47 login timeout resilience patch.
+
+Apply:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v47-login-timeout-resilience-apply.sh
+
+Rules:
+- server only
+- no push
+- preserve V45
+- no DB/data changes
+
+Run patch, verify sixty-seven.service active, then verify /api/superadmin/login no longer returns 504.
+
+Return only:
+PATCH_APPLIED=YES/NO
+SERVICE=ACTIVE/FAIL
+LOGIN_PATH=PASS/FAIL
+HTTP_CODE=<code>
+PUSH_PERFORMED=NO
+ERROR=NONE/<error>
