@@ -13,6 +13,8 @@ HBR_CSS="$ROOT/src/components/HomeBelowHero.css"
 
 TMP_B64="/tmp/67-logo-user-exact-v812.base64"
 TMP_LOGO="/tmp/67-logo-user-exact-v812.png"
+TMP_JSX="/tmp/67-HomeStoreHeader-v812.jsx"
+TMP_CSS="/tmp/67-HomeStoreHeader-v812.css"
 BACKUP="/tmp/67-home-header-v8-12-backup-$(date +%Y%m%d-%H%M%S)"
 
 RAW_B64="https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/home-assets-v9/logo-67-user-exact.png.base64"
@@ -37,6 +39,16 @@ cp -a "$HERO" "$BACKUP/public/assets/hero-car.jpg"
 [ ! -f "$HBR_CSS" ] || cp -a "$HBR_CSS" "$BACKUP/src/components/HomeBelowHero.css"
 echo "Backup: $BACKUP"
 
+rollback() {
+  code=$?
+  echo "ERROR: V8.12 failed; restoring original header files/logo from backup" >&2
+  cp -f "$BACKUP/src/components/HomeStoreHeader.jsx" "$HEADER_JSX" || true
+  cp -f "$BACKUP/src/components/HomeStoreHeader.css" "$HEADER_CSS" || true
+  cp -f "$BACKUP/public/assets/logo-67.png" "$LOGO" || true
+  exit "$code"
+}
+trap rollback ERR
+
 HOME_JSX_BEFORE="$(sha256sum "$HOME_JSX" | awk '{print $1}')"
 HOME_CSS_BEFORE="$(sha256sum "$HOME_CSS" | awk '{print $1}')"
 HERO_BEFORE="$(sha256sum "$HERO" | awk '{print $1}')"
@@ -45,7 +57,7 @@ HBR_CSS_BEFORE=""
 [ ! -f "$HBR_JSX" ] || HBR_JSX_BEFORE="$(sha256sum "$HBR_JSX" | awk '{print $1}')"
 [ ! -f "$HBR_CSS" ] || HBR_CSS_BEFORE="$(sha256sum "$HBR_CSS" | awk '{print $1}')"
 
-rm -f "$TMP_B64" "$TMP_LOGO"
+rm -f "$TMP_B64" "$TMP_LOGO" "$TMP_JSX" "$TMP_CSS"
 curl -fsSL -H "Cache-Control: no-cache" "$RAW_B64?v=$(date +%s)" -o "$TMP_B64"
 
 python3 - "$TMP_B64" "$TMP_LOGO" "$EXPECTED_LOGO_SHA" "$EXPECTED_LOGO_BYTES" "$EXPECTED_WIDTH" "$EXPECTED_HEIGHT" <<'PY_LOGO'
@@ -72,9 +84,10 @@ Path(dst).write_bytes(data)
 print(f'EXACT_LOGO_VALID {w}x{h} {len(data)} bytes sha256={sha}')
 PY_LOGO
 
-cp -f "$TMP_LOGO" "$LOGO"
+cp -f "$HEADER_JSX" "$TMP_JSX"
+cp -f "$HEADER_CSS" "$TMP_CSS"
 
-python3 - "$HEADER_JSX" "$CACHE_BUST" <<'PY_JSX'
+python3 - "$TMP_JSX" "$CACHE_BUST" <<'PY_JSX'
 from pathlib import Path
 import re, sys
 p = Path(sys.argv[1])
@@ -96,12 +109,10 @@ required = [
 for marker in required:
     if marker not in s:
         raise SystemExit(f'ERROR: required header behavior marker missing: {marker}')
-
 for route in ('/store','/top-parts','/orders','/cart','/profile','/notifications','/search'):
     if route not in s:
         raise SystemExit(f'ERROR: required header route missing: {route}')
 
-# Ensure the approved physical action DOM order is already present.
 auth_i = s.index('className="h67-auth"')
 bell_i = s.index('aria-label="الإشعارات"')
 search_i = s.index('aria-label="بحث"')
@@ -114,17 +125,20 @@ s2, count = re.subn(pattern, replacement, s)
 if count != 1:
     raise SystemExit(f'ERROR: expected exactly one logo src replacement, got {count}')
 
+# Confirm only the logo src literal changed; all behavior/routes remain present.
+for marker in required:
+    if marker not in s2:
+        raise SystemExit(f'ERROR: protected JSX marker lost after edit: {marker}')
 p.write_text(s2, encoding='utf-8')
-print('HEADER_JSX_LOGO_URL_UPDATED')
+print('HEADER_JSX_LOGO_URL_STAGED')
 PY_JSX
 
-python3 - "$HEADER_CSS" <<'PY_CSS'
+python3 - "$TMP_CSS" <<'PY_CSS'
 from pathlib import Path
 import re, sys
 p = Path(sys.argv[1])
 s = p.read_text(encoding='utf-8')
 
-# Remove previous desktop hotfixes that conflict with the stable layout.
 for name in (
     '67_HOME_HEADER_LOGO_V8_5',
     '67_HOME_HEADER_LOGO_V8_6',
@@ -138,13 +152,12 @@ for name in (
     pattern = rf'\n?/\* {re.escape(name)}_START \*/.*?/\* {re.escape(name)}_END \*/\n?'
     s = re.sub(pattern, '\n', s, flags=re.S)
 
-# Defensive cleanup of the known invalid declaration form from V8.11.
+# Remove malformed duplicate-important syntax if any old line remains outside tagged blocks.
 s = s.replace('!important !important', '!important')
 
 block = r'''
 /* 67_HOME_HEADER_STABLE_V8_12_START */
 @media (min-width: 1281px) {
-  /* Keep the navbar as an overlay on the approved hero. */
   .h67-header {
     position: absolute !important;
     top: 0 !important;
@@ -155,7 +168,6 @@ block = r'''
     overflow: visible !important;
   }
 
-  /* One real direct parent, three explicit physical areas. */
   .h67-navbar {
     position: relative !important;
     width: min(1360px, calc(100% - 64px)) !important;
@@ -278,37 +290,46 @@ if '!important !important' in out:
 for marker in (
     'grid-template-areas: "actions nav logo"',
     'width: min(1360px, calc(100% - 64px))',
-    'position: absolute !important;',
     '67_HOME_HEADER_STABLE_V8_12_START',
 ):
     if marker not in out:
         raise SystemExit(f'ERROR: V8.12 CSS marker missing: {marker}')
 p.write_text(out, encoding='utf-8')
-print('HEADER_CSS_V8_12_WRITTEN')
+print('HEADER_CSS_V8_12_STAGED')
 PY_CSS
 
-# Protected files must remain byte-identical.
+# Validate staged files before touching live files.
+grep -q 'logo-67.png?v=20260916-v812' "$TMP_JSX" || { echo "ERROR: staged cache-busted logo URL missing" >&2; false; }
+grep -q '67_HOME_HEADER_STABLE_V8_12_START' "$TMP_CSS" || { echo "ERROR: staged V8.12 CSS block missing" >&2; false; }
+! grep -q '!important !important' "$TMP_CSS" || { echo "ERROR: invalid duplicate !important found in staged CSS" >&2; false; }
+
+# Commit the three prepared files only after every staged validation passes.
+cp -f "$TMP_JSX" "$HEADER_JSX"
+cp -f "$TMP_CSS" "$HEADER_CSS"
+cp -f "$TMP_LOGO" "$LOGO"
+
 HOME_JSX_AFTER="$(sha256sum "$HOME_JSX" | awk '{print $1}')"
 HOME_CSS_AFTER="$(sha256sum "$HOME_CSS" | awk '{print $1}')"
 HERO_AFTER="$(sha256sum "$HERO" | awk '{print $1}')"
-[ "$HOME_JSX_BEFORE" = "$HOME_JSX_AFTER" ] || { echo "ERROR: HomePage.jsx changed unexpectedly" >&2; exit 213; }
-[ "$HOME_CSS_BEFORE" = "$HOME_CSS_AFTER" ] || { echo "ERROR: HomePage.css changed unexpectedly" >&2; exit 214; }
-[ "$HERO_BEFORE" = "$HERO_AFTER" ] || { echo "ERROR: hero-car.jpg changed unexpectedly" >&2; exit 215; }
+[ "$HOME_JSX_BEFORE" = "$HOME_JSX_AFTER" ] || { echo "ERROR: HomePage.jsx changed unexpectedly" >&2; false; }
+[ "$HOME_CSS_BEFORE" = "$HOME_CSS_AFTER" ] || { echo "ERROR: HomePage.css changed unexpectedly" >&2; false; }
+[ "$HERO_BEFORE" = "$HERO_AFTER" ] || { echo "ERROR: hero-car.jpg changed unexpectedly" >&2; false; }
 
 if [ -n "$HBR_JSX_BEFORE" ]; then
-  [ "$HBR_JSX_BEFORE" = "$(sha256sum "$HBR_JSX" | awk '{print $1}')" ] || { echo "ERROR: HomeBelowHero.jsx changed unexpectedly" >&2; exit 216; }
+  [ "$HBR_JSX_BEFORE" = "$(sha256sum "$HBR_JSX" | awk '{print $1}')" ] || { echo "ERROR: HomeBelowHero.jsx changed unexpectedly" >&2; false; }
 fi
 if [ -n "$HBR_CSS_BEFORE" ]; then
-  [ "$HBR_CSS_BEFORE" = "$(sha256sum "$HBR_CSS" | awk '{print $1}')" ] || { echo "ERROR: HomeBelowHero.css changed unexpectedly" >&2; exit 217; }
+  [ "$HBR_CSS_BEFORE" = "$(sha256sum "$HBR_CSS" | awk '{print $1}')" ] || { echo "ERROR: HomeBelowHero.css changed unexpectedly" >&2; false; }
 fi
 
 FINAL_LOGO_SHA="$(sha256sum "$LOGO" | awk '{print $1}')"
-[ "$FINAL_LOGO_SHA" = "$EXPECTED_LOGO_SHA" ] || { echo "ERROR: installed exact logo SHA mismatch" >&2; exit 218; }
+[ "$FINAL_LOGO_SHA" = "$EXPECTED_LOGO_SHA" ] || { echo "ERROR: installed exact logo SHA mismatch" >&2; false; }
 
-grep -q 'logo-67.png?v=20260916-v812' "$HEADER_JSX" || { echo "ERROR: cache-busted logo URL missing" >&2; exit 219; }
-grep -q '67_HOME_HEADER_STABLE_V8_12_START' "$HEADER_CSS" || { echo "ERROR: V8.12 CSS block missing" >&2; exit 220; }
-! grep -q '!important !important' "$HEADER_CSS" || { echo "ERROR: invalid duplicate !important found" >&2; exit 221; }
+grep -q 'logo-67.png?v=20260916-v812' "$HEADER_JSX" || { echo "ERROR: live cache-busted logo URL missing" >&2; false; }
+grep -q '67_HOME_HEADER_STABLE_V8_12_START' "$HEADER_CSS" || { echo "ERROR: live V8.12 CSS block missing" >&2; false; }
+! grep -q '!important !important' "$HEADER_CSS" || { echo "ERROR: invalid duplicate !important found" >&2; false; }
 
+trap - ERR
 echo "HOME_HEADER_STABLE_V8_12_APPLIED"
 echo "Exact logo SHA: $FINAL_LOGO_SHA"
 echo "Changed only:"
