@@ -1,0 +1,1 @@
+V8.12 will replace the header logo with the exact user-provided asset (SHA256 5f097e4cfe7802a2baa8b1440bcfe27eb1c37484a1cafb9c006e446624ce6090), fix the invalid V8.11 CSS declarations, preserve hero/home content, and use a stable 1360px desktop grid layout.
