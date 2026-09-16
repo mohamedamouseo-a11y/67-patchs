@@ -1,0 +1,29 @@
+PROJECT=67
+TASK=Apply V46 runtime dist repair only.
+
+Root cause confirmed:
+/67/dist/index.html was missing while sixty-seven.service serves /67/dist.
+
+Apply exactly:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v46-runtime-dist-repair-apply.sh
+
+Rules:
+- server only
+- no source push
+- no DB/data changes
+- preserve V45
+- do not modify managed workspace
+
+Run the patch, then verify:
+https://sixty-seven.net/admin/
+loads normally and no ENOENT remains.
+
+Return only:
+PATCH_APPLIED=YES/NO
+V45_PRESERVED=YES/NO
+BUILD=PASS/FAIL
+DIST_ATOMIC_DEPLOY=YES/NO
+SERVICE_RESTARTED=YES/NO
+LIVE_ADMIN=PASS/FAIL
+PUSH_PERFORMED=NO
+ERROR=NONE/<error>
