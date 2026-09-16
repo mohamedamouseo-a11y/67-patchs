@@ -1,0 +1,27 @@
+PROJECT=67
+TASK=Diagnose live ENOENT only.
+
+Live: https://sixty-seven.net/admin/
+
+Rules:
+- server only
+- NO direct fix
+- NO push
+- preserve V45
+- do not modify DB/data
+
+Do:
+1) Check service status/logs.
+2) Find exact ENOENT missing path and root cause.
+3) Verify /67/dist, /67/dist/index.html, service WorkingDirectory/ExecStart, V45 files.
+4) Do NOT repair anything yet.
+
+Return only:
+ENOENT_PATH=<path>
+ROOT_CAUSE=<cause>
+SERVICE=<name>
+WORKING_DIRECTORY=<path>
+DIST_EXISTS=YES/NO
+INDEX_HTML_EXISTS=YES/NO
+V45_PRESENT=YES/NO
+ERROR=NONE/<error>
