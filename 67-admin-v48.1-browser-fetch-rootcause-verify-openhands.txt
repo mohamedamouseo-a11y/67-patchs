@@ -1,0 +1,27 @@
+PROJECT=67
+TASK=Verify browser Failed-to-fetch root cause only.
+
+Important: page and API are both https://sixty-seven.net, so same-origin requests do NOT require Access-Control-Allow-Origin, and CSP connect-src 'self' should allow /api/superadmin/login.
+
+Server only. No fix. No push.
+
+Verify with the real frontend code + browser/network evidence:
+1) exact login fetch() URL/options
+2) page origin at runtime
+3) request/response Origin headers
+4) browser console error text
+5) DevTools request status/type
+6) service worker/interceptor/proxy involvement
+7) TLS/mixed-content/redirect issue
+8) whether fetch rejects on HTTP 401 or code incorrectly turns 401 into network error
+
+Return only:
+PAGE_ORIGIN=<value>
+FETCH_URL=<value>
+SAME_ORIGIN=YES/NO
+BROWSER_CONSOLE_ERROR=<exact>
+HTTP_RESPONSE_VISIBLE_TO_JS=YES/NO
+SERVICE_WORKER_INVOLVED=YES/NO
+ROOT_CAUSE=<exact>
+FIX_REQUIRED=YES/NO
+ERROR=NONE/<error>
