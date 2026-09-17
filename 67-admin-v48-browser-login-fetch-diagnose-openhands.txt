@@ -1,0 +1,30 @@
+PROJECT=67
+TASK=Diagnose browser "Failed to fetch" on Superadmin login only.
+
+Live: https://sixty-seven.net/admin/
+Current server checks: local API PASS, nginx API PASS, no 504.
+
+Rules:
+- server only
+- NO fix yet
+- NO push
+- preserve V45/V47
+- do not change DB/data/auth
+
+Do:
+1) Check nginx + sixty-seven logs around a fresh login attempt.
+2) Inspect frontend login fetch URL/method/headers.
+3) Use headless Chromium/Playwright against the real live page; submit invalid credentials and capture request URL, status/failure reason, console/network errors.
+4) Check TLS/CORS/CSP/mixed-content/cache/service-worker only as relevant.
+5) Identify exact root cause. Do not modify anything.
+
+Return only:
+BROWSER_REQUEST_SENT=YES/NO
+REQUEST_URL=<url/NONE>
+HTTP_STATUS=<code/NONE>
+NETWORK_ERROR=<error/NONE>
+NGINX_REQUEST_SEEN=YES/NO
+NODE_REQUEST_SEEN=YES/NO
+ROOT_CAUSE=<exact cause>
+FIX_REQUIRED=YES/NO
+ERROR=NONE/<error>
