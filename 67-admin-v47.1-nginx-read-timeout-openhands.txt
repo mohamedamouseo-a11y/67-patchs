@@ -1,0 +1,24 @@
+PROJECT=67
+TASK=Apply V47.1 nginx timeout fix only.
+
+Apply:
+https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-v47.1-nginx-read-timeout-apply.sh
+
+Rules:
+- server only
+- no push
+- no app/data changes
+
+Run patch, then verify:
+- nginx -t PASS
+- nginx active
+- proxy_read_timeout 90s exists for upstream 127.0.0.1:4173
+- /api/superadmin/login does not return 504
+
+Return only:
+PATCH_APPLIED=YES/NO
+NGINX_READ_TIMEOUT=90s/OTHER
+NGINX_TEST=PASS/FAIL
+LOGIN_504=YES/NO
+PUSH_PERFORMED=NO
+ERROR=NONE/<error>
