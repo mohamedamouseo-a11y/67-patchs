@@ -1,0 +1,31 @@
+TASK=Apply 67 Admin Theme V1 only.
+
+SERVER_ONLY. NO MANUAL EDITS. NO PUSH.
+
+Run:
+curl -fsSL https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-theme-v1-apply.sh | bash
+
+Then:
+sudo systemctl restart sixty-seven.service
+curl -I -s https://sixty-seven.net/admin/ | head -n 1
+
+Verify only:
+- Admin login still works
+- Overview opens
+- Light/Dark toggle exists in sidebar and Settings
+- toggle changes Admin appearance immediately
+- refresh preserves selected theme
+- GitHub tab renders in both themes
+- no auth/backend/business-data regression
+
+Return ONLY:
+PATCH_APPLIED=YES/NO
+BUILD=PASS/FAIL
+SERVICE=ACTIVE/FAILED
+HTTP=<code>
+LIGHT=PASS/FAIL
+DARK=PASS/FAIL
+PERSISTENCE=PASS/FAIL
+GITHUB_THEME=PASS/FAIL
+AUTH=PASS/FAIL
+ERROR=NONE/<error>
