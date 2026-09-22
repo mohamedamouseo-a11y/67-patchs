@@ -1,0 +1,28 @@
+TASK=Apply 67 Admin Login Luxury Reference V1.1 only.
+
+SERVER_ONLY. NO MANUAL EDITS. NO PUSH.
+
+curl -fsSL https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-login-luxury-reference-v1.1-apply.sh | bash
+sudo systemctl restart sixty-seven.service
+
+Verify:
+systemctl is-active sixty-seven.service
+curl -s -o /dev/null -w '%{http_code}\n' -H 'Accept: text/html' https://sixty-seven.net/admin/
+
+Fresh browser/no session, desktop:
+- login matches approved clean reference: luxury white/gold form LEFT, navy/gold skyline hero RIGHT
+- no browser/taskbar graphics inside page
+- official 67 logo/title/description aligned like reference
+- username/password + secure login work
+- successful login reaches Admin Overview
+- existing Admin Light/Dark theme still works after login
+
+Return ONLY:
+PATCH=PASS/FAIL
+BUILD=PASS/FAIL
+SERVICE=ACTIVE/FAILED
+HTTP=<code>
+REFERENCE_LOCK=PASS/FAIL
+AUTH=PASS/FAIL
+ADMIN_THEME=PASS/FAIL
+ERROR=NONE/<error>
