@@ -1,0 +1,23 @@
+TASK=Verify 67 Admin Theme V1.1 routing correctly. READ-ONLY. NO EDITS. NO RESTART. NO PUSH.
+
+Run:
+echo PUBLIC_HTML=$(curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' https://sixty-seven.net/admin/)
+echo LOCAL_HTML=$(curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://127.0.0.1:4173/admin/)
+echo HEALTH=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:4173/api/health)
+
+Also confirm /67/server/index.js handleStatic contains HTML SPA fallback to dist/index.html.
+
+If PUBLIC_HTML=200 and LOCAL_HTML=200, browser-open https://sixty-seven.net/admin/ and verify:
+Light/Dark toggle, refresh persistence, GitHub tab.
+
+Return ONLY:
+PUBLIC_HTML=<code>
+LOCAL_HTML=<code>
+HEALTH=<code>
+SPA_FALLBACK=YES/NO
+ADMIN_BROWSER=PASS/FAIL
+LIGHT=PASS/FAIL
+DARK=PASS/FAIL
+PERSISTENCE=PASS/FAIL
+GITHUB_THEME=PASS/FAIL
+ERROR=NONE/<error>
