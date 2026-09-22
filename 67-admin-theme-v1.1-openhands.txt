@@ -1,0 +1,26 @@
+TASK=Apply 67 Admin Theme V1.1 only.
+
+SERVER_ONLY. NO MANUAL EDITS. NO PUSH.
+
+curl -fsSL https://raw.githubusercontent.com/mohamedamouseo-a11y/67-patchs/main/67-admin-theme-v1.1-apply.sh -o /tmp/67-admin-theme-v1.1.sh
+bash /tmp/67-admin-theme-v1.1.sh
+sudo systemctl restart sixty-seven.service
+
+Verify:
+systemctl is-active sixty-seven.service
+curl -s -o /dev/null -w '%{http_code}\n' https://sixty-seven.net/admin/
+
+Browser verify:
+Admin login + Overview + sidebar/Settings Light/Dark + refresh persistence + GitHub tab both themes.
+
+Return ONLY:
+PATCH_APPLIED=YES/NO
+BUILD=PASS/FAIL
+SERVICE=ACTIVE/FAILED
+HTTP=<code>
+LIGHT=PASS/FAIL
+DARK=PASS/FAIL
+PERSISTENCE=PASS/FAIL
+GITHUB_THEME=PASS/FAIL
+AUTH=PASS/FAIL
+ERROR=NONE/<error>
