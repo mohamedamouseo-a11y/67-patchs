@@ -53,6 +53,13 @@ end_marker = """  // ==========================================
 start = s.find(start_marker)
 end = s.find(end_marker)
 if start < 0:
+    # Upgrade from V1 if it was already applied.
+    start_marker = """  // ==========================================
+  // 1. PREMIUM ADMIN LOGIN SCREEN — LUXURY REFERENCE V1
+  // ==========================================
+"""
+    start = s.find(start_marker)
+if start < 0:
     # Idempotent/reapply support.
     start_marker = """  // ==========================================
   // 1. PREMIUM ADMIN LOGIN SCREEN — LUXURY REFERENCE V1.1
