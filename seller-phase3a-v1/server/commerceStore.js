@@ -106,7 +106,7 @@ export class CommerceStore{
       const rows=await this.orders();const created=[];const now=new Date().toISOString();
       for(const group of groups.values()){
         const subtotal=group.items.reduce((s,x)=>s+x.price*x.quantity,0);
-        const commission=Math.round(subtotal*0.015*100)/100;
+        const commission=Math.round(subtotal*0.01*100)/100;
         const order={
           id:`ORD-${crypto.randomUUID()}`,sellerId:group.sellerId,storeName:group.storeName,
           customerName:clean(input.customerName,'Customer name',160),customerPhone:clean(input.customerPhone,'Customer phone',40),
