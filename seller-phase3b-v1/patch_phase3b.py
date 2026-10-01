@@ -96,7 +96,7 @@ new="""  const handleCompleteOrder = async () => {
         customerPhone: address.phone,
         fulfillment: fulfillmentMethod,
         address: isPickup ? 'استلام من الفرع' : [address.city,address.district,address.street,address.building].filter(Boolean).join(' - '),
-        items: items.map(({offer,quantity}) => ({ productId: offer.id, quantity })),
+        items: items.map(({offer,quantity}) => ({ productId: offer.id, quantity })),\n        shippingCost:Number(shippingCost.toFixed(2)),\n        paymentMethod:remainingTotal === 0 ? 'wallet' : (paymentMethod || 'pending'),
       };
       const response = await fetch('/api/marketplace/orders', {
         method:'POST',
