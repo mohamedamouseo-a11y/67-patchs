@@ -117,7 +117,8 @@ export class CommerceStore{
           customerName:clean(input.customerName,'Customer name',160),customerPhone:clean(input.customerPhone,'Customer phone',40),
           fulfillment:clean(input.fulfillment||'delivery','Fulfillment',40),
           address:clean(input.address||'','Address',500,false),items:group.items,
-          subtotal:Math.round(subtotal*100)/100,tax,shippingCost,total,commission,sellerNet:Math.round((subtotal-commission)*100)/100,\n          paymentMethod:clean(input.paymentMethod||'pending','Payment method',80),
+          subtotal:Math.round(subtotal*100)/100,tax,shippingCost,total,commission,sellerNet:Math.round((subtotal-commission)*100)/100,
+          paymentMethod:clean(input.paymentMethod||'pending','Payment method',80),
           status:'new',createdAt:now,updatedAt:now,statusHistory:[{status:'new',at:now,actor:'customer'}],
           trackingHash,
         };
