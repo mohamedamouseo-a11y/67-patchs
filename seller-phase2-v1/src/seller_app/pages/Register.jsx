@@ -146,7 +146,7 @@ export default function Register() {
           </>}
 
           {error && <div style={{padding:12,borderRadius:10,background:'#FEF2F2',color:'#B91C1C',fontWeight:700}}>{error}</div>}
-          <button type="submit" disabled={busy} style={{height:50,border:0,borderRadius:12,background:'linear-gradient(135deg,#D4AF37,#B8962C)',color:'#111',fontWeight:900,cursor:'pointer',opacity:busy?.65:1,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+          <button type="submit" disabled={busy} style={{height:50,border:0,borderRadius:12,background:'linear-gradient(135deg,#D4AF37,#B8962C)',color:'#111',fontWeight:900,cursor:'pointer',opacity:busy ? .65 : 1,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
             {busy?'جاري الإرسال…':step===5?'إرسال للمراجعة':'التالي'} {step<5 && <ArrowLeft size={18}/>}
           </button>
         </form>
