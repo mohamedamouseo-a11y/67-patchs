@@ -106,6 +106,9 @@ export class CommerceStore{
       const rows=await this.orders();const created=[];const now=new Date().toISOString();
       for(const group of groups.values()){
         const subtotal=group.items.reduce((s,x)=>s+x.price*x.quantity,0);
+        const tax=Math.round(subtotal*0.15*100)/100;
+        const shippingCost=money(input.shippingCost || 0,'Shipping cost');
+        const total=Math.round((subtotal+tax+shippingCost)*100)/100;
         const commission=Math.round(subtotal*0.01*100)/100;
         const trackingToken=crypto.randomBytes(32).toString('base64url');
         const trackingHash=crypto.createHash('sha256').update(trackingToken).digest('hex');
@@ -114,7 +117,7 @@ export class CommerceStore{
           customerName:clean(input.customerName,'Customer name',160),customerPhone:clean(input.customerPhone,'Customer phone',40),
           fulfillment:clean(input.fulfillment||'delivery','Fulfillment',40),
           address:clean(input.address||'','Address',500,false),items:group.items,
-          subtotal:Math.round(subtotal*100)/100,commission,sellerNet:Math.round((subtotal-commission)*100)/100,
+          subtotal:Math.round(subtotal*100)/100,tax,shippingCost,total,commission,sellerNet:Math.round((subtotal-commission)*100)/100,\n          paymentMethod:clean(input.paymentMethod||'pending','Payment method',80),
           status:'new',createdAt:now,updatedAt:now,statusHistory:[{status:'new',at:now,actor:'customer'}],
           trackingHash,
         };
