@@ -1,0 +1,21 @@
+diff --git a/src/pages/TopPartsPage.jsx b/src/pages/TopPartsPage.jsx
+--- a/src/pages/TopPartsPage.jsx
++++ b/src/pages/TopPartsPage.jsx
+@@ -32,7 +32,7 @@ const TopPartsPage = () => {
+       }
+     });
+     return Array.from(unique, ([id, label]) => ({ id, label }));
+-  }, []);
++  }, [mockOffers]);
+ 
+   const products = useMemo(() => {
+     const normalized = query.trim().toLowerCase();
+@@ -54,7 +54,7 @@ const TopPartsPage = () => {
+     if (sortBy === 'rating') return [...list].sort((a, b) => b.rating - a.rating);
+     if (sortBy === 'shipping') return [...list].sort((a, b) => a.shippingDays - b.shippingDays);
+     return list;
+-  }, [condition, query, sortBy]);
++  }, [mockOffers, condition, query, sortBy]);
+ 
+   const handleToggleFavorite = (event, id) => {
+     event.stopPropagation();
